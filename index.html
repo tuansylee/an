@@ -50,6 +50,17 @@
   .setrow button{flex:0 0 auto;padding:10px 14px}
   .note{font-size:12px;color:var(--muted);margin-top:10px}
   .candy{font-size:64px;font-weight:800;text-align:center;margin:6px 0 2px;color:var(--gold)}
+  .crit-item{border-left:4px solid var(--line);padding:6px 0 6px 12px;margin:12px 0}
+  .crit-item.great{border-color:var(--great)} .crit-item.good{border-color:var(--good)}
+  .crit-item.neutral{border-color:var(--neutral)} .crit-item.bad{border-color:var(--bad)}
+  .crit-item.worse{border-color:var(--worse)}
+  .crit-head{font-size:15px;margin-bottom:4px}
+  .crit-head .pts{float:right;font-weight:800}
+  .crit-head i{color:var(--muted);font-weight:600}
+  .crit-vn{font-size:13px;color:#334155;margin-top:3px}
+  .crit-de{font-size:13px;color:var(--muted);margin-top:3px}
+  .crit-note{font-size:12.5px;color:#475569;margin-top:12px;background:#f8fafc;
+    border:1px solid var(--line);border-radius:10px;padding:10px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -76,6 +87,45 @@
     <button class="b-worse"   data-key="ch"  onclick="scoreToday('ch')">Cực hư<br>+2</button>
   </div>
   <div id="todayStatus" class="small"></div>
+
+  <details style="margin-top:14px">
+    <summary>❓ Tiêu chí chấm điểm / Bewertungskriterien <span style="font-weight:400">(cho người lớn / für Erwachsene)</span></summary>
+
+    <div class="crit-item great">
+      <div class="crit-head"><b>Cực ngoan</b> · <i>Sehr brav</i> <span class="pts">−2</span></div>
+      <div class="crit-vn">🇻🇳 Một bước dũng cảm thật sự: giơ tay phát biểu, nói trước lớp, bắt chuyện / kết bạn mới, thử việc mới dù còn ngại, chủ động giúp bạn.</div>
+      <div class="crit-de">🇩🇪 Ein richtig mutiger Schritt: sich im Unterricht melden, vor der Klasse sprechen, jemanden ansprechen / neue Freunde finden, etwas Neues ausprobieren trotz Angst, einem Freund von sich aus helfen.</div>
+    </div>
+
+    <div class="crit-item good">
+      <div class="crit-head"><b>Ngoan</b> · <i>Brav</i> <span class="pts">−1</span></div>
+      <div class="crit-vn">🇻🇳 Có tham gia, có cố gắng: trả lời cô một câu, chơi cùng bạn, vào nhóm hoạt động, tự giác uống thuốc và làm việc của mình không càu nhàu.</div>
+      <div class="crit-de">🇩🇪 Mitgemacht und sich bemüht: der Lehrerin geantwortet, mit Freunden gespielt, bei einer Aktivität mitgemacht, selbstständig die Medizin genommen und die eigenen Aufgaben ohne Murren erledigt.</div>
+    </div>
+
+    <div class="crit-item neutral">
+      <div class="crit-head"><b>Bình thường</b> · <i>Normal</i> <span class="pts">0</span></div>
+      <div class="crit-vn">🇻🇳 Một ngày yên ổn, làm xong việc của mình — mức mặc định, hoàn toàn ổn.</div>
+      <div class="crit-de">🇩🇪 Ein ruhiger Tag, die eigenen Aufgaben erledigt — der Normalfall, alles in Ordnung.</div>
+    </div>
+
+    <div class="crit-item bad">
+      <div class="crit-head"><b>Hư</b> · <i>Unartig</i> <span class="pts">+1</span></div>
+      <div class="crit-vn">🇻🇳 Sai rõ ràng nhưng nhỏ: cãi lại / nói trống không, không chịu làm bài sau nhiều lần nhắc, nói dối nhỏ.</div>
+      <div class="crit-de">🇩🇪 Etwas klar Falsches, aber Kleines: widersprochen / unhöflich geredet, nach mehreren Ermahnungen die Hausaufgaben verweigert, eine kleine Lüge.</div>
+    </div>
+
+    <div class="crit-item worse">
+      <div class="crit-head"><b>Cực hư</b> · <i>Sehr unartig</i> <span class="pts">+2</span></div>
+      <div class="crit-vn">🇻🇳 Nghiêm trọng, hiếm: đánh / làm đau người khác, nói dối lớn, ăn vạ đập phá đồ, làm việc nguy hiểm, bướng bỉnh chống đối lặp lại.</div>
+      <div class="crit-de">🇩🇪 Ernst und selten: jemanden geschlagen / verletzt, eine große Lüge, ein Wutanfall mit Sachenwerfen, gefährliches Verhalten, wiederholter Trotz.</div>
+    </div>
+
+    <div class="crit-note">
+      🇻🇳 Phần “Hư / Cực hư” chỉ dùng khi thật sự cần — phần lớn các ngày sẽ là Bình thường hoặc Ngoan. Quên chấm = tự động tính Bình thường.<br>
+      🇩🇪 „Unartig / Sehr unartig“ nur benutzen, wenn es wirklich nötig ist — die meisten Tage sind Normal oder Brav. Eine vergessene Bewertung zählt automatisch als Normal.
+    </div>
+  </details>
 </div>
 
 <!-- ===== KẸO ===== -->
