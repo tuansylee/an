@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#4f46e5" />
+<title>Cấm game & Kẹo cao su</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --line:#e2e8f0; --indigo:#4f46e5;
+    --great:#16a34a; --good:#65a30d; --neutral:#64748b; --bad:#ea580c; --worse:#dc2626;
+    --gold:#d97706;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);padding:16px;line-height:1.4;
+    max-width:560px;margin:0 auto;
+  }
+  h1{font-size:20px;margin:4px 0 16px;text-align:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+  .big{font-size:64px;font-weight:800;text-align:center;margin:6px 0 2px;line-height:1}
+  .unit{text-align:center;color:var(--muted);font-size:15px;margin-bottom:8px}
+  .breakdown{text-align:center;color:var(--muted);font-size:13px;margin-top:4px}
+  .done{text-align:center;color:var(--great);font-weight:700;font-size:18px;margin-top:6px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border:none;border-radius:12px;
+    padding:14px 12px;font-weight:700;color:#fff;flex:1;min-width:0;
+    transition:transform .05s ease, filter .15s ease}
+  button:active{transform:scale(.96)}
+  button:hover{filter:brightness(1.05)}
+  .grid5{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:6px}
+  .grid5 button{padding:12px 4px;font-size:13px;border-radius:10px}
+  .b-great{background:var(--great)} .b-good{background:var(--good)}
+  .b-neutral{background:var(--neutral)} .b-bad{background:var(--bad)} .b-worse{background:var(--worse)}
+  .b-indigo{background:var(--indigo)} .b-gold{background:var(--gold)}
+  .b-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .selected{outline:3px solid #0f172a;outline-offset:1px}
+  .small{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:var(--muted);font-size:14px;font-weight:600;padding:6px 0}
+  .logitem{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--line)}
+  .logitem span:last-child{font-weight:700}
+  .pos{color:var(--worse)} .neg{color:var(--great)}
+  .setrow{display:flex;gap:8px;align-items:center;margin:8px 0}
+  .setrow input{flex:1;padding:10px;border:1px solid var(--line);border-radius:10px;font:inherit}
+  .setrow button{flex:0 0 auto;padding:10px 14px}
+  .note{font-size:12px;color:var(--muted);margin-top:10px}
+  .candy{font-size:64px;font-weight:800;text-align:center;margin:6px 0 2px;color:var(--gold)}
+</style>
+</head>
+<body>
+
+<h1>🎮 Cấm game &nbsp;•&nbsp; 🍬 Kẹo cao su</h1>
+
+<!-- ===== ĐẾM NGÀY ===== -->
+<div class="card">
+  <div class="label">Số ngày cấm chơi game còn lại</div>
+  <div id="daysBig" class="big">–</div>
+  <div class="unit">ngày</div>
+  <div id="breakdown" class="breakdown"></div>
+  <div id="doneMsg" class="done" style="display:none">🎉 Hết hạn phạt rồi!</div>
+</div>
+
+<!-- ===== CHẤM ĐIỂM ===== -->
+<div class="card">
+  <div class="label">Chấm điểm hôm nay — <span id="todayLabel"></span></div>
+  <div class="grid5" style="margin-top:10px">
+    <button class="b-great"   data-key="cn"  onclick="scoreToday('cn')">Cực ngoan<br>−2</button>
+    <button class="b-good"    data-key="n"   onclick="scoreToday('n')">Ngoan<br>−1</button>
+    <button class="b-neutral" data-key="bt"  onclick="scoreToday('bt')">Bình thường<br>0</button>
+    <button class="b-bad"     data-key="h"   onclick="scoreToday('h')">Hư<br>+1</button>
+    <button class="b-worse"   data-key="ch"  onclick="scoreToday('ch')">Cực hư<br>+2</button>
+  </div>
+  <div id="todayStatus" class="small"></div>
+</div>
+
+<!-- ===== KẸO ===== -->
+<div class="card">
+  <div class="label">Số kẹo cao su đang nợ con</div>
+  <div id="gumBig" class="candy">–</div>
+  <div class="unit">cái kẹo</div>
+  <div class="row" style="margin-top:10px">
+    <button class="b-indigo" onclick="addGum(2,'Đúng hết bài kiểm tra')">📝 Đúng hết bài kiểm tra<br>+2</button>
+    <button class="b-gold"   onclick="addGum(10,'König / Nhất lớp một môn')">👑 König (nhất lớp)<br>+10</button>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <button class="b-ghost" onclick="payGum()">🍬 Đã đưa kẹo cho con (trừ bớt)</button>
+  </div>
+</div>
+
+<!-- ===== LỊCH SỬ ===== -->
+<div class="card">
+  <details>
+    <summary>📜 Lịch sử chấm điểm ngày</summary>
+    <div id="scoreLog"></div>
+  </details>
+  <details>
+    <summary>📜 Lịch sử kẹo cao su</summary>
+    <div id="gumLog"></div>
+  </details>
+</div>
+
+<!-- ===== CÀI ĐẶT ===== -->
+<div class="card">
+  <details>
+    <summary>⚙️ Cài đặt &amp; sao lưu</summary>
+    <div class="setrow">
+      <input id="setDays" type="number" placeholder="Số ngày còn lại" />
+      <button class="b-ghost" onclick="setDays()">Đặt lại ngày</button>
+    </div>
+    <div class="setrow">
+      <input id="setGum" type="number" placeholder="Số kẹo đang nợ" />
+      <button class="b-ghost" onclick="setGum()">Đặt lại kẹo</button>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button class="b-ghost" onclick="backup()">💾 Sao lưu</button>
+      <button class="b-ghost" onclick="document.getElementById('restoreFile').click()">📂 Khôi phục</button>
+    </div>
+    <input id="restoreFile" type="file" accept="application/json" style="display:none" onchange="restore(event)" />
+    <div class="row" style="margin-top:6px">
+      <button class="b-ghost" style="color:#dc2626" onclick="resetAll()">🗑️ Xoá tất cả &amp; bắt đầu lại</button>
+    </div>
+    <div class="note">Dữ liệu được lưu ngay trên thiết bị/trình duyệt này. Nếu đổi máy hoặc xoá dữ liệu trình duyệt thì sẽ mất — thỉnh thoảng bấm “Sao lưu” để giữ một bản phòng hờ.</div>
+  </details>
+</div>
+
+<script>
+const KEY = 'daycount_gum_v1';
+const RATINGS = {
+  cn:{label:'Cực ngoan', delta:-2},
+  n :{label:'Ngoan',     delta:-1},
+  bt:{label:'Bình thường',delta:0},
+  h :{label:'Hư',        delta:1},
+  ch:{label:'Cực hư',    delta:2},
+};
+
+/* ---- ngày tháng ---- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayStr(){return ymd(new Date());}
+function parseYmd(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function daysBetween(a,b){return Math.round((parseYmd(b)-parseYmd(a))/86400000);}
+function fmtVN(s){const [y,m,d]=s.split('-');return d+'/'+m+'/'+y;}
+
+/* ---- state ---- */
+function freshState(){return {startDate:todayStr(), initialDays:42, scoreLog:[], gum:12, gumLog:[]};}
+let state = load();
+function load(){
+  try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.initialDays!=null) return Object.assign(freshState(),s);}catch(e){}
+  const init=freshState(); localStorage.setItem(KEY,JSON.stringify(init)); return init;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+
+/* ---- tính toán ---- */
+function scoreSum(){return state.scoreLog.reduce((a,e)=>a+e.delta,0);}
+function daysElapsed(){return Math.max(0, daysBetween(state.startDate, todayStr()));}
+function remainingRaw(){return state.initialDays - daysElapsed() + scoreSum();}
+
+/* ---- hành động ---- */
+function scoreToday(key){
+  const t=todayStr(); const r=RATINGS[key];
+  state.scoreLog = state.scoreLog.filter(e=>e.date!==t);
+  state.scoreLog.push({date:t, key, label:r.label, delta:r.delta});
+  save(); render();
+}
+function addGum(n,label){
+  state.gum+=n; state.gumLog.push({date:todayStr(), time:new Date().toLocaleTimeString('vi-VN'), label, delta:n});
+  save(); render();
+}
+function payGum(){
+  const v=prompt('Đưa cho con mấy cái kẹo?','1'); if(v===null) return;
+  const n=Math.abs(parseInt(v,10)); if(!n) return;
+  state.gum=Math.max(0,state.gum-n);
+  state.gumLog.push({date:todayStr(), time:new Date().toLocaleTimeString('vi-VN'), label:'Đã đưa kẹo cho con', delta:-n});
+  save(); render();
+}
+function setDays(){
+  const v=parseInt(document.getElementById('setDays').value,10); if(isNaN(v)) return;
+  state.initialDays=v; state.startDate=todayStr(); state.scoreLog=[]; save(); render();
+  document.getElementById('setDays').value='';
+}
+function setGum(){
+  const v=parseInt(document.getElementById('setGum').value,10); if(isNaN(v)) return;
+  state.gum=v; save(); render(); document.getElementById('setGum').value='';
+}
+function resetAll(){
+  if(confirm('Xoá hết và bắt đầu lại từ 42 ngày / 12 kẹo?')){ state=freshState(); save(); render(); }
+}
+function backup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='sao-luu-cam-game-'+todayStr()+'.json'; a.click();
+}
+function restore(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{try{const s=JSON.parse(r.result); if(s.initialDays==null) throw 0;
+    state=Object.assign(freshState(),s); save(); render(); alert('Đã khôi phục dữ liệu.');}
+    catch(e){alert('File không hợp lệ.');}};
+  r.readAsText(f); ev.target.value='';
+}
+
+/* ---- hiển thị ---- */
+function render(){
+  const raw=remainingRaw(); const shown=Math.max(0,raw);
+  document.getElementById('daysBig').textContent=shown;
+  document.getElementById('breakdown').textContent=
+    `Bắt đầu ${state.initialDays} − đã trôi qua ${daysElapsed()} ${scoreSum()<0?'−':'+'} điểm chấm ${Math.abs(scoreSum())}`;
+  document.getElementById('doneMsg').style.display = raw<=0 ? 'block':'none';
+
+  document.getElementById('todayLabel').textContent=fmtVN(todayStr());
+  const tr=state.scoreLog.find(e=>e.date===todayStr());
+  document.querySelectorAll('.grid5 button').forEach(b=>b.classList.toggle('selected', tr && b.dataset.key===tr.key));
+  document.getElementById('todayStatus').textContent = tr
+    ? `Hôm nay đã chấm: ${tr.label} (${tr.delta>0?'+':''}${tr.delta} ngày). Bấm lại để đổi.`
+    : 'Chưa chấm điểm hôm nay.';
+
+  document.getElementById('gumBig').textContent=state.gum;
+
+  document.getElementById('scoreLog').innerHTML = state.scoreLog.slice().reverse().slice(0,30)
+    .map(e=>`<div class="logitem"><span>${fmtVN(e.date)} — ${e.label}</span><span class="${e.delta>0?'pos':'neg'}">${e.delta>0?'+':''}${e.delta} ngày</span></div>`).join('') || '<div class="small">Chưa có.</div>';
+  document.getElementById('gumLog').innerHTML = state.gumLog.slice().reverse().slice(0,30)
+    .map(e=>`<div class="logitem"><span>${fmtVN(e.date)} — ${e.label}</span><span class="${e.delta>0?'pos':'neg'}">${e.delta>0?'+':''}${e.delta} 🍬</span></div>`).join('') || '<div class="small">Chưa có.</div>';
+}
+render();
+</script>
+</body>
+</html>
