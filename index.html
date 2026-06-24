@@ -112,6 +112,45 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .bars .b{flex:1;background:var(--blue);border-radius:4px 4px 0 0;min-height:3px;position:relative}
 .bars .b span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--mut)}
 .foot{margin:22px 4px;color:var(--mut);font-size:12px;text-align:center}
+/* ===== View của Con (Kid mode) ===== */
+#kid{position:fixed;inset:0;z-index:70;background:linear-gradient(165deg,#12101f,#0f1320 55%,#101a16);color:var(--fg);overflow:auto;padding:18px;max-width:760px;margin:0 auto}
+.kidtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.kidav{font-size:46px;cursor:pointer;line-height:1}
+.kidhi{flex:1;font-size:22px;font-weight:800}
+.kidclose{background:#222733;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px 16px;font-size:16px;font-weight:700;cursor:pointer}
+.kidstar{background:linear-gradient(155deg,#2a2410,#1a1d24);border:1px solid #6a5520;border-radius:18px;padding:14px;text-align:center;margin-bottom:8px}
+.kidstar .n{font-size:34px;font-weight:800;color:var(--y);line-height:1.1}
+.kidstar .sub{font-size:14px;color:#ffd98a;margin-top:2px}
+.kidcheer{background:#16241a;border:1px solid #3a5a40;color:#bfe9cc;border-radius:14px;padding:12px;text-align:center;font-weight:800;margin-bottom:10px;animation:pop .4s}
+@keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.kidsec{margin:16px 2px 8px;font-size:14px;color:var(--mut);font-weight:700}
+.kidcards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:560px){.kidcards{grid-template-columns:1fr 1fr 1fr}}
+.kidcard{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;min-height:108px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.kidcard .em{font-size:40px;line-height:1}
+.kidcard .lb{font-size:15px;font-weight:700}
+.kidcard.done{background:linear-gradient(155deg,#16a34a,#0c3b22);border-color:var(--g)}
+.kidmood{display:flex;gap:8px}
+.kidmood button{flex:1;font-size:30px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 0;cursor:pointer}
+.kidmood button.sel{outline:3px solid var(--g);outline-offset:1px}
+.kidrow{display:flex;gap:8px;margin-top:6px}
+.kidrow input{flex:1;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px;font-size:15px}
+.kidrow button{background:var(--g);color:#06210f;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
+.kidgoal{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.kidgoal .gt{font-size:16px;font-weight:700;margin-bottom:6px}
+.kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
+.kidavpick span.sel{background:#2a3550;outline:2px solid var(--blue)}
+.kiddiary{font-size:13px;color:#c7ccd6;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:6px 12px;margin-top:6px}
+.kiddiary .row{padding:6px 0;border-top:1px solid var(--bd)}.kiddiary .row:first-child{border-top:0}
+/* ===== Tối giản ban đêm ===== */
+#night{position:fixed;inset:0;z-index:80;background:#000;color:#3a3f4a;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;cursor:pointer;user-select:none}
+#night .clock{font-size:84px;font-weight:800;letter-spacing:3px;line-height:1}
+#night .nd{font-size:18px;color:#2c303a}
+#night .nh{position:absolute;bottom:26px;font-size:12px;color:#23262e}
+#nightBtn,#kidBtn{background:#222733;border:1px solid var(--bd);color:var(--mut);padding:6px 10px;border-radius:8px;font-size:15px;cursor:pointer}
+#kidBtn{font-size:18px}
 #printArea{display:none}
 @media print{
   body{background:#fff;color:#000;padding:0;max-width:none}
@@ -129,16 +168,16 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <div class="bar">
   <div><div class="d" id="dateLbl"></div><div class="t" id="weekLbl"></div></div>
-  <div class="lang"><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
+  <div class="lang"><button id="kidBtn" title="Con">🧒</button><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
 </div>
 <div class="mockbanner" id="backupReminder" hidden style="cursor:pointer;background:#1a2a16;border-color:#3a5a40;color:#9fe0b0"></div>
 <div class="mockbanner" id="acariReminder" hidden style="cursor:pointer"></div>
 
 <div class="tabs">
   <button data-tab="truc" id="tab_truc"></button>
-  <button data-tab="lich" id="tab_lich"></button>
   <button data-tab="con" id="tab_con"></button>
   <button data-tab="health" id="tab_health"></button>
+  <button data-tab="lich" id="tab_lich"></button>
 </div>
 
 <!-- ===== TAB: TRỰC + việc hằng ngày ===== -->
@@ -236,6 +275,8 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 </div>
 
 <div class="foot" id="footNote"></div>
+<div id="kid" hidden></div>
+<div id="night" hidden><div class="clock" id="nightClock"></div><div class="nd" id="nightDate"></div><div class="nh" id="nightHint"></div></div>
 <div id="ov" hidden><div class="sheet" id="sheet"></div></div>
 <div id="printArea"></div>
 <input id="impFile" type="file" accept="application/json" hidden>
@@ -253,7 +294,7 @@ const T={
    tally:t=>`Tuần này: <b>👨 Bố ${t.bo} ca</b> · <b>👩 Mẹ ${t.me} ca</b>`,
    legend:"Xoay mặc định 2 tuần (cân 7/7) · cuối tuần T7=Bố, CN=Mẹ · chạm: đổi ca · ca đã qua tự khoá · giữ 0.5s: khoá/mở",
    foot:"Local-only trên thiết bị này · sao lưu bằng ⚙️ · không đồng bộ, không đăng nhập",
-   bodyparts:["Đầu","Bụng","Tai","Họng","Răng","Chân","Tay","Khác"],
+   bodyparts:["Đầu","Bụng","Tai","Họng","Ho","Răng","Chân","Tay","Khác"],
    level:"Mức độ", amount:"Lượng", duration:"Bao lâu mới hết", side:"Bên", part:"Bộ phận",
    amounts:["Ít","Vừa","Nhiều"], sides:["Trái","Phải","Cả hai"],
    moods:["😀 Rất vui","🙂 Ổn","😐 Bình thường","😟 Buồn","😣 Khó chịu"],
@@ -278,6 +319,7 @@ const T={
    pasteT:"📋 Hoặc chép/dán JSON trực tiếp (không cần file)", pasteExport:"Xuất ra ô", pasteImport:"Nhập từ ô (ghi đè)",
    pastePh:"Dán JSON sao lưu (app này hoặc /lich) vào đây rồi bấm \"Nhập từ ô\"…",
    pasteCopied:"Đã điền JSON — bôi đen + copy cất vào ghi chú điện thoại.", pasteOk:n=>`Đã nhập + áp dụng ✅ (${n} mục)`, pasteEmpty:"Ô đang trống.",
+   dlBlocked:"Trình duyệt/tablet không cho tải file. Hãy dùng ô 'chép/dán JSON' bên dưới — bấm 'Xuất ra ô' rồi copy cất vào ghi chú.",
    nameSet:"✏️ Đặt tên con", nameAsk:"Tên con hiển thị trong app (chỉ lưu trên máy):",
    backupWarn:"⚠️ Lâu chưa xuất ra ngoài — nên 'Xuất ra file' cất vào Drive/ghi chú phòng tablet hỏng.",
    backupNever:"💾 Chưa sao lưu ra ngoài lần nào — chạm để xuất.", backupRemind:d=>`💾 Đã ${d} ngày chưa sao lưu ra ngoài — chạm để xuất.`,
@@ -299,7 +341,7 @@ const T={
    tally:t=>`Diese Woche: <b>👨 Papa ${t.bo}</b> · <b>👩 Mama ${t.me}</b>`,
    legend:"Standard-Rotation über 2 Wochen (7/7) · WE Sa=Papa, So=Mama · tippen: tauschen · vergangene Schicht autom. gesperrt · 0,5s halten: sperren/entsperren",
    foot:"Nur lokal auf diesem Gerät · Sicherung über ⚙️ · keine Synchronisierung, kein Login",
-   bodyparts:["Kopf","Bauch","Ohr","Hals","Zähne","Bein","Arm","Andere"],
+   bodyparts:["Kopf","Bauch","Ohr","Hals","Husten","Zähne","Bein","Arm","Andere"],
    level:"Stärke", amount:"Menge", duration:"Dauer bis Stopp", side:"Seite", part:"Körperteil",
    amounts:["Wenig","Mittel","Viel"], sides:["Links","Rechts","Beide"],
    moods:["😀 Sehr gut","🙂 Gut","😐 Normal","😟 Traurig","😣 Unwohl"],
@@ -324,6 +366,7 @@ const T={
    pasteT:"📋 Oder JSON direkt kopieren/einfügen (ohne Datei)", pasteExport:"In Feld exportieren", pasteImport:"Aus Feld importieren (überschreiben)",
    pastePh:"Backup-JSON (diese App oder /lich) hier einfügen, dann \"Aus Feld importieren\"…",
    pasteCopied:"JSON eingefügt — markieren + in Handy-Notizen kopieren.", pasteOk:n=>`Importiert + angewendet ✅ (${n} Einträge)`, pasteEmpty:"Feld ist leer.",
+   dlBlocked:"Browser/Tablet erlaubt keinen Datei-Download. Bitte das JSON-Feld unten verwenden — 'In Feld exportieren' und in Notizen kopieren.",
    nameSet:"✏️ Name des Kindes", nameAsk:"Angezeigter Name des Kindes (nur lokal gespeichert):",
    backupWarn:"⚠️ Lange nicht extern gesichert — bitte 'Exportieren' und in Drive/Notizen ablegen.",
    backupNever:"💾 Noch nie extern gesichert — tippen zum Export.", backupRemind:d=>`💾 Seit ${d} Tagen keine externe Sicherung — tippen zum Export.`,
@@ -344,6 +387,11 @@ const dmy=d=>d.split("-").reverse().slice(0,2).join("/");
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
 const sv=(k,a)=>localStorage.setItem(k,JSON.stringify(a));
 const CHILD=()=>localStorage.getItem("fam.childname")||L().childDefault;
+let _idc=0;const newId=()=>"r"+Date.now().toString(36)+(_idc++).toString(36);
+function ensureIds(key){const a=ld(key);let ch=false;a.forEach(x=>{if(!x.id){x.id=newId();ch=true;}});if(ch)sv(key,a);return a;}
+function delEntry(key,id){if(!confirm(LANG==="vi"?"Xoá bản ghi này?":"Eintrag löschen?"))return;
+  sv(key,ld(key).filter(x=>x.id!==id));
+  if(key==="fam.health.logs")renderHealth();else if(key==="fam.sleep")renderSleep();else if(key==="fam.temp")renderTemp();else if(key==="fam.growth")renderGrowth();}
 
 /* ============ Tabs ============ */
 let TAB=localStorage.getItem("fam.tab")||"truc";
@@ -517,15 +565,15 @@ $("evSave").onclick=()=>{const t=$("evT").value.trim(),d=$("evD").value,p=$("evP
   $("evT").value="";$("evD").value="";$("apptForm").hidden=true;};
 
 /* ============ Log sức khỏe ============ */
-function addLog(o){const a=ld("fam.health.logs");a.push({date:iso(new Date()),...o});sv("fam.health.logs",a);renderHealth();}
+function addLog(o){const a=ld("fam.health.logs");a.push({id:newId(),date:iso(new Date()),...o});sv("fam.health.logs",a);renderHealth();}
 function summ(x){const e={pain:"🤕",nose:"🩸",mood:"🙂"}[x.type];let s=e+" ";
   if(x.type==="pain")s+=`${x.part} · ${L().level} ${x.level}`;
   else if(x.type==="nose")s+=`${x.amount} · ${x.duration}`+(x.side?` · ${x.side}`:"");
   else s+=x.mood;if(x.note)s+=` — "${x.note}"`;return s;}
 function renderHealth(){
   $("h_health").textContent=L().health;$("b_pain").textContent=L().pain;$("b_nose").textContent=L().nose;$("b_mood").textContent=L().mood;
-  const today=ld("fam.health.logs").filter(x=>x.date===iso(new Date())).slice(-6).reverse();
-  $("healthHist").innerHTML=today.length?today.map(x=>`<div class="row">${summ(x)}</div>`).join(""):`<div class="row">${L().nohist}</div>`;}
+  const today=ensureIds("fam.health.logs").filter(x=>x.date===iso(new Date())).slice(-6).reverse();
+  $("healthHist").innerHTML=today.length?today.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${summ(x)}</span><span class="ic" data-xdel="fam.health.logs" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${L().nohist}</div>`;}
 const ov=$("ov"),sheet=$("sheet");
 function open(html){sheet.innerHTML=html;ov.hidden=false;}
 function close(){ov.hidden=true;}
@@ -573,18 +621,38 @@ function openReport(){
     <div class="acts"><button class="cancel" id="cCancel">${L().cancel}</button><button class="save" style="background:#4f46e5;color:#fff" onclick="csvExport()">⬇️ CSV</button><button class="save" onclick="printReport()">🖨️ PDF A4</button></div></div>`);
   $("cCancel").onclick=close;}
 function buildPrintHtml(){
-  const H=ld("fam.health.logs"),noses=H.filter(x=>x.type==="nose"),pains=H.filter(x=>x.type==="pain");
+  const H=ld("fam.health.logs"),noses=H.filter(x=>x.type==="nose"),pains=H.filter(x=>x.type==="pain"),moods=H.filter(x=>x.type==="mood");
   const temps=ld("fam.temp"),sleeps=ld("fam.sleep"),grows=ld("fam.growth"),missed=acariMissed();
+  const esc=s=>String(s==null?"":s).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
   const tbl=(head,rows)=>rows.length?`<table><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.join("")}</table>`:`<p style="color:#666">— keine Einträge —</p>`;
-  return `<h1>Gesundheitsbericht — ${CHILD()}</h1>
+  return `<h1>Gesundheitsbericht — ${esc(CHILD())}</h1>
    <div style="color:#444;font-size:12px">Erstellt am ${dd(iso(new Date()))} · gesamter erfasster Verlauf</div>
-   <h3>Nasenbluten</h3>${tbl(["Datum","Menge","Dauer","Notiz"],noses.map(x=>`<tr><td>${dd(x.date)}</td><td>${x.amount}</td><td>${x.duration}${x.side?" / "+x.side:""}</td><td>${x.note||""}</td></tr>`))}
-   <h3>Schmerzen</h3>${tbl(["Datum","Körperteil","Stärke","Notiz"],pains.map(x=>`<tr><td>${dd(x.date)}</td><td>${x.part}</td><td>${x.level}/5</td><td>${x.note||""}</td></tr>`))}
+   <h3>Nasenbluten</h3>${tbl(["Datum","Menge","Dauer","Notiz"],noses.map(x=>`<tr><td>${dd(x.date)}</td><td>${esc(x.amount)}</td><td>${esc(x.duration)}${x.side?" / "+esc(x.side):""}</td><td>${esc(x.note)}</td></tr>`))}
+   <h3>Schmerzen / Symptome</h3>${tbl(["Datum","Körperteil","Stärke","Notiz"],pains.map(x=>`<tr><td>${dd(x.date)}</td><td>${esc(x.part)}</td><td>${esc(x.level)}/5</td><td>${esc(x.note)}</td></tr>`))}
+   <h3>Stimmung</h3>${tbl(["Datum","Stimmung","Notiz"],moods.map(x=>`<tr><td>${dd(x.date)}</td><td>${esc(x.mood)}</td><td>${esc(x.note)}</td></tr>`))}
    <h3>Acarizax — vergessene Tage</h3><p>${missed.length?missed.map(dd).join(", "):"keine"}</p>
-   <h3>Temperatur</h3>${tbl(["Datum","°C","Hinweis","Notiz"],temps.map(x=>`<tr><td>${dd(x.date)}</td><td>${x.v}</td><td>${x.v>=38?"Fieber":""}</td><td>${x.note||""}</td></tr>`))}
-   <h3>Schlaf</h3>${tbl(["Datum","Dauer","Bett→Auf","Qualität"],sleeps.map(x=>`<tr><td>${dd(x.date)}</td><td>${durH(x.bed,x.wake)||""} h</td><td>${x.bed||""}→${x.wake||""}</td><td>${x.quality||""}</td></tr>`))}
+   <h3>Temperatur</h3>${tbl(["Datum","°C","Hinweis","Notiz"],temps.map(x=>`<tr><td>${dd(x.date)}</td><td>${esc(x.v)}</td><td>${x.v>=38?"Fieber":""}</td><td>${esc(x.note)}</td></tr>`))}
+   <h3>Schlaf</h3>${tbl(["Datum","Dauer","Bett→Auf","Qualität"],sleeps.map(x=>`<tr><td>${dd(x.date)}</td><td>${durH(x.bed,x.wake)||""} h</td><td>${esc(x.bed)}→${esc(x.wake)}</td><td>${esc(x.quality)}</td></tr>`))}
    <h3>Wachstum</h3>${tbl(["Datum","Größe","Gewicht"],grows.map(x=>`<tr><td>${dd(x.date)}</td><td>${x.h||""} cm</td><td>${x.w||""} kg</td></tr>`))}`;}
-function printReport(){$("printArea").innerHTML=buildPrintHtml();window.print();}
+function printReport(){
+  const css=`@page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:13px/1.45 system-ui,"Segoe UI",Roboto,sans-serif;color:#000;background:#fff;padding:0;margin:0}
+    h1{font-size:20px;margin:0 0 2px}h3{font-size:14px;margin:16px 0 4px}p{margin:4px 0}
+    table{width:100%;border-collapse:collapse;margin:4px 0 12px}th,td{border:1px solid #999;padding:5px 8px;text-align:left;font-size:12px;color:#000;background:#fff}`;
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Gesundheitsbericht — ${CHILD()}</title><style>${css}</style></head><body>${buildPrintHtml()}</body></html>`;
+  const w=window.open("","_blank");
+  if(w){w.document.open();w.document.write(html);w.document.close();w.focus();setTimeout(()=>{try{w.print();}catch(e){}},350);return;}
+  // fallback nếu trình duyệt chặn cửa sổ mới: in qua #printArea
+  $("printArea").innerHTML=buildPrintHtml();window.print();}
+// Tải file CHẮC CHẮN: gắn anchor vào DOM (nhiều trình duyệt/WebView bỏ qua nếu không gắn);
+// nếu môi trường không hỗ trợ tải (WebView) -> mở blob ở tab mới để lưu tay.
+function downloadFile(filename,content,mime){
+  let url;
+  try{url=URL.createObjectURL(new Blob([content],{type:mime}));}catch(e){return false;}
+  const a=document.createElement("a");
+  if("download" in a){a.href=url;a.download=filename;a.rel="noopener";a.style.display="none";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{try{document.body.removeChild(a);}catch(e){}URL.revokeObjectURL(url);},2000);return true;}
+  const w=window.open(url,"_blank");setTimeout(()=>URL.revokeObjectURL(url),5000);return !!w;}
 function csvExport(){
   const rows=[["Datum","Kategorie","Wert","Detail","Notiz"]];
   ld("fam.health.logs").forEach(x=>{
@@ -595,8 +663,7 @@ function csvExport(){
   ld("fam.sleep").forEach(x=>rows.push([x.date,"Schlaf",(durH(x.bed,x.wake)||"")+" h",(x.bed||"")+"-"+(x.wake||""),(x.quality||"")+(x.note?" / "+x.note:"")]));
   ld("fam.growth").forEach(x=>rows.push([x.date,"Wachstum",(x.w||"")+" kg",(x.h||"")+" cm",""]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(";")).join("\r\n");
-  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Gesundheitsbericht_"+iso(new Date())+".csv";a.click();}
+  downloadFile("Gesundheitsbericht_"+iso(new Date())+".csv","﻿"+csv,"text/csv;charset=utf-8");}
 
 /* ============ Cấm game + Kẹo ============ */
 const GKEY="fam.game", DELTA={cn:-2,n:-1,bt:0,h:1,ch:2};
@@ -655,33 +722,33 @@ function bindPick(cb){sheet.querySelectorAll("[data-pk]").forEach(c=>c.onclick=(
 function durH(bed,wake){if(!bed||!wake)return null;const[bh,bm]=bed.split(":").map(Number),[wh,wm]=wake.split(":").map(Number);
   let m=(wh*60+wm)-(bh*60+bm);if(m<0)m+=1440;return(m/60).toFixed(1);}
 function renderSleep(){$("h_sleep").textContent=SL().sleep;$("addSleep").textContent=SL().addSleep;
-  const a=ld("fam.sleep").slice(-5).reverse();
-  $("sleepList").innerHTML=a.length?a.map(x=>`<div class="row">😴 ${dmy(x.date)} · ${x.bed||"–"}→${x.wake||"–"}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${x.quality}`:""}${x.note?` — "${x.note}"`:""}</div>`).join(""):`<div class="row">${SL().none}</div>`;}
+  const a=ensureIds("fam.sleep").slice(-5).reverse();
+  $("sleepList").innerHTML=a.length?a.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">😴 ${dmy(x.date)} · ${x.bed||"–"}→${x.wake||"–"}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${x.quality}`:""}${x.note?` — "${x.note}"`:""}</span><span class="ic" data-xdel="fam.sleep" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${SL().none}</div>`;}
 function openSleep(){let q=null;
   open(`<h3>${SL().sleep}</h3><div class="lbl">${SL().bed}</div><input id="sBed" type="time" value="21:00">
    <div class="lbl">${SL().wake}</div><input id="sWake" type="time" value="07:00">
    <div class="lbl">${SL().quality}</div>${pickRow(SL().qualities)}<textarea id="sNote" placeholder="${SL().note}"></textarea>`+actBtns());
   bindPick(v=>q=v);$("cC").onclick=close;
-  $("cS").onclick=()=>{const a=ld("fam.sleep");a.push({date:iso(new Date()),bed:$("sBed").value,wake:$("sWake").value,quality:q,note:$("sNote").value.trim()});sv("fam.sleep",a);renderSleep();close();};}
+  $("cS").onclick=()=>{const a=ld("fam.sleep");a.push({id:newId(),date:iso(new Date()),bed:$("sBed").value,wake:$("sWake").value,quality:q,note:$("sNote").value.trim()});sv("fam.sleep",a);renderSleep();close();};}
 function renderTemp(){$("h_temp").textContent=SL().temp;$("addTemp").textContent=SL().addTemp;
-  const a=ld("fam.temp").slice(-8);
+  const a=ensureIds("fam.temp").slice(-8);
   const chart=a.length?`<div class="bars">${a.map(x=>{const h=Math.max(4,Math.round((x.v-35)/6*78));
     return `<div class="b" style="height:${h}px;background:${x.v>=38?'var(--r)':'var(--blue)'}"><span>${x.v}</span></div>`;}).join("")}</div>`:"";
-  const list=a.slice().reverse().map(x=>`<div class="row" style="color:${x.v>=38?'var(--r)':'#c7ccd6'}">🌡️ ${dmy(x.date)} · ${x.v}°C${x.v>=38?` (${SL().fever})`:""}${x.note?` — "${x.note}"`:""}</div>`).join("");
+  const list=a.slice().reverse().map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px;color:${x.v>=38?'var(--r)':'#c7ccd6'}"><span style="flex:1">🌡️ ${dmy(x.date)} · ${x.v}°C${x.v>=38?` (${SL().fever})`:""}${x.note?` — "${x.note}"`:""}</span><span class="ic" data-xdel="fam.temp" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
   $("tempList").innerHTML=chart+(a.length?list:`<div class="row">${SL().none}</div>`);}
 function openTemp(){open(`<h3>${SL().temp}</h3><div class="lbl">${SL().tempVal}</div>
    <input id="tV" type="number" step="0.1" inputmode="decimal" placeholder="37.0"><textarea id="tNote" placeholder="${SL().note}"></textarea>`+actBtns());
-  $("cC").onclick=close;$("cS").onclick=()=>{const v=parseFloat($("tV").value);if(v){const a=ld("fam.temp");a.push({date:iso(new Date()),v,note:$("tNote").value.trim()});sv("fam.temp",a);renderTemp();close();}};}
+  $("cC").onclick=close;$("cS").onclick=()=>{const v=parseFloat($("tV").value);if(v){const a=ld("fam.temp");a.push({id:newId(),date:iso(new Date()),v,note:$("tNote").value.trim()});sv("fam.temp",a);renderTemp();close();}};}
 function renderGrowth(){$("h_growth").textContent=SL().growth;$("addGrowth").textContent=SL().addGrowth;
-  const a=ld("fam.growth");let chart="";
+  const a=ensureIds("fam.growth");let chart="";
   if(a.length){const ws=a.map(x=>x.w).filter(Boolean);const mn=Math.min(...ws),mx=Math.max(...ws);
     chart=`<div style="font-size:12px;color:var(--mut);margin:2px 0">${SL().weightL} (kg)</div><div class="bars">${a.slice(-8).map(x=>{const h=mx>mn?Math.round((x.w-mn)/(mx-mn)*68)+8:40;
      return `<div class="b" style="height:${h}px"><span>${x.w}</span></div>`;}).join("")}</div>`;}
-  const list=a.slice().reverse().slice(0,5).map(x=>`<div class="row">📈 ${x.date.split("-").reverse().join("/")} · ${x.h||"–"}cm · ${x.w||"–"}kg</div>`).join("");
+  const list=a.slice().reverse().slice(0,5).map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">📈 ${x.date.split("-").reverse().join("/")} · ${x.h||"–"}cm · ${x.w||"–"}kg</span><span class="ic" data-xdel="fam.growth" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
   $("growthList").innerHTML=chart+(a.length?list:`<div class="row">${SL().none}</div>`);}
 function openGrowth(){open(`<h3>${SL().growth}</h3><div class="lbl">${SL().height}</div><input id="gH" type="number" step="0.1" inputmode="decimal" placeholder="125">
    <div class="lbl">${SL().weight}</div><input id="gW" type="number" step="0.1" inputmode="decimal" placeholder="24">`+actBtns());
-  $("cC").onclick=close;$("cS").onclick=()=>{const h=parseFloat($("gH").value)||null,w=parseFloat($("gW").value)||null;if(h||w){const a=ld("fam.growth");a.push({date:iso(new Date()),h,w});sv("fam.growth",a);renderGrowth();close();}};}
+  $("cC").onclick=close;$("cS").onclick=()=>{const h=parseFloat($("gH").value)||null,w=parseFloat($("gW").value)||null;if(h||w){const a=ld("fam.growth");a.push({id:newId(),date:iso(new Date()),h,w});sv("fam.growth",a);renderGrowth();close();}};}
 
 /* ============ click handlers (CRUD + scores) ============ */
 document.addEventListener("click",e=>{
@@ -698,7 +765,8 @@ document.addEventListener("click",e=>{
   const dv=e.target.closest("[data-del]");if(dv){delEvent(dv.dataset.del);return;}
   const cy=e.target.closest("[data-cyc]");if(cy){cyclePerson(cy.dataset.cyc);return;}
   const th=e.target.closest("[data-togglehidden]");if(th){showHidden=!showHidden;renderAppt();return;}
-  const un=e.target.closest("[data-undone]");if(un){undone(un.dataset.undone);return;}});
+  const un=e.target.closest("[data-undone]");if(un){undone(un.dataset.undone);return;}
+  const xd=e.target.closest("[data-xdel]");if(xd){delEntry(xd.dataset.xdel,xd.dataset.xid);return;}});
 $("addDaily").onclick=()=>{const t=prompt(LANG==="vi"?"Việc hằng ngày mới:":"Neue tägliche Aufgabe:");if(t&&t.trim()){const a=anItems();a.push({id:"a"+Date.now(),t:t.trim()});saveAn(a);renderDaily();}};
 $("choreMng").onclick=()=>{manageCh=!manageCh;renderChores();};
 $("gTest").onclick=()=>addGum(2,L().gReasonTest);$("gKonig").onclick=()=>addGum(10,L().gReasonKonig);$("gPay").onclick=payGum;
@@ -718,9 +786,11 @@ function snaps(){const a=[];for(let i=0;i<localStorage.length;i++){const k=local
 function autoSnapshot(){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
   localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);
   snaps().slice(7).forEach(d=>localStorage.removeItem("fam.snap."+d));}
-function exportFile(){const blob=new Blob([JSON.stringify(famDump(),null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="gia-dinh-backup-"+iso(new Date())+".json";a.click();
-  localStorage.setItem("fam.lastexport",iso(new Date()));}
+function exportFile(){
+  const ok=downloadFile("gia-dinh-backup-"+iso(new Date())+".json",JSON.stringify(famDump(),null,2),"application/json");
+  localStorage.setItem("fam.lastexport",iso(new Date()));
+  if(!ok)alert(L().dlBlocked);
+  return ok;}
 function importFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let o;try{o=JSON.parse(r.result);}catch(e){alert(L().importErr);return;}
     if(!o||typeof o!=="object"){alert(L().importErr);return;}
@@ -745,6 +815,12 @@ function openCog(){
     <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
     <div class="lbl" id="ioStatus" style="min-height:1.2em;text-transform:none;letter-spacing:0;color:var(--g)"></div>
     <button class="notebtn" id="bName" style="margin-top:10px">${L().nameSet} — ${CHILD()}</button>
+    <div class="lbl" style="margin-top:14px">${KL().nightT}</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:#c7ccd6">
+      <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nOn" style="width:auto;margin:0"> ${KL().nightOn}</label>
+      <span style="color:var(--mut)">${KL().nightFrom}</span><input id="nFrom" type="time" style="width:auto;margin:0">
+      <span style="color:var(--mut)">${KL().nightTo}</span><input id="nTo" type="time" style="width:auto;margin:0">
+    </div>
     <div class="lbl" style="margin-top:14px">${L().snapHist}</div><div class="hist">${snapList}</div>
     <div class="acts"><button class="cancel" id="bClose">${L().cancel}</button></div>`);
   $("bExp").onclick=()=>{exportFile();renderBackupReminder();openCog();};
@@ -758,6 +834,9 @@ function openCog(){
     const n=famRestore(o);if(!n){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importNone;return;}
     renderAll();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteOk(n);};
   $("bName").onclick=()=>{const v=prompt(L().nameAsk,CHILD());if(v!==null){if(v.trim())localStorage.setItem("fam.childname",v.trim());else localStorage.removeItem("fam.childname");renderAll();openCog();}};
+  (()=>{const nc=nightCfg();$("nOn").checked=nc.on;$("nFrom").value=nc.from;$("nTo").value=nc.to;
+    const sN=()=>nightSave({on:$("nOn").checked,from:$("nFrom").value||"21:30",to:$("nTo").value||"06:30"});
+    $("nOn").onchange=sN;$("nFrom").onchange=sN;$("nTo").onchange=sN;})();
   $("bClose").onclick=close;
   sheet.querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>{if(confirm(L().restoreAsk)){const s=localStorage.getItem("fam.snap."+b.dataset.restore);if(s){famRestore(JSON.parse(s));renderAll();}close();}});}
 
@@ -777,6 +856,87 @@ function acariBuyFn(){const s0=acari();const v=prompt(L().acariAsk,"4");if(v===n
   const s={count:Math.round(boxes*ppb)+acariRemain(s0),perDay,since:iso(new Date())};
   localStorage.setItem("fam.acari",JSON.stringify(s));renderAll();}
 
+/* ============ View của Con (Kid mode) + Tối ban đêm ============ */
+const KX={
+ vi:{morning:"Chào buổi sáng",afternoon:"Chào buổi chiều",evening:"Chào buổi tối",close:"✓ Xong",
+   routine:"Việc của con hôm nay — chạm khi làm xong",noTasks:"Chưa có việc — nhờ bố mẹ thêm nhé.",
+   streak:n=>n>1?`🔥 ${n} ngày liền con tự làm hết!`:"Làm hết việc để được 1 ⭐ nhé!",
+   allDone:"🎉 Giỏi quá! Con tự làm hết — +1 ⭐",
+   goalT:"🎯 Mục tiêu tuần này",goalPh:"Vd: tự giơ tay phát biểu 1 lần",goalSet:"Đặt",goalDoneBtn:"✓ Làm được rồi!",goalDone:"🌟 Hoàn thành mục tiêu — +1 ⭐",
+   moodT:"Hôm nay con thấy thế nào?",goodT:"✨ Điều hay hôm nay",goodPh:"Hôm nay có gì vui?…",goodSave:"Lưu",thanks:"Cảm ơn con đã ghi! 💚",
+   nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
+ de:{morning:"Guten Morgen",afternoon:"Guten Tag",evening:"Guten Abend",close:"✓ Fertig",
+   routine:"Deine Aufgaben heute — antippen wenn erledigt",noTasks:"Noch keine Aufgaben — bitte Eltern fragen.",
+   streak:n=>n>1?`🔥 ${n} Tage in Folge selbst gemacht!`:"Mach alles fertig für 1 ⭐!",
+   allDone:"🎉 Super! Alles selbst erledigt — +1 ⭐",
+   goalT:"🎯 Wochenziel",goalPh:"z.B. einmal im Unterricht melden",goalSet:"OK",goalDoneBtn:"✓ Geschafft!",goalDone:"🌟 Ziel erreicht — +1 ⭐",
+   moodT:"Wie fühlst du dich heute?",goodT:"✨ Schönes heute",goodPh:"Was war heute schön?…",goodSave:"Speichern",thanks:"Danke fürs Eintragen! 💚",
+   nightHint:"Schlafenszeit 🌙 · tippen zum Ansehen",nightT:"🌙 Nachtmodus",nightOn:"Nachts automatisch abdunkeln",nightFrom:"Von",nightTo:"Bis"}
+};
+const KL=()=>KX[LANG];
+const AVATARS=["🦊","🐯","🐼","🐰","🦁","🐸","🐥","🦄","🐳","🤖","🦖","🌟"];
+function taskEmoji(t){t=(t||"").toLowerCase();
+  const map=[[/bài|hausauf|haus|lernen|học/,"📚"],[/mũi|nase/,"👃"],[/acari|thuốc|medi|tablet/,"💊"],
+   [/răng|zähne|zahn/,"🪥"],[/tắm|dusch|bad/,"🛁"],[/ăn|essen|frühstück|cơm/,"🍚"],[/ngủ|schlaf|bett/,"😴"],
+   [/đọc|lesen|sách|buch/,"📖"],[/nước|wasser|uống|trink/,"💧"],[/dọn|aufräum|räum|cất/,"🧸"]];
+  for(const[re,e]of map)if(re.test(t))return e;return "✅";}
+function kidState(){try{const s=JSON.parse(localStorage.getItem("fam.kid"));if(s)return Object.assign({avatar:"🦊",stars:0,streak:0,lastStar:"",goal:null},s);}catch(e){}
+  return {avatar:"🦊",stars:0,streak:0,lastStar:"",goal:null};}
+function kidSave(s){localStorage.setItem("fam.kid",JSON.stringify(s));}
+function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18?KL().afternoon:KL().evening;}
+function allRoutineDone(){const a=anItems();return a.length>0&&a.every(it=>anDone(it.id));}
+function awardRoutineStar(){const s=kidState(),today=iso(new Date());
+  if(allRoutineDone()&&s.lastStar!==today){const y=iso(new Date(Date.now()-864e5));
+    s.streak=(s.lastStar===y)?(s.streak||0)+1:1;s.stars=(s.stars||0)+1;s.lastStar=today;kidSave(s);return true;}return false;}
+let kidCheer="";
+function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date()));
+  const goal=s.goal&&s.goal.week===wk?s.goal:null;
+  const cards=items.length?items.map(it=>{const dn=anDone(it.id);
+    return `<div class="kidcard${dn?' done':''}" data-kid="${it.id}"><div class="em">${taskEmoji(it.t)}${dn?" ✓":""}</div><div class="lb">${it.t}</div></div>`;}).join("")
+    :`<div class="empty">${KL().noTasks}</div>`;
+  const diary=ld("fam.kid.diary").slice(-3).reverse().map(d=>`<div class="row">✨ ${dmy(d.date)} — ${d.text}</div>`).join("");
+  $("kid").innerHTML=`
+   <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
+     <div class="kidhi">${greetWord()}, ${CHILD()}! 🌟</div>
+     <button class="kidclose" id="kClose">${KL().close}</button></div>
+   <div class="kidstar"><div class="n">⭐ ${s.stars||0}</div><div class="sub">${KL().streak(s.streak||0)}</div></div>
+   ${kidCheer?`<div class="kidcheer">${kidCheer}</div>`:""}
+   <div class="kidavpick" id="kAvPick" hidden>${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}</div>
+   <div class="kidsec">${KL().routine}</div>
+   <div class="kidcards">${cards}</div>
+   <div class="kidsec">${KL().goalT}</div>
+   <div class="kidgoal">${goal
+       ?`<div class="gt">${goal.text}</div>`+(goal.done?`<div style="color:var(--g);font-weight:700">${KL().goalDoneBtn} ✓</div>`:`<div class="kidrow"><button id="kGoalDone">${KL().goalDoneBtn}</button></div>`)
+       :`<div class="kidrow"><input id="kGoalIn" placeholder="${KL().goalPh}"><button id="kGoalSet">${KL().goalSet}</button></div>`}</div>
+   <div class="kidsec">${KL().moodT}</div>
+   <div class="kidmood" id="kMood">${L().moods.map((m,i)=>`<button data-mi="${i}">${m.split(" ")[0]}</button>`).join("")}</div>
+   <div class="kidsec">${KL().goodT}</div>
+   <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>
+   ${diary?`<div class="kiddiary">${diary}</div>`:""}`;
+  $("kClose").onclick=closeKid;
+  $("kAv").onclick=()=>{$("kAvPick").hidden=!$("kAvPick").hidden;};
+  $("kid").querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
+  $("kid").querySelectorAll("[data-kid]").forEach(c=>c.onclick=()=>{anToggle(c.dataset.kid);if(awardRoutineStar())kidCheer=KL().allDone;renderKid();});
+  $("kid").querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;renderKid();});
+  if($("kGoalSet"))$("kGoalSet").onclick=()=>{const v=$("kGoalIn").value.trim();if(v){const st=kidState();st.goal={text:v,week:wk,done:false};kidSave(st);renderKid();}};
+  if($("kGoalDone"))$("kGoalDone").onclick=()=>{const st=kidState();if(st.goal&&!st.goal.done){st.goal.done=true;st.stars=(st.stars||0)+1;kidSave(st);kidCheer=KL().goalDone;renderKid();}};
+  if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;renderKid();}};}
+function openKid(){kidCheer="";$("night").hidden=true;$("kid").hidden=false;renderKid();}
+function closeKid(){kidCheer="";$("kid").hidden=true;renderAll();}
+/* --- Tối ban đêm (tự chuyển theo giờ) --- */
+let manualNight=false,wakeUntil=0;
+function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c)return Object.assign({on:true,from:"21:30",to:"06:30"},c);}catch(e){}return {on:true,from:"21:30",to:"06:30"};}
+function nightSave(c){localStorage.setItem("fam.night",JSON.stringify(c));}
+function inWin(now,from,to){const m=now.getHours()*60+now.getMinutes(),f=from.split(":").map(Number),t=to.split(":").map(Number),a=f[0]*60+f[1],b=t[0]*60+t[1];return a<=b?(m>=a&&m<b):(m>=a||m<b);}
+function showNight(){const now=new Date();
+  $("nightClock").textContent=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  $("nightDate").textContent=DAYN[now.getDay()]+" · "+iso(now).split("-").reverse().join("/");
+  $("nightHint").textContent=KL().nightHint;$("night").hidden=false;}
+function tickNight(){
+  if(!$("kid").hidden||!$("ov").hidden){$("night").hidden=true;return;}   // đang dùng (màn con / popup) -> không tối
+  const c=nightCfg(),now=new Date();
+  if(manualNight||(c.on&&inWin(now,c.from,c.to)&&Date.now()>=wakeUntil))showNight();else $("night").hidden=true;}
+
 /* ============ language + render all ============ */
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;localStorage.setItem("fam.lang",LANG);
   document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));renderAll();});
@@ -790,6 +950,10 @@ document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.da
 autoSnapshot();renderAll();setTab(TAB);
 $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEventListener("change",importFile);
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
+$("kidBtn").onclick=openKid;
+$("nightBtn").onclick=()=>{manualNight=true;showNight();};
+$("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
+tickNight();setInterval(()=>{if(!$("night").hidden&&($("kid").hidden&&$("ov").hidden))showNight();tickNight();},12000);
 setInterval(renderDuty,60000);
 </script>
 </body>
