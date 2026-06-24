@@ -245,13 +245,13 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 let LANG=localStorage.getItem("fam.lang")||"vi";
 const T={
  vi:{ tab_truc:"🗓️ Trực", tab_lich:"📋 Định kỳ & Khám", tab_con:"🎮 Thưởng phạt", tab_health:"🩺 Sức khỏe",
-   today:"Hôm nay trực", week:"Tuần này — chạm: đổi ca · giữ 0.5s: khoá 🔒",
+   today:"Hôm nay trực", week:"Tuần này — chạm: đổi ca · ca đã qua tự khoá 🔒 · giữ 0.5s: khoá/mở",
    daily:"Việc hằng ngày của", chores:"🧺 Việc định kỳ tới hạn", health:"🩺 Sức khỏe",
    appt:"⏰ Lịch bác sĩ & deadline", report:"Báo cáo cho bác sĩ", repBtn:"📄 Xuất báo cáo bác sĩ (tiếng Đức)",
    addDaily:"＋ Thêm việc hằng ngày", pain:"Đau", nose:"Chảy máu mũi", mood:"Cảm xúc",
    weekA:"Tuần A", weekB:"Tuần B", bo:"Bố", me:"Mẹ", sang:"SÁNG", chieu:"CHIỀU", childDefault:"Con",
    tally:t=>`Tuần này: <b>👨 Bố ${t.bo} ca</b> · <b>👩 Mẹ ${t.me} ca</b>`,
-   legend:"Xoay mặc định 2 tuần (cân 7/7) · cuối tuần T7=Bố, CN=Mẹ · chạm: đổi ca · giữ 0.5s: khoá/mở",
+   legend:"Xoay mặc định 2 tuần (cân 7/7) · cuối tuần T7=Bố, CN=Mẹ · chạm: đổi ca · ca đã qua tự khoá · giữ 0.5s: khoá/mở",
    foot:"Local-only trên thiết bị này · sao lưu bằng ⚙️ · không đồng bộ, không đăng nhập",
    bodyparts:["Đầu","Bụng","Tai","Họng","Răng","Chân","Tay","Khác"],
    level:"Mức độ", amount:"Lượng", duration:"Bao lâu mới hết", side:"Bên", part:"Bộ phận",
@@ -275,6 +275,9 @@ const T={
    exportFile:"Xuất ra file", importFile:"Nhập từ file (backup hoặc /lich)", snapHist:"Bản tự lưu (7 ngày gần nhất) — chạm ↩ để khôi phục",
    restoreAsk:"Khôi phục về bản này? Dữ liệu hiện tại sẽ bị ghi đè.", importOk:"Đã nhập ✅",
    importErr:"File không hợp lệ ❌", importNone:"File không có dữ liệu hợp lệ (cần backup app này hoặc export /lich).",
+   pasteT:"📋 Hoặc chép/dán JSON trực tiếp (không cần file)", pasteExport:"Xuất ra ô", pasteImport:"Nhập từ ô (ghi đè)",
+   pastePh:"Dán JSON sao lưu (app này hoặc /lich) vào đây rồi bấm \"Nhập từ ô\"…",
+   pasteCopied:"Đã điền JSON — bôi đen + copy cất vào ghi chú điện thoại.", pasteOk:n=>`Đã nhập + áp dụng ✅ (${n} mục)`, pasteEmpty:"Ô đang trống.",
    nameSet:"✏️ Đặt tên con", nameAsk:"Tên con hiển thị trong app (chỉ lưu trên máy):",
    backupWarn:"⚠️ Lâu chưa xuất ra ngoài — nên 'Xuất ra file' cất vào Drive/ghi chú phòng tablet hỏng.",
    backupNever:"💾 Chưa sao lưu ra ngoài lần nào — chạm để xuất.", backupRemind:d=>`💾 Đã ${d} ngày chưa sao lưu ra ngoài — chạm để xuất.`,
@@ -288,13 +291,13 @@ const T={
    noAppt:"Chưa có lịch nào 🎉", hiddenLbl:n=>`↩ Mục đã ẩn (${n})`,
    personOpts:[["an","🧒 Con"],["bo","🧔 Bố"],["me","👩 Mẹ"],["all","👪 Cả nhà"]] },
  de:{ tab_truc:"🗓️ Dienst", tab_lich:"📋 Routine & Termine", tab_con:"🎮 Belohnung", tab_health:"🩺 Gesundheit",
-   today:"Heute zuständig für", week:"Diese Woche — tippen: tauschen · 0,5s halten: sperren 🔒",
+   today:"Heute zuständig für", week:"Diese Woche — tippen: tauschen · vergangene Schicht autom. gesperrt 🔒 · 0,5s halten: sperren/entsperren",
    daily:"Tägliche Aufgaben von", chores:"🧺 Fällige wiederkehrende Aufgaben", health:"🩺 Gesundheit",
    appt:"⏰ Arzttermine & Fristen", report:"Bericht für den Arzt", repBtn:"📄 Arztbericht erstellen (Deutsch)",
    addDaily:"＋ Tägliche Aufgabe hinzufügen", pain:"Schmerz", nose:"Nasenbluten", mood:"Stimmung",
    weekA:"Woche A", weekB:"Woche B", bo:"Papa", me:"Mama", sang:"VORM.", chieu:"NACHM.", childDefault:"Kind",
    tally:t=>`Diese Woche: <b>👨 Papa ${t.bo}</b> · <b>👩 Mama ${t.me}</b>`,
-   legend:"Standard-Rotation über 2 Wochen (7/7) · WE Sa=Papa, So=Mama · tippen: tauschen · 0,5s halten: sperren",
+   legend:"Standard-Rotation über 2 Wochen (7/7) · WE Sa=Papa, So=Mama · tippen: tauschen · vergangene Schicht autom. gesperrt · 0,5s halten: sperren/entsperren",
    foot:"Nur lokal auf diesem Gerät · Sicherung über ⚙️ · keine Synchronisierung, kein Login",
    bodyparts:["Kopf","Bauch","Ohr","Hals","Zähne","Bein","Arm","Andere"],
    level:"Stärke", amount:"Menge", duration:"Dauer bis Stopp", side:"Seite", part:"Körperteil",
@@ -318,6 +321,9 @@ const T={
    exportFile:"Als Datei exportieren", importFile:"Aus Datei importieren (Backup oder /lich)", snapHist:"Auto-Sicherungen (letzte 7 Tage) — ↩ zum Wiederherstellen",
    restoreAsk:"Auf diese Sicherung zurücksetzen? Aktuelle Daten werden überschrieben.", importOk:"Importiert ✅",
    importErr:"Ungültige Datei ❌", importNone:"Keine gültigen Daten (Backup dieser App oder /lich-Export nötig).",
+   pasteT:"📋 Oder JSON direkt kopieren/einfügen (ohne Datei)", pasteExport:"In Feld exportieren", pasteImport:"Aus Feld importieren (überschreiben)",
+   pastePh:"Backup-JSON (diese App oder /lich) hier einfügen, dann \"Aus Feld importieren\"…",
+   pasteCopied:"JSON eingefügt — markieren + in Handy-Notizen kopieren.", pasteOk:n=>`Importiert + angewendet ✅ (${n} Einträge)`, pasteEmpty:"Feld ist leer.",
    nameSet:"✏️ Name des Kindes", nameAsk:"Angezeigter Name des Kindes (nur lokal gespeichert):",
    backupWarn:"⚠️ Lange nicht extern gesichert — bitte 'Exportieren' und in Drive/Notizen ablegen.",
    backupNever:"💾 Noch nie extern gesichert — tippen zum Export.", backupRemind:d=>`💾 Seit ${d} Tagen keine externe Sicherung — tippen zum Export.`,
@@ -363,10 +369,15 @@ let weekOffset=0;
 function dispMon(){const m=mondayOf(new Date());m.setDate(m.getDate()+weekOffset*7);return m;}
 const ovKey=(d,sk)=>"fam.ov."+iso(d)+"|"+sk, lkKey=(d,sk)=>"fam.lk."+iso(d)+"|"+sk;
 const owner=(d,sk)=>localStorage.getItem(ovKey(d,sk))||baseOwner(d,sk);
-const isLocked=(d,sk)=>localStorage.getItem(lkKey(d,sk))==="1";
+// Ca đã qua = TỰ KHOÁ. Sáng hết 13:00, Chiều hết cuối ngày (24:00).
+const SANG_END_HOUR=13;
+function slotPast(d,sk){const end=new Date(d);end.setHours(sk==="sang"?SANG_END_HOUR:24,0,0,0);return new Date()>end;}
+function isLocked(d,sk){const v=localStorage.getItem(lkKey(d,sk));
+  if(v==="1")return true;if(v==="0")return false;return slotPast(d,sk);}   // mặc định: ca đã qua = khoá
 function toggle(d,sk){if(isLocked(d,sk))return;const other=owner(d,sk)==="bo"?"me":"bo";
   if(other===baseOwner(d,sk))localStorage.removeItem(ovKey(d,sk));else localStorage.setItem(ovKey(d,sk),other);renderDuty();}
-function toggleLock(d,sk){if(isLocked(d,sk))localStorage.removeItem(lkKey(d,sk));else localStorage.setItem(lkKey(d,sk),"1");renderDuty();}
+function toggleLock(d,sk){const next=!isLocked(d,sk),def=slotPast(d,sk);   // giữ 0.5s: khoá/mở (mở lại được cả ca đã qua)
+  if(next===def)localStorage.removeItem(lkKey(d,sk));else localStorage.setItem(lkKey(d,sk),next?"1":"0");renderDuty();}
 function cellHtml(d,sk){const o=owner(d,sk),p=PEOPLE[o];
   return `<div class="cell ${p.c}${isLocked(d,sk)?' locked':''}" data-d="${iso(d)}" data-s="${sk}">
     ${isLocked(d,sk)?'<span class="lk">🔒</span>':''}
@@ -729,11 +740,23 @@ function openCog(){
     <div style="font-size:13px;color:#c7ccd6;margin-bottom:8px">${L().autoOn}<br>${L().lastSnap}: <b>${last?last.split("-").reverse().join("/"):"–"}</b></div>
     ${warn?`<div class="mockbanner" style="margin:0 0 10px">${L().backupWarn}</div>`:""}
     <div class="acts" style="margin-top:0"><button class="cancel" id="bImp">📂 ${L().importFile}</button><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
+    <div class="lbl" style="margin-top:14px">${L().pasteT}</div>
+    <textarea id="ioBox" placeholder="${L().pastePh}" style="font:12px/1.4 monospace;min-height:96px"></textarea>
+    <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
+    <div class="lbl" id="ioStatus" style="min-height:1.2em;text-transform:none;letter-spacing:0;color:var(--g)"></div>
     <button class="notebtn" id="bName" style="margin-top:10px">${L().nameSet} — ${CHILD()}</button>
     <div class="lbl" style="margin-top:14px">${L().snapHist}</div><div class="hist">${snapList}</div>
     <div class="acts"><button class="cancel" id="bClose">${L().cancel}</button></div>`);
   $("bExp").onclick=()=>{exportFile();renderBackupReminder();openCog();};
   $("bImp").onclick=()=>$("impFile").click();
+  $("bIoExp").onclick=()=>{$("ioBox").value=JSON.stringify(famDump(),null,2);$("ioBox").select();
+    localStorage.setItem("fam.lastexport",iso(new Date()));renderBackupReminder();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteCopied;};
+  $("bIoImp").onclick=()=>{const v=$("ioBox").value.trim();
+    if(!v){$("ioStatus").style.color="var(--o)";$("ioStatus").textContent=L().pasteEmpty;return;}
+    let o;try{o=JSON.parse(v);}catch(e){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importErr;return;}
+    if(!o||typeof o!=="object"){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importErr;return;}
+    const n=famRestore(o);if(!n){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importNone;return;}
+    renderAll();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteOk(n);};
   $("bName").onclick=()=>{const v=prompt(L().nameAsk,CHILD());if(v!==null){if(v.trim())localStorage.setItem("fam.childname",v.trim());else localStorage.removeItem("fam.childname");renderAll();openCog();}};
   $("bClose").onclick=close;
   sheet.querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>{if(confirm(L().restoreAsk)){const s=localStorage.getItem("fam.snap."+b.dataset.restore);if(s){famRestore(JSON.parse(s));renderAll();}close();}});}
