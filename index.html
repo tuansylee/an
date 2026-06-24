@@ -116,7 +116,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .bars .b span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--mut)}
 .foot{margin:22px 4px;color:var(--mut);font-size:12px;text-align:center}
 /* ===== View của Con (Kid mode) ===== */
-#kid{position:fixed;inset:0;z-index:70;background:linear-gradient(165deg,#12101f,#0f1320 55%,#101a16);color:var(--fg);overflow:auto;padding:18px;max-width:760px;margin:0 auto}
+#kidPanel{background:linear-gradient(165deg,#1a1530,#12131f 55%,#10211a);border:1px solid var(--bd);border-radius:18px;padding:16px}
 .kidtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .kidav{font-size:34px;cursor:pointer;line-height:1;width:60px;height:60px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--kidc,#5fd08a)}
 .kidhi{flex:1;font-size:22px;font-weight:800}
@@ -154,7 +154,16 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kidrow input{flex:1;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px;font-size:15px}
 .kidrow button{background:var(--g);color:#06210f;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
 .kidgoal{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px}
-.kidgoal .gt{font-size:16px;font-weight:700;margin-bottom:6px}
+.kidgoal .gt{font-size:18px;font-weight:800;margin-bottom:8px}
+.kidgoal.active{border-color:var(--kidc,#5fd08a)}
+.kidgoal.done{background:linear-gradient(155deg,#16241a,#0f1d14);border-color:var(--g)}
+.kidgoal .ksub{font-size:13px;color:var(--mut);margin-bottom:8px}
+.kidgoal.done .ksub{color:#bfe9cc;margin-bottom:0}
+.goalbtn{flex:1;background:var(--g);color:#06210f;border:0;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer}
+.kidgoal .goaledit{flex:0 0 auto;background:#222733;color:var(--mut);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;cursor:pointer;font-weight:700}
+.kidchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.kidchip{background:#0c0e12;border:1px solid var(--bd);color:var(--fg);padding:10px 13px;border-radius:20px;font-size:14px;cursor:pointer}
+.kidchip:active{background:#2a3550}
 .kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
 .kidavpick span.sel{background:#2a3550;outline:2px solid var(--blue)}
@@ -166,8 +175,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 #night .clock{font-size:84px;font-weight:800;letter-spacing:3px;line-height:1}
 #night .nd{font-size:18px;color:#2c303a}
 #night .nh{position:absolute;bottom:26px;font-size:12px;color:#23262e}
-#nightBtn,#kidBtn{background:#222733;border:1px solid var(--bd);color:var(--mut);padding:6px 10px;border-radius:8px;font-size:15px;cursor:pointer}
-#kidBtn{font-size:18px}
+#nightBtn{background:#222733;border:1px solid var(--bd);color:var(--mut);padding:6px 10px;border-radius:8px;font-size:15px;cursor:pointer}
 #printArea{display:none}
 @media print{
   body{background:#fff;color:#000;padding:0;max-width:none}
@@ -185,7 +193,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <div class="bar">
   <div><div class="d" id="dateLbl"></div><div class="t" id="weekLbl"></div></div>
-  <div class="lang"><button id="kidBtn" title="Con">🧒</button><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
+  <div class="lang"><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
 </div>
 <div class="mockbanner" id="backupReminder" hidden style="cursor:pointer;background:#1a2a16;border-color:#3a5a40;color:#9fe0b0"></div>
 <div class="mockbanner" id="acariReminder" hidden style="cursor:pointer"></div>
@@ -193,6 +201,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 <div class="tabs">
   <button data-tab="truc" id="tab_truc"></button>
   <button data-tab="con" id="tab_con"></button>
+  <button data-tab="kid" id="tab_kid"></button>
   <button data-tab="health" id="tab_health"></button>
   <button data-tab="lich" id="tab_lich"></button>
 </div>
@@ -263,6 +272,9 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
  </div>
 </div>
 
+<!-- ===== TAB: VIEW CỦA CON ===== -->
+<div class="panel" data-panel="kid" hidden><div id="kidPanel"></div></div>
+
 <!-- ===== TAB: SỨC KHỎE ===== -->
 <div class="panel" data-panel="health" hidden>
  <div class="page">
@@ -292,7 +304,6 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 </div>
 
 <div class="foot" id="footNote"></div>
-<div id="kid" hidden></div>
 <div id="night" hidden><div class="clock" id="nightClock"></div><div class="nd" id="nightDate"></div><div class="nh" id="nightHint"></div></div>
 <div id="ov" hidden><div class="sheet" id="sheet"></div></div>
 <div id="printArea"></div>
@@ -300,7 +311,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-06-24·09";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-06-24·10";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 const T={
  vi:{ tab_truc:"🗓️ Trực", tab_lich:"📋 Định kỳ & Khám", tab_con:"🎮 Thưởng phạt", tab_health:"🩺 Sức khỏe",
@@ -417,7 +428,9 @@ function delEntry(key,id){if(!confirm(LANG==="vi"?"Xoá bản ghi này?":"Eintra
 let TAB=localStorage.getItem("fam.tab")||"truc";
 function setTab(t){TAB=t;localStorage.setItem("fam.tab",t);
   document.querySelectorAll(".panel").forEach(p=>p.hidden=p.dataset.panel!==t);
-  document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));}
+  document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
+  if(t==="kid")enterKidTab();
+  tickNight();}
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 
 /* ============ Lịch trực (thuật toán 2 tuần, plan mục 4) ============ */
@@ -897,7 +910,9 @@ const KX={
    askQ:"Con đã làm xong hết! Con TỰ làm, không ai nhắc đúng không?",askYes:"Đúng, con tự làm! 🌟",askNo:"Bố mẹ có nhắc 🙂",
    askNoCheer:"Làm xong hết rồi, giỏi lắm! Lần sau con thử tự làm nhé 💚",tasksDone:"việc xong",
    badgesT:"🏅 Huy hiệu của con",badgeGet:nb=>`🎉 Mở huy hiệu mới: ${nb.e} ${nb.vi}!`,badgeLock:t=>`cần ${t}⭐`,pickColor:"Chọn màu của con",
-   goalT:"🎯 Mục tiêu tuần này",goalPh:"Vd: tự giơ tay phát biểu 1 lần",goalSet:"Đặt",goalDoneBtn:"✓ Làm được rồi!",goalDone:"🌟 Hoàn thành mục tiêu — +1 ⭐",
+   goalT:"🎯 Mục tiêu tuần này",goalPh:"Hoặc tự viết mục tiêu…",goalSet:"Đặt",goalDoneBtn:"✓ Làm được rồi!",goalDone:"🌟 Hoàn thành mục tiêu — +1 ⭐",
+   goalHint:"Con tự chọn 1 việc nhỏ để cố gắng tuần này:",goalCheer:"Tuần này con làm được rồi, giỏi ghê! 🎉",goalsCount:n=>`đã đạt ${n} mục tiêu`,
+   goalSugg:["✋ Giơ tay phát biểu","🤝 Bắt chuyện với 1 bạn","🧸 Tự dọn đồ chơi","📚 Tự làm bài không cần nhắc","😊 Nói cảm ơn / xin lỗi"],
    moodT:"Hôm nay con thấy thế nào?",goodT:"✨ Điều hay hôm nay",goodPh:"Hôm nay có gì vui?…",goodSave:"Lưu",thanks:"Cảm ơn con đã ghi! 💚",
    nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
  de:{morning:"Guten Morgen",afternoon:"Guten Tag",evening:"Guten Abend",close:"✓ Fertig",
@@ -907,7 +922,9 @@ const KX={
    askQ:"Alles erledigt! Hast du ALLES selbst gemacht, ohne Erinnerung?",askYes:"Ja, ganz allein! 🌟",askNo:"Mama/Papa hat erinnert 🙂",
    askNoCheer:"Alles fertig, super! Versuch es nächstes Mal allein 💚",tasksDone:"erledigt",
    badgesT:"🏅 Deine Abzeichen",badgeGet:nb=>`🎉 Neues Abzeichen: ${nb.e} ${nb.de}!`,badgeLock:t=>`${t}⭐ nötig`,pickColor:"Wähle deine Farbe",
-   goalT:"🎯 Wochenziel",goalPh:"z.B. einmal im Unterricht melden",goalSet:"OK",goalDoneBtn:"✓ Geschafft!",goalDone:"🌟 Ziel erreicht — +1 ⭐",
+   goalT:"🎯 Wochenziel",goalPh:"Oder eigenes Ziel schreiben…",goalSet:"OK",goalDoneBtn:"✓ Geschafft!",goalDone:"🌟 Ziel erreicht — +1 ⭐",
+   goalHint:"Wähle eine kleine Sache für diese Woche:",goalCheer:"Diese Woche geschafft, super! 🎉",goalsCount:n=>`${n} Ziele erreicht`,
+   goalSugg:["✋ Im Unterricht melden","🤝 Ein Kind ansprechen","🧸 Spielzeug aufräumen","📚 Hausaufgaben allein machen","😊 Danke / Entschuldigung sagen"],
    moodT:"Wie fühlst du dich heute?",goodT:"✨ Schönes heute",goodPh:"Was war heute schön?…",goodSave:"Speichern",thanks:"Danke fürs Eintragen! 💚",
    nightHint:"Schlafenszeit 🌙 · tippen zum Ansehen",nightT:"🌙 Nachtmodus",nightOn:"Nachts automatisch abdunkeln",nightFrom:"Von",nightTo:"Bis"}
 };
@@ -922,7 +939,7 @@ function taskEmoji(t){t=(t||"").toLowerCase();
    [/răng|zähne|zahn/,"🪥"],[/tắm|dusch|bad/,"🛁"],[/ăn|essen|frühstück|cơm/,"🍚"],[/ngủ|schlaf|bett/,"😴"],
    [/đọc|lesen|sách|buch/,"📖"],[/nước|wasser|uống|trink/,"💧"],[/dọn|aufräum|räum|cất/,"🧸"]];
   for(const[re,e]of map)if(re.test(t))return e;return "✅";}
-function kidState(){const d={avatar:"🦊",color:"#5fd08a",stars:0,streak:0,lastStar:"",asked:"",goal:null};
+function kidState(){const d={avatar:"🦊",color:"#5fd08a",stars:0,streak:0,lastStar:"",asked:"",goal:null,goalsDone:0};
   try{const s=JSON.parse(localStorage.getItem("fam.kid"));if(s)return Object.assign(d,s);}catch(e){}return d;}
 function kidSave(s){localStorage.setItem("fam.kid",JSON.stringify(s));}
 function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18?KL().afternoon:KL().evening;}
@@ -943,10 +960,9 @@ function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date(
   const pr=routineProgress();
   const badges=BADGES.map(b=>{const got=(s.stars||0)>=b.t;
     return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?b[LANG]:KL().badgeLock(b.t)}</span></div>`;}).join("");
-  $("kid").innerHTML=`
+  $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
-     <div class="kidhi">${greetWord()}, ${CHILD()}! 🌟</div>
-     <button class="kidclose" id="kClose">${KL().close}</button></div>
+     <div class="kidhi">${greetWord()}, ${CHILD()}! 🌟</div></div>
    <div class="kidstar"><div class="n">⭐ ${s.stars||0}</div><div class="sub">${KL().streak(s.streak||0)}</div></div>
    <div class="kidsec" style="margin-top:10px">${KL().badgesT}</div>
    <div class="kidbadges">${badges}</div>
@@ -961,35 +977,39 @@ function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date(
    <div class="kidsec">${KL().routine}</div>
    ${pr.total?`<div class="kidprog"><div class="bar" style="width:${Math.round(pr.done/pr.total*100)}%"></div></div><div class="kidprogn">${pr.done}/${pr.total} ${KL().tasksDone}</div>`:""}
    <div class="kidcards">${cards}</div>
-   <div class="kidsec">${KL().goalT}</div>
-   <div class="kidgoal">${goal
-       ?`<div class="gt">${goal.text}</div>`+(goal.done?`<div style="color:var(--g);font-weight:700">${KL().goalDoneBtn} ✓</div>`:`<div class="kidrow"><button id="kGoalDone">${KL().goalDoneBtn}</button></div>`)
-       :`<div class="kidrow"><input id="kGoalIn" placeholder="${KL().goalPh}"><button id="kGoalSet">${KL().goalSet}</button></div>`}</div>
+   <div class="kidsec">${KL().goalT}${(s.goalsDone||0)>0?` · <span style="color:#ffd98a">${KL().goalsCount(s.goalsDone)}</span>`:""}</div>
+   ${goal
+     ?(goal.done
+        ?`<div class="kidgoal done"><div class="gt">🌟 ${goal.text}</div><div class="ksub">${KL().goalCheer}</div></div>`
+        :`<div class="kidgoal active"><div class="gt">🎯 ${goal.text}</div>
+            <div class="kidrow"><button id="kGoalDone" class="goalbtn">${KL().goalDoneBtn}</button><button id="kGoalEdit" class="goaledit">✎</button></div></div>`)
+     :`<div class="kidgoal"><div class="ksub">${KL().goalHint}</div>
+        <div class="kidchips">${KL().goalSugg.map(g=>`<span class="kidchip" data-goal="${g}">${g}</span>`).join("")}</div>
+        <div class="kidrow"><input id="kGoalIn" placeholder="${KL().goalPh}"><button id="kGoalSet">${KL().goalSet}</button></div></div>`}
    <div class="kidsec">${KL().moodT}</div>
    <div class="kidmood" id="kMood">${L().moods.map((m,i)=>`<button data-mi="${i}">${m.split(" ")[0]}</button>`).join("")}</div>
    <div class="kidsec">${KL().goodT}</div>
    <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>
    ${diary?`<div class="kiddiary">${diary}</div>`:""}`;
-  $("kid").style.setProperty("--kidc",s.color||"#5fd08a");
-  $("kClose").onclick=closeKid;
+  const P=$("kidPanel");P.style.setProperty("--kidc",s.color||"#5fd08a");
+  P.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
+  P.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{const st=kidState();st.color=b.dataset.color;kidSave(st);renderKid();});
   $("kAv").onclick=()=>{$("kAvPick").hidden=!$("kAvPick").hidden;};
-  $("kid").querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
-  $("kid").querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{const st=kidState();st.color=b.dataset.color;kidSave(st);renderKid();});
-  $("kid").querySelectorAll("[data-kid]").forEach(c=>c.onclick=()=>{anToggle(c.dataset.kid);
+  P.querySelectorAll("[data-kid]").forEach(c=>c.onclick=()=>{anToggle(c.dataset.kid);
     const st=kidState(),today=iso(new Date());
     if(allRoutineDone()&&st.lastStar!==today&&st.asked!==today)kidAsk=true;
     renderKid();});
   if($("kAskYes"))$("kAskYes").onclick=()=>{const b=kidState().stars||0;giveStar(true);const nb=badgeUnlocked(b,kidState().stars||0);
     kidAsk=false;kidCheer=nb?KL().badgeGet(nb):KL().allDone;renderKid();};
   if($("kAskNo"))$("kAskNo").onclick=()=>{giveStar(false);kidAsk=false;kidCheer=KL().askNoCheer;renderKid();};
-  $("kid").querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;renderKid();});
+  P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;renderKid();});
+  P.querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{const st=kidState();st.goal={text:b.dataset.goal,week:wk,done:false};kidSave(st);renderKid();});
   if($("kGoalSet"))$("kGoalSet").onclick=()=>{const v=$("kGoalIn").value.trim();if(v){const st=kidState();st.goal={text:v,week:wk,done:false};kidSave(st);renderKid();}};
-  if($("kGoalDone"))$("kGoalDone").onclick=()=>{const st=kidState();if(st.goal&&!st.goal.done){const b=st.stars||0;st.goal.done=true;st.stars=b+1;kidSave(st);const nb=badgeUnlocked(b,st.stars);kidCheer=nb?KL().badgeGet(nb):KL().goalDone;renderKid();}};
+  if($("kGoalEdit"))$("kGoalEdit").onclick=()=>{const st=kidState();st.goal=null;kidSave(st);renderKid();};
+  if($("kGoalDone"))$("kGoalDone").onclick=()=>{const st=kidState();if(st.goal&&!st.goal.done){const b=st.stars||0;st.goal.done=true;st.stars=b+1;st.goalsDone=(st.goalsDone||0)+1;kidSave(st);const nb=badgeUnlocked(b,st.stars);kidCheer=nb?KL().badgeGet(nb):KL().goalDone;renderKid();}};
   if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;renderKid();}};}
-function openKid(){kidCheer="";const st=kidState(),today=iso(new Date());
-  kidAsk=allRoutineDone()&&st.lastStar!==today&&st.asked!==today;
-  $("night").hidden=true;$("kid").hidden=false;renderKid();}
-function closeKid(){kidCheer="";kidAsk=false;$("kid").hidden=true;renderAll();}
+function enterKidTab(){const st=kidState(),today=iso(new Date());
+  kidAsk=allRoutineDone()&&st.lastStar!==today&&st.asked!==today;kidCheer="";renderKid();}
 /* --- Tối ban đêm (tự chuyển theo giờ) --- */
 let manualNight=false,wakeUntil=0;
 function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c)return Object.assign({on:true,from:"21:30",to:"06:30"},c);}catch(e){}return {on:true,from:"21:30",to:"06:30"};}
@@ -1000,7 +1020,7 @@ function showNight(){const now=new Date();
   $("nightDate").textContent=DAYN[now.getDay()]+" · "+iso(now).split("-").reverse().join("/");
   $("nightHint").textContent=KL().nightHint;$("night").hidden=false;}
 function tickNight(){
-  if(!$("kid").hidden||!$("ov").hidden){$("night").hidden=true;return;}   // đang dùng (màn con / popup) -> không tối
+  if(TAB==="kid"||!$("ov").hidden){$("night").hidden=true;return;}   // đang dùng (tab con / popup) -> không tối
   const c=nightCfg(),now=new Date();
   if(manualNight||(c.on&&inWin(now,c.from,c.to)&&Date.now()>=wakeUntil))showNight();else $("night").hidden=true;}
 
@@ -1010,17 +1030,17 @@ document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.datase
 function renderAll(){
   $("footNote").textContent=L().foot+" · v"+BUILD;
   $("tab_truc").textContent=L().tab_truc;$("tab_lich").textContent=L().tab_lich;$("tab_con").textContent=L().tab_con;$("tab_health").textContent=L().tab_health;
+  $("tab_kid").textContent="🧒 "+CHILD();
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
   $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;
-  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderGame();renderGum();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();}
+  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderGame();renderGum();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 autoSnapshot();renderAll();setTab(TAB);
 $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEventListener("change",importFile);
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
-$("kidBtn").onclick=openKid;
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
-tickNight();setInterval(()=>{if(!$("night").hidden&&($("kid").hidden&&$("ov").hidden))showNight();tickNight();},12000);
+tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},12000);
 setInterval(renderDuty,60000);
 </script>
 </body>
