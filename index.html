@@ -311,7 +311,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-06-24·10";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-06-24·11";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 const T={
  vi:{ tab_truc:"🗓️ Trực", tab_lich:"📋 Định kỳ & Khám", tab_con:"🎮 Thưởng phạt", tab_health:"🩺 Sức khỏe",
@@ -911,7 +911,7 @@ const KX={
    askNoCheer:"Làm xong hết rồi, giỏi lắm! Lần sau con thử tự làm nhé 💚",tasksDone:"việc xong",
    badgesT:"🏅 Huy hiệu của con",badgeGet:nb=>`🎉 Mở huy hiệu mới: ${nb.e} ${nb.vi}!`,badgeLock:t=>`cần ${t}⭐`,pickColor:"Chọn màu của con",
    goalT:"🎯 Mục tiêu tuần này",goalPh:"Hoặc tự viết mục tiêu…",goalSet:"Đặt",goalDoneBtn:"✓ Làm được rồi!",goalDone:"🌟 Hoàn thành mục tiêu — +1 ⭐",
-   goalHint:"Con tự chọn 1 việc nhỏ để cố gắng tuần này:",goalCheer:"Tuần này con làm được rồi, giỏi ghê! 🎉",goalsCount:n=>`đã đạt ${n} mục tiêu`,
+   goalHint:"Con tự chọn 1 việc nhỏ để cố gắng tuần này:",goalCheer:"Tuần này con làm được rồi, giỏi ghê! 🎉",goalsCount:n=>`đã đạt ${n} mục tiêu`,goalUndo:"↩ Quay lại (chưa xong)",
    goalSugg:["✋ Giơ tay phát biểu","🤝 Bắt chuyện với 1 bạn","🧸 Tự dọn đồ chơi","📚 Tự làm bài không cần nhắc","😊 Nói cảm ơn / xin lỗi"],
    moodT:"Hôm nay con thấy thế nào?",goodT:"✨ Điều hay hôm nay",goodPh:"Hôm nay có gì vui?…",goodSave:"Lưu",thanks:"Cảm ơn con đã ghi! 💚",
    nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
@@ -923,7 +923,7 @@ const KX={
    askNoCheer:"Alles fertig, super! Versuch es nächstes Mal allein 💚",tasksDone:"erledigt",
    badgesT:"🏅 Deine Abzeichen",badgeGet:nb=>`🎉 Neues Abzeichen: ${nb.e} ${nb.de}!`,badgeLock:t=>`${t}⭐ nötig`,pickColor:"Wähle deine Farbe",
    goalT:"🎯 Wochenziel",goalPh:"Oder eigenes Ziel schreiben…",goalSet:"OK",goalDoneBtn:"✓ Geschafft!",goalDone:"🌟 Ziel erreicht — +1 ⭐",
-   goalHint:"Wähle eine kleine Sache für diese Woche:",goalCheer:"Diese Woche geschafft, super! 🎉",goalsCount:n=>`${n} Ziele erreicht`,
+   goalHint:"Wähle eine kleine Sache für diese Woche:",goalCheer:"Diese Woche geschafft, super! 🎉",goalsCount:n=>`${n} Ziele erreicht`,goalUndo:"↩ Zurück (doch nicht)",
    goalSugg:["✋ Im Unterricht melden","🤝 Ein Kind ansprechen","🧸 Spielzeug aufräumen","📚 Hausaufgaben allein machen","😊 Danke / Entschuldigung sagen"],
    moodT:"Wie fühlst du dich heute?",goodT:"✨ Schönes heute",goodPh:"Was war heute schön?…",goodSave:"Speichern",thanks:"Danke fürs Eintragen! 💚",
    nightHint:"Schlafenszeit 🌙 · tippen zum Ansehen",nightT:"🌙 Nachtmodus",nightOn:"Nachts automatisch abdunkeln",nightFrom:"Von",nightTo:"Bis"}
@@ -980,7 +980,8 @@ function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date(
    <div class="kidsec">${KL().goalT}${(s.goalsDone||0)>0?` · <span style="color:#ffd98a">${KL().goalsCount(s.goalsDone)}</span>`:""}</div>
    ${goal
      ?(goal.done
-        ?`<div class="kidgoal done"><div class="gt">🌟 ${goal.text}</div><div class="ksub">${KL().goalCheer}</div></div>`
+        ?`<div class="kidgoal done"><div class="gt">🌟 ${goal.text}</div><div class="ksub">${KL().goalCheer}</div>
+            <div class="kidrow" style="margin-top:8px"><button id="kGoalUndo" class="goaledit" style="flex:1">${KL().goalUndo}</button></div></div>`
         :`<div class="kidgoal active"><div class="gt">🎯 ${goal.text}</div>
             <div class="kidrow"><button id="kGoalDone" class="goalbtn">${KL().goalDoneBtn}</button><button id="kGoalEdit" class="goaledit">✎</button></div></div>`)
      :`<div class="kidgoal"><div class="ksub">${KL().goalHint}</div>
@@ -1007,6 +1008,7 @@ function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date(
   if($("kGoalSet"))$("kGoalSet").onclick=()=>{const v=$("kGoalIn").value.trim();if(v){const st=kidState();st.goal={text:v,week:wk,done:false};kidSave(st);renderKid();}};
   if($("kGoalEdit"))$("kGoalEdit").onclick=()=>{const st=kidState();st.goal=null;kidSave(st);renderKid();};
   if($("kGoalDone"))$("kGoalDone").onclick=()=>{const st=kidState();if(st.goal&&!st.goal.done){const b=st.stars||0;st.goal.done=true;st.stars=b+1;st.goalsDone=(st.goalsDone||0)+1;kidSave(st);const nb=badgeUnlocked(b,st.stars);kidCheer=nb?KL().badgeGet(nb):KL().goalDone;renderKid();}};
+  if($("kGoalUndo"))$("kGoalUndo").onclick=()=>{const st=kidState();if(st.goal&&st.goal.done){st.goal.done=false;st.stars=Math.max(0,(st.stars||0)-1);st.goalsDone=Math.max(0,(st.goalsDone||0)-1);kidSave(st);kidCheer="";renderKid();}};
   if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;renderKid();}};}
 function enterKidTab(){const st=kidState(),today=iso(new Date());
   kidAsk=allRoutineDone()&&st.lastStar!==today&&st.asked!==today;kidCheer="";renderKid();}
