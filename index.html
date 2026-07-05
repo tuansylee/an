@@ -9,6 +9,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Gia đình</title>
+<link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#0f1115;--card:#1a1d24;--fg:#e9edf3;--mut:#9aa0aa;--bd:#2a2f3a;
   --r:#ff5a5a;--o:#ffa53a;--y:#ffd84d;--g:#5fd08a;--blue:#3f6fd0;--pink:#c0407f;}
@@ -115,6 +116,20 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .bars .b{flex:1;background:var(--blue);border-radius:4px 4px 0 0;min-height:3px;position:relative}
 .bars .b span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--mut)}
 .foot{margin:22px 4px;color:var(--mut);font-size:12px;text-align:center}
+.neg{color:var(--r)!important}
+.wallets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.wallet{border-radius:18px;padding:14px;text-align:center}
+.wallet.sao{background:linear-gradient(155deg,#2a2410,#1a1d24);border:1px solid #6a5520}
+.wallet.keo{background:linear-gradient(155deg,#241033,#161022);border:1px solid #5a3a7a}
+.wallet .n{font-size:32px;font-weight:800;line-height:1.1}
+.wallet.sao .n{color:var(--y)}.wallet.keo .n{color:#c99bff}
+.wallet .sub{font-size:13px;margin-top:2px;color:#cfd3db}
+.hand{background:linear-gradient(155deg,#1b2740,#12182a);border:2px solid var(--blue);border-radius:18px;padding:14px;text-align:center;margin:10px 0}
+.hand .big{font-size:28px;font-weight:800}
+.hand .q{font-size:15px;font-weight:700;margin-bottom:8px}
+.hand .cnt{font-size:14px;color:#cfe0ff;margin-bottom:10px}
+.handbtn{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;width:100%}
+.shopbuy{opacity:.55}
 /* ===== View của Con (Kid mode) ===== */
 #kidPanel{background:linear-gradient(165deg,#1a1530,#12131f 55%,#10211a);border:1px solid var(--bd);border-radius:18px;padding:16px}
 .kidtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -130,9 +145,6 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kidask .q{font-size:18px;font-weight:800;margin-bottom:12px;line-height:1.3}
 .kidask .askyes{flex:2;background:var(--g);color:#06210f;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer}
 .kidask .askno{flex:1;background:#222733;color:var(--mut);border:0;border-radius:14px;padding:16px;font-size:13px;font-weight:700;cursor:pointer}
-.kidprog{height:14px;background:#222733;border-radius:8px;overflow:hidden;margin:0 2px 4px}
-.kidprog .bar{height:100%;background:linear-gradient(90deg,var(--kidc,#5fd08a),var(--y));border-radius:8px;transition:width .35s}
-.kidprogn{font-size:13px;color:var(--mut);margin:0 2px 8px;text-align:center}
 .kidbadges{display:flex;gap:8px;overflow-x:auto;margin-bottom:6px;padding-bottom:2px}
 .kidbadge{flex:0 0 auto;background:#1b1f27;border:1px solid var(--bd);border-radius:14px;padding:8px 10px;text-align:center;font-size:24px;min-width:66px;opacity:.45}
 .kidbadge span{display:block;font-size:11px;color:var(--mut);margin-top:2px;font-weight:700}
@@ -141,29 +153,12 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kcolor{width:30px;height:30px;border-radius:50%;cursor:pointer;display:inline-block}
 .kcolor.sel{outline:3px solid #fff;outline-offset:2px}
 .kidsec{margin:16px 2px 8px;font-size:14px;color:var(--mut);font-weight:700}
-.kidcards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(min-width:560px){.kidcards{grid-template-columns:1fr 1fr 1fr}}
-.kidcard{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:16px 8px;text-align:center;cursor:pointer;min-height:108px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.kidcard .em{font-size:40px;line-height:1}
-.kidcard .lb{font-size:15px;font-weight:700}
-.kidcard.done{background:linear-gradient(155deg,#16a34a,#0c3b22);border-color:var(--g)}
 .kidmood{display:flex;gap:8px}
 .kidmood button{flex:1;font-size:30px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 0;cursor:pointer}
 .kidmood button.sel{outline:3px solid var(--g);outline-offset:1px}
 .kidrow{display:flex;gap:8px;margin-top:6px}
 .kidrow input{flex:1;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px;font-size:15px}
 .kidrow button{background:var(--g);color:#06210f;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
-.kidgoal{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px}
-.kidgoal .gt{font-size:18px;font-weight:800;margin-bottom:8px}
-.kidgoal.active{border-color:var(--kidc,#5fd08a)}
-.kidgoal.done{background:linear-gradient(155deg,#16241a,#0f1d14);border-color:var(--g)}
-.kidgoal .ksub{font-size:13px;color:var(--mut);margin-bottom:8px}
-.kidgoal.done .ksub{color:#bfe9cc;margin-bottom:0}
-.goalbtn{flex:1;background:var(--g);color:#06210f;border:0;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer}
-.kidgoal .goaledit{flex:0 0 auto;background:#222733;color:var(--mut);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;cursor:pointer;font-weight:700}
-.kidchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-.kidchip{background:#0c0e12;border:1px solid var(--bd);color:var(--fg);padding:10px 13px;border-radius:20px;font-size:14px;cursor:pointer}
-.kidchip:active{background:#2a3550}
 .kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
 .kidavpick span.sel{background:#2a3550;outline:2px solid var(--blue)}
@@ -217,7 +212,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
    <div class="tally" id="tally"></div><div class="legend" id="legend"></div>
   </div>
   <div class="col">
-   <h2 id="h_daily"></h2><div id="dailyList"></div><button class="add" id="addDaily"></button>
+   <h2 id="h_daily"></h2><div id="dailyList"></div><div id="dutyAsk"></div>
   </div>
  </div>
 </div>
@@ -226,16 +221,10 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 <div class="panel" data-panel="lich" hidden>
  <div class="page">
   <div class="col">
-   <h2 id="h_chores"></h2><div id="choreList"></div><button class="add" id="choreMng"></button>
+   <h2 id="h_chores"></h2><div id="choreList"></div>
   </div>
   <div class="col">
    <h2 id="h_appt"></h2><div id="apptList"></div>
-   <button class="add" id="addAppt"></button>
-   <div class="addform" id="apptForm" hidden>
-     <input id="evT" placeholder="">
-     <div class="frow"><input id="evD" type="date"><select id="evP"></select></div>
-     <div class="frow"><button class="fsave" id="evSave"></button><button class="fghost" id="evCancel"></button></div>
-   </div>
   </div>
  </div>
 </div>
@@ -244,19 +233,21 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 <div class="panel" data-panel="con" hidden>
  <div class="page">
   <div class="col">
-   <h2 id="h_game"></h2>
+   <h2 id="h_sao"></h2>
    <div class="gamebox">
-     <div class="bignum" id="gameDays">–</div><div class="gunit" id="gameUnit"></div>
-     <div class="gbreak" id="gameBreak"></div><div class="done" id="doneMsg" style="display:none"></div>
-     <div class="grid5" id="gameBtns"></div><div class="gstatus" id="gameStatus"></div>
+     <div class="bignum gold" id="pSao">–</div><div class="gunit" id="pSaoUnit"></div>
+     <div class="gstatus" id="evalStatus" style="margin-bottom:8px"></div>
+     <div class="grid5" id="evalBtns"></div>
      <button class="critbtn" id="critBtn"></button>
-     <button class="gumbtn ghost" id="gSetDays"></button>
    </div>
+   <h2 id="h_badges"></h2>
+   <div class="hist" id="rwList"></div>
+   <div class="empty" id="rwHint" style="text-align:left;font-size:12.5px"></div>
   </div>
   <div class="col">
-   <h2 id="h_gum"></h2>
+   <h2 id="h_keo"></h2>
    <div class="gamebox">
-     <div class="bignum gold" id="gumNum">–</div><div class="gunit" id="gumUnit"></div>
+     <div class="bignum gold" id="pKeo">–</div><div class="gunit" id="keoUnit"></div>
      <button class="gumbtn indigo" id="gTest"></button>
      <button class="gumbtn gold2" id="gKonig"></button>
      <div style="display:flex;gap:8px;margin-top:8px">
@@ -264,10 +255,12 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
        <button class="gumbtn ghost" id="gMinus" style="margin:0;flex:1"></button>
      </div>
      <button class="gumbtn ghost" id="gPay"></button>
-     <button class="gumbtn ghost" id="gSetGum"></button>
-     <div class="lbl" id="gumLogT" style="margin-top:12px"></div>
-     <div class="hist" id="gumLog"></div>
+     <div class="lbl" id="keoLogT" style="margin-top:12px"></div>
+     <div class="hist" id="keoLog"></div>
    </div>
+   <h2 id="h_shop"></h2>
+   <div id="shopList"></div>
+   <div class="empty" id="shopHint" style="text-align:left;font-size:12.5px"></div>
   </div>
  </div>
 </div>
@@ -303,6 +296,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
  </div>
 </div>
 
+<h2 id="h_manage"></h2><button class="report" id="mgOpenBtn"></button>
 <div class="foot" id="footNote"></div>
 <div id="night" hidden><div class="clock" id="nightClock"></div><div class="nd" id="nightDate"></div><div class="nh" id="nightHint"></div></div>
 <div id="ov" hidden><div class="sheet" id="sheet"></div></div>
@@ -311,14 +305,14 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-06-24·11";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-05·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 const T={
- vi:{ tab_truc:"🗓️ Trực", tab_lich:"📋 Định kỳ & Khám", tab_con:"🎮 Thưởng phạt", tab_health:"🩺 Sức khỏe",
+ vi:{ tab_truc:"🗓️ Trực", tab_lich:"📋 Định kỳ & Khám", tab_con:"🎁 Thưởng", tab_health:"🩺 Sức khỏe",
    today:"Hôm nay trực", week:"Tuần này — chạm: đổi ca · ca đã qua tự khoá 🔒 · giữ 0.5s: khoá/mở",
    daily:"Việc hằng ngày của", chores:"🧺 Việc định kỳ tới hạn", health:"🩺 Sức khỏe",
    appt:"⏰ Lịch bác sĩ & deadline", report:"Báo cáo cho bác sĩ", repBtn:"📄 Xuất báo cáo bác sĩ (tiếng Đức)",
-   addDaily:"＋ Thêm việc hằng ngày", pain:"Đau", nose:"Chảy máu mũi", mood:"Cảm xúc",
+   pain:"Đau", nose:"Chảy máu mũi", mood:"Cảm xúc",
    weekA:"Tuần A", weekB:"Tuần B", bo:"Bố", me:"Mẹ", sang:"SÁNG", chieu:"CHIỀU", childDefault:"Con",
    tally:t=>`Tuần này: <b>👨 Bố ${t.bo} ca</b> · <b>👩 Mẹ ${t.me} ca</b>`,
    legend:"Xoay mặc định 2 tuần (cân 7/7) · cuối tuần T7=Bố, CN=Mẹ · chạm: đổi ca · ca đã qua tự khoá · giữ 0.5s: khoá/mở",
@@ -329,18 +323,31 @@ const T={
    moods:["😀 Rất vui","🙂 Ổn","😐 Bình thường","😟 Buồn","😣 Khó chịu"],
    addnote:"＋ Thêm ghi chú", save:"Lưu", cancel:"Huỷ", notePh:"Ghi chú (nếu cần)…",
    nohist:"Chưa có bản ghi hôm nay.", reportTitle:"Gesundheitsbericht",
-   game:"🎮 Cấm chơi game", gameUnit:"ngày còn lại", gum:"🍬 Kẹo cao su đang nợ", gumUnit:"cái kẹo",
-   ratings:[["cn","Cực ngoan","−2"],["n","Ngoan","−1"],["bt","Bình thường","0"],["h","Hư","+1"],["ch","Cực hư","+2"]],
-   gameStatus:r=>r?`Hôm nay đã chấm: ${r} — bấm lại để đổi`:"Chưa chấm điểm hôm nay.",
-   gbreak:(i,e,m)=>`Bắt đầu ${i} − đã trôi qua ${e} ${m<0?'−':'+'} điểm ${Math.abs(m)}`,
-   gNotSet:"Chưa thiết lập — bấm '⚙️ Đặt số ngày cấm'",
-   critBtn:"❓ Tiêu chí chấm điểm", critTitle:"Tiêu chí chấm điểm", done:"🎉 Hết hạn phạt!",
-   gTest:"📝 Đúng hết bài kiểm tra (+2)", gKonig:"👑 König / nhất lớp (+10)", gPay:"🍬 Đã đưa kẹo (trừ)",
-   gPlus:"＋ Cộng", gMinus:"－ Trừ", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
-   gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay", gumLogT:"Nhật ký kẹo (ngày · +/− · lý do)",
+   h_sao:"⭐ Sao của con (bố mẹ đánh giá)", pSaoUnit:n=>`sao hiện có · tổng đã kiếm: <b>${n}</b> (mở khoá huy hiệu)`,
+   evalRatings:[["cn","Cực ngoan","+2"],["n","Ngoan","+1"],["bt","Bình thường","0"],["h","Hư","−1"],["ch","Cực hư","−2"]],
+   evalStatus:r=>r?`Hôm nay đã chấm: ${r} — bấm lại để đổi`:"Chưa chấm điểm hôm nay.",
+   critBtn:"❓ Tiêu chí chấm điểm", critTitle:"Tiêu chí chấm điểm",
+   h_badges:"🏅 Huy hiệu & phần thưởng", rwHint:"Sửa mốc (số ⭐, bonus kẹo, phần thưởng), thêm/xóa mốc và Reset sao & kẹo ở ⚙️ menu quản lý cuối trang.",
+   h_keo:"🍬 Kẹo (điểm xịn — tiêu ở cửa hàng)", keoUnit:"kẹo đang có",
+   gTest:"📝 Đúng hết bài kiểm tra (+2)", gKonig:"👑 König / nhất lớp (+10)", gPay:"🍬 Đã đưa kẹo thật (trừ)",
+   gPlus:"＋ Cộng kẹo", gMinus:"－ Trừ kẹo", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
+   gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay", keoLogT:"Nhật ký điểm (ngày · +/− · lý do)",
    gPayAsk:"Đưa con mấy cái kẹo?", gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
-   gSetDays:"⚙️ Đặt số ngày cấm", gSetAsk:"Đặt lại: cấm game bao nhiêu ngày kể từ hôm nay?",
-   gSetGum:"⚙️ Đặt thẳng số kẹo nợ", gGumAsk:"Đặt số kẹo đang nợ là bao nhiêu?", gSetReason:"Đặt lại số kẹo",
+   h_shop:"🛒 Cửa hàng đổi thưởng — chỗ tiêu",
+   shopHint:"Chạm 1 món để đổi cho con (trừ điểm + ghi log) · phải đủ điểm · thêm/sửa/xóa món & giá ở ⚙️ menu quản lý cuối trang.",
+   shopBlocked:(cost,icon,name,bal)=>`Chưa đủ ${cost}${icon} để đổi "${name}" (đang có ${bal}${icon}).`,
+   shopConfirm:(name,cost,icon)=>`Đổi "${name}" cho con — trừ ${cost}${icon}?`,
+   shopOk:(name,cost,icon)=>`🎉 Đã đổi "${name}"! −${cost}${icon}`,
+   h_manage:"⚙️ Menu quản lý", mgOpenBtn:"⚙️ Quản lý danh sách — thêm / sửa / xóa mọi mục", mgTitle:"⚙️ Quản lý danh sách",
+   mgReset:"↺ Reset sao & kẹo về 0", mgResetConfirm:"Reset toàn bộ SAO và KẸO về 0?\n(xóa nhật ký + huy hiệu đã mở · mục tiêu tuần bỏ đánh dấu)",
+   mgResetDone:"↺ Đã reset sao & kẹo về 0.", mgClose:"Xong",
+   mgSecCheck:"📝 Checklist hằng ngày", mgAddCheck:"＋ Thêm việc",
+   mgSecGoal:"🎯 Mục tiêu tuần", mgAddGoal:"＋ Thêm mục tiêu",
+   mgSecShop:"🛒 Cửa hàng đổi thưởng", mgAddShop:"＋ Thêm món",
+   mgSecTier:"🏅 Mốc huy hiệu", mgAddTier:"＋ Thêm mốc",
+   mgSecChore:"🧺 Việc định kỳ", mgAddChore:"＋ Thêm việc định kỳ",
+   mgSecAppt:"⏰ Lịch bác sĩ & sự kiện", mgAddAppt:"＋ Thêm lịch",
+   mgEmpty:"— trống —",
    cog:"⚙️", backupT:"Sao lưu & dữ liệu", autoOn:"Tự động sao lưu mỗi đêm: BẬT (trong máy)", lastSnap:"Bản tự động gần nhất",
    exportFile:"Xuất ra file", importFile:"Nhập từ file (backup hoặc /lich)", snapHist:"Bản tự lưu (7 ngày gần nhất) — chạm ↩ để khôi phục",
    expHist:"📁 Bản đã xuất (giữ trong máy) — ↩ khôi phục (ghi đè) · ✕ xoá",
@@ -357,16 +364,16 @@ const T={
    acariBreak:(rem,pd)=>`Còn ~${rem} viên · ${pd} viên/ngày`, acariSetup:"Chưa thiết lập kho — bấm bên dưới để nhập số viên.",
    acariAsk:"Mua thêm mấy hộp?", acariPpb:"Mỗi hộp mấy viên?", acariPerDay:"Dùng mấy viên/ngày? (vd 2 = bố + con)",
    acariRemind:d=>`💊 Acarizax sắp hết — còn ~${d} ngày, nên đặt mua thêm.`,
-   choreMng:"⚙️ Sửa danh sách việc định kỳ", choreMngDone:"✓ Xong sửa", noDue:"Không có việc tới hạn ✅",
+   noDue:"Không có việc tới hạn ✅",
    t2lbl:"🔧 Bảo trì nhà (ít quan trọng)", tier1:"Quan trọng", tier2:"Bảo trì nhà",
    addAppt:"＋ Thêm lịch bác sĩ / sự kiện", apptPh:"Vd: Khám dị ứng – BS Müller", evSave:"Lưu", evCancel:"Huỷ",
    noAppt:"Chưa có lịch nào 🎉", hiddenLbl:n=>`↩ Mục đã ẩn (${n})`,
    personOpts:[["an","🧒 Con"],["bo","🧔 Bố"],["me","👩 Mẹ"],["all","👪 Cả nhà"]] },
- de:{ tab_truc:"🗓️ Dienst", tab_lich:"📋 Routine & Termine", tab_con:"🎮 Belohnung", tab_health:"🩺 Gesundheit",
+ de:{ tab_truc:"🗓️ Dienst", tab_lich:"📋 Routine & Termine", tab_con:"🎁 Belohnung", tab_health:"🩺 Gesundheit",
    today:"Heute zuständig für", week:"Diese Woche — tippen: tauschen · vergangene Schicht autom. gesperrt 🔒 · 0,5s halten: sperren/entsperren",
    daily:"Tägliche Aufgaben von", chores:"🧺 Fällige wiederkehrende Aufgaben", health:"🩺 Gesundheit",
    appt:"⏰ Arzttermine & Fristen", report:"Bericht für den Arzt", repBtn:"📄 Arztbericht erstellen (Deutsch)",
-   addDaily:"＋ Tägliche Aufgabe hinzufügen", pain:"Schmerz", nose:"Nasenbluten", mood:"Stimmung",
+   pain:"Schmerz", nose:"Nasenbluten", mood:"Stimmung",
    weekA:"Woche A", weekB:"Woche B", bo:"Papa", me:"Mama", sang:"VORM.", chieu:"NACHM.", childDefault:"Kind",
    tally:t=>`Diese Woche: <b>👨 Papa ${t.bo}</b> · <b>👩 Mama ${t.me}</b>`,
    legend:"Standard-Rotation über 2 Wochen (7/7) · WE Sa=Papa, So=Mama · tippen: tauschen · vergangene Schicht autom. gesperrt · 0,5s halten: sperren/entsperren",
@@ -377,18 +384,31 @@ const T={
    moods:["😀 Sehr gut","🙂 Gut","😐 Normal","😟 Traurig","😣 Unwohl"],
    addnote:"＋ Notiz hinzufügen", save:"Speichern", cancel:"Abbrechen", notePh:"Notiz (optional)…",
    nohist:"Noch keine Einträge heute.", reportTitle:"Gesundheitsbericht",
-   game:"🎮 Spielverbot", gameUnit:"Tage übrig", gum:"🍬 Geschuldete Kaugummis", gumUnit:"Kaugummis",
-   ratings:[["cn","Sehr brav","−2"],["n","Brav","−1"],["bt","Normal","0"],["h","Unartig","+1"],["ch","Sehr unartig","+2"]],
-   gameStatus:r=>r?`Heute bewertet: ${r} — zum Ändern erneut tippen`:"Heute noch nicht bewertet.",
-   gbreak:(i,e,m)=>`Start ${i} − vergangen ${e} ${m<0?'−':'+'} Punkte ${Math.abs(m)}`,
-   gNotSet:"Noch nicht eingerichtet — '⚙️' tippen, um Tage zu setzen",
-   critBtn:"❓ Bewertungskriterien", critTitle:"Bewertungskriterien", done:"🎉 Strafe vorbei!",
-   gTest:"📝 Test fehlerfrei (+2)", gKonig:"👑 König (+10)", gPay:"🍬 Kaugummi gegeben (−)",
+   h_sao:"⭐ Sterne des Kindes (Elternbewertung)", pSaoUnit:n=>`Sterne aktuell · insgesamt verdient: <b>${n}</b> (schaltet Abzeichen frei)`,
+   evalRatings:[["cn","Sehr brav","+2"],["n","Brav","+1"],["bt","Normal","0"],["h","Unartig","−1"],["ch","Sehr unartig","−2"]],
+   evalStatus:r=>r?`Heute bewertet: ${r} — zum Ändern erneut tippen`:"Heute noch nicht bewertet.",
+   critBtn:"❓ Bewertungskriterien", critTitle:"Bewertungskriterien",
+   h_badges:"🏅 Abzeichen & Belohnungen", rwHint:"Stufen bearbeiten (⭐-Schwelle, Bonus, Belohnung), Stufen hinzufügen/löschen und Sterne & Süßigkeiten zurücksetzen unter ⚙️ Verwaltung unten.",
+   h_keo:"🍬 Süßigkeiten (echte Punkte — im Shop ausgeben)", keoUnit:"Süßigkeiten aktuell",
+   gTest:"📝 Test fehlerfrei (+2)", gKonig:"👑 König (+10)", gPay:"🍬 Süßigkeit gegeben (−)",
    gPlus:"＋ Plus", gMinus:"－ Minus", gReasonTest:"Test fehlerfrei", gReasonKonig:"König",
-   gReasonPay:"Kaugummi gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −", gumLogT:"Verlauf (Datum · +/− · Grund)",
-   gPayAsk:"Wie viele Kaugummis gegeben?", gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
-   gSetDays:"⚙️ Strafe-Tage setzen", gSetAsk:"Neu setzen: wie viele Tage Spielverbot ab heute?",
-   gSetGum:"⚙️ Kaugummi-Stand direkt setzen", gGumAsk:"Geschuldete Kaugummis auf wie viel setzen?", gSetReason:"Stand gesetzt",
+   gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −", keoLogT:"Verlauf (Datum · +/− · Grund)",
+   gPayAsk:"Wie viele Süßigkeiten gegeben?", gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
+   h_shop:"🛒 Belohnungs-Shop — Ausgabestelle",
+   shopHint:"Artikel antippen, um für das Kind einzulösen (zieht Punkte ab + Protokoll) · Punkte müssen reichen · Artikel/Preise bearbeiten unter ⚙️ Verwaltung unten.",
+   shopBlocked:(cost,icon,name,bal)=>`Nicht genug ${cost}${icon} für "${name}" (aktuell ${bal}${icon}).`,
+   shopConfirm:(name,cost,icon)=>`"${name}" einlösen — ${cost}${icon} abziehen?`,
+   shopOk:(name,cost,icon)=>`🎉 "${name}" eingelöst! −${cost}${icon}`,
+   h_manage:"⚙️ Verwaltungsmenü", mgOpenBtn:"⚙️ Listen verwalten — hinzufügen / bearbeiten / löschen", mgTitle:"⚙️ Listen verwalten",
+   mgReset:"↺ Sterne & Süßigkeiten zurücksetzen", mgResetConfirm:"Alle STERNE und SÜSSIGKEITEN auf 0 zurücksetzen?\n(löscht Protokoll + freigeschaltete Abzeichen · Wochenziele werden zurückgesetzt)",
+   mgResetDone:"↺ Sterne & Süßigkeiten zurückgesetzt.", mgClose:"Fertig",
+   mgSecCheck:"📝 Tägliche Checkliste", mgAddCheck:"＋ Aufgabe hinzufügen",
+   mgSecGoal:"🎯 Wochenziele", mgAddGoal:"＋ Ziel hinzufügen",
+   mgSecShop:"🛒 Belohnungs-Shop", mgAddShop:"＋ Artikel hinzufügen",
+   mgSecTier:"🏅 Abzeichen-Stufen", mgAddTier:"＋ Stufe hinzufügen",
+   mgSecChore:"🧺 Wiederkehrende Aufgaben", mgAddChore:"＋ Aufgabe hinzufügen",
+   mgSecAppt:"⏰ Arzttermine & Ereignisse", mgAddAppt:"＋ Termin hinzufügen",
+   mgEmpty:"— leer —",
    cog:"⚙️", backupT:"Sicherung & Daten", autoOn:"Auto-Sicherung jede Nacht: AN (im Gerät)", lastSnap:"Letzte Auto-Sicherung",
    exportFile:"Als Datei exportieren", importFile:"Aus Datei importieren (Backup oder /lich)", snapHist:"Auto-Sicherungen (letzte 7 Tage) — ↩ zum Wiederherstellen",
    expHist:"📁 Exportierte Stände (im Gerät) — ↩ wiederherstellen (überschreiben) · ✕ löschen",
@@ -405,7 +425,7 @@ const T={
    acariBreak:(rem,pd)=>`~${rem} Tabletten · ${pd}/Tag`, acariSetup:"Noch nicht eingerichtet — unten Tablettenzahl eingeben.",
    acariAsk:"Wie viele Packungen?", acariPpb:"Tabletten pro Packung?", acariPerDay:"Tabletten pro Tag? (z.B. 2 = Papa + Kind)",
    acariRemind:d=>`💊 Acarizax fast leer — noch ~${d} Tage, bitte nachbestellen.`,
-   choreMng:"⚙️ Aufgabenliste bearbeiten", choreMngDone:"✓ Fertig", noDue:"Keine fälligen Aufgaben ✅",
+   noDue:"Keine fälligen Aufgaben ✅",
    t2lbl:"🔧 Hauspflege (weniger wichtig)", tier1:"Wichtig", tier2:"Hauspflege",
    addAppt:"＋ Arzttermin / Ereignis hinzufügen", apptPh:"z.B. Allergietest – Dr. Müller", evSave:"Speichern", evCancel:"Abbrechen",
    noAppt:"Noch keine Termine 🎉", hiddenLbl:n=>`↩ Ausgeblendet (${n})`,
@@ -498,12 +518,13 @@ const saveAn=a=>sv(ANI,a);
 const anChkKey=id=>"fam.anchk."+iso(new Date())+"|"+id;
 const anDone=id=>localStorage.getItem(anChkKey(id))==="1";
 function anToggle(id){anDone(id)?localStorage.removeItem(anChkKey(id)):localStorage.setItem(anChkKey(id),"1");renderDaily();}
-function renderDaily(){$("addDaily").textContent=L().addDaily;$("h_daily").textContent=L().daily+" "+CHILD();
+function renderDaily(){$("h_daily").textContent=L().daily+" "+CHILD();
   const a=anItems();
   $("dailyList").innerHTML=a.length?a.map(it=>{const dn=anDone(it.id);
     return `<div class="chk${dn?' done':''}" data-dk="${it.id}"><span class="box">${dn?'✓':''}</span>
-      <span class="nm">${it.t}</span><span class="ic" data-ded="${it.id}">✏️</span><span class="ic" data-ddel="${it.id}">✕</span></div>`;}).join("")
-    :`<div class="empty">${L().nohist==='Chưa có bản ghi hôm nay.'?'Chưa có việc — bấm ＋ để thêm.':'Noch keine Aufgaben — ＋ zum Hinzufügen.'}</div>`;}
+      <span class="nm">${taskEmoji(it.t)} ${it.t}</span></div>`;}).join("")
+    :`<div class="empty">${LANG==='vi'?'Chưa có việc — thêm ở ⚙️ menu quản lý cuối trang.':'Noch keine Aufgaben — unter ⚙️ Verwaltung hinzufügen.'}</div>`;
+  renderDutyAsk();}
 
 /* ============ Việc định kỳ (chores.* — tương thích /lich) ============ */
 const CHI="fam.chores";
@@ -520,7 +541,6 @@ function choreDue(c){const l=choreLeft(c);return l===null||l<=0;}
 function choreDoneFn(id){const c=chores().find(x=>x.id===id);if(!c)return;
   if(!confirm((LANG==="vi"?"Đã làm xong: ":"Erledigt: ")+c.t+" ?\n"+(LANG==="vi"?"Ẩn và nhắc lại sau ":"Ausblenden, erneut nach ")+everyLabel(c.days)+"."))return;
   localStorage.setItem(choreKey(id),iso(new Date()));renderChores();}
-let manageCh=false;
 function askTier(def){return parseInt(prompt(LANG==="vi"?"Mức độ: 1 = quan trọng, 2 = bảo trì nhà":"Stufe: 1 = wichtig, 2 = Hauspflege",def),10)===1?1:2;}
 function addChore(){const t=prompt(LANG==="vi"?"Tên việc định kỳ mới:":"Neue wiederkehrende Aufgabe:");if(!t||!t.trim())return;
   const n=parseInt(prompt(LANG==="vi"?"Lặp lại mỗi bao nhiêu NGÀY? (7=1 tuần · 14=2 tuần · 30=1 tháng):":"Wiederholung alle wie viele TAGE? (7=1 Woche · 30=1 Monat):"),10);
@@ -533,24 +553,15 @@ function editChore(id){const a=chores(),c=a.find(x=>x.id===id);if(!c)return;
 function delChore(id){if(!confirm(LANG==="vi"?"Xoá việc định kỳ này?":"Diese Aufgabe löschen?"))return;
   saveChores(chores().filter(x=>x.id!==id));localStorage.removeItem(choreKey(id));renderChores();}
 function renderChores(){$("h_chores").textContent=L().chores;
-  const all=chores(),tierName=t=>t===1?L().tier1:L().tier2;
-  $("choreMng").textContent=manageCh?L().choreMngDone:L().choreMng;
-  if(manageCh){
-    const sorted=all.slice().sort((a,b)=>(a.tier||1)-(b.tier||1));
-    $("choreList").innerHTML=(sorted.map(c=>{const l=choreLeft(c);
-      const st=l===null?(LANG==="vi"?"chưa làm":"noch nie"):l<=0?'<b style="color:var(--o)">'+(LANG==="vi"?"TỚI HẠN":"FÄLLIG")+'</b>':(LANG==="vi"?"còn "+l+" ngày":"in "+l+" Tagen");
-      return `<div class="chk"><span class="nm">${c.t}<div class="sub" style="font-size:12px;color:var(--mut)">[${tierName(c.tier||1)}] · ${LANG==="vi"?"mỗi":"alle"} ${everyLabel(c.days)} · ${st}</div></span>
-        <span class="ic" data-choreedit="${c.id}">✏️</span><span class="ic" data-choredel="${c.id}">✕</span></div>`;}).join("")||`<div class="empty">${L().noDue}</div>`)
-      +`<button class="add" data-choreadd="1">${LANG==="vi"?"＋ Thêm việc định kỳ":"＋ Aufgabe hinzufügen"}</button>`;
-  }else{
-    const due=all.filter(choreDue),lv=c=>{const l=choreLeft(c);return l===null?0:l;};
-    const sortf=(a,b)=>lv(a)-lv(b)||a.days-b.days;
-    const due1=due.filter(c=>(c.tier||1)===1).sort(sortf),due2=due.filter(c=>(c.tier||1)===2).sort(sortf);
-    const card=(c,m)=>`<div class="chore${m?' t2':''}" data-chore="${c.id}"><span class="box">○</span>
-      <span class="nm">${c.t}<div class="sub">${LANG==="vi"?"mỗi":"alle"} ${everyLabel(c.days)} · ${LANG==="vi"?"chạm khi xong":"antippen wenn fertig"}</div></span></div>`;
-    let h="";if(due1.length)h+=due1.map(c=>card(c,false)).join("");
-    if(due2.length)h+=`<div class="t2lbl">${L().t2lbl}</div>`+due2.map(c=>card(c,true)).join("");
-    $("choreList").innerHTML=h||`<div class="empty">${L().noDue}</div>`;}}
+  const all=chores();
+  const due=all.filter(choreDue),lv=c=>{const l=choreLeft(c);return l===null?0:l;};
+  const sortf=(a,b)=>lv(a)-lv(b)||a.days-b.days;
+  const due1=due.filter(c=>(c.tier||1)===1).sort(sortf),due2=due.filter(c=>(c.tier||1)===2).sort(sortf);
+  const card=(c,m)=>`<div class="chore${m?' t2':''}" data-chore="${c.id}"><span class="box">○</span>
+    <span class="nm">${c.t}<div class="sub">${LANG==="vi"?"mỗi":"alle"} ${everyLabel(c.days)} · ${LANG==="vi"?"chạm khi xong":"antippen wenn fertig"}</div></span></div>`;
+  let h="";if(due1.length)h+=due1.map(c=>card(c,false)).join("");
+  if(due2.length)h+=`<div class="t2lbl">${L().t2lbl}</div>`+due2.map(c=>card(c,true)).join("");
+  $("choreList").innerHTML=h||`<div class="empty">${L().noDue}</div>`;}
 
 /* ============ Lịch bác sĩ & deadline (dl.* — tương thích /lich) ============ */
 const DLI="fam.dl.items";
@@ -559,7 +570,7 @@ const saveDl=a=>sv(DLI,a);
 const PICON={bo:"🧔",me:"👩‍🦰",an:"🧒",all:"👪"};
 const PORDER=["bo","me","an","all"];
 const doneFlag=id=>localStorage.getItem("fam.done."+id)==="1";
-let editId=null,showHidden=false;
+let showHidden=false;
 function addEvent(t,d,p){const a=dlItems();a.push({id:"e"+Date.now(),t,d,p});saveDl(a);renderAppt();}
 function delEvent(id){if(!confirm(LANG==="vi"?"Xoá mục này?":"Eintrag löschen?"))return;saveDl(dlItems().filter(e=>String(e.id)!==String(id)));renderAppt();}
 function cyclePerson(id){const a=dlItems(),e=a.find(x=>String(x.id)===String(id));if(!e)return;
@@ -567,11 +578,22 @@ function cyclePerson(id){const a=dlItems(),e=a.find(x=>String(x.id)===String(id)
 function confirmDone(id){if(!confirm(LANG==="vi"?"Đánh dấu ĐÃ XONG và ẩn mục này?":"Als ERLEDIGT markieren und ausblenden?"))return;
   localStorage.setItem("fam.done."+id,"1");renderAppt();}
 function undone(id){localStorage.removeItem("fam.done."+id);renderAppt();}
-function editEvent(id){const e=dlItems().find(x=>String(x.id)===String(id));if(!e)return;
-  editId=e.id;$("evT").value=e.t;$("evD").value=e.d;$("evP").value=e.p;$("apptForm").hidden=false;}
-function renderApptForm(){$("addAppt").textContent=L().addAppt;$("evT").placeholder=L().apptPh;$("evSave").textContent=L().evSave;$("evCancel").textContent=L().evCancel;
-  $("evP").innerHTML=L().personOpts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");}
-function renderAppt(){$("h_appt").textContent=L().appt;renderApptForm();
+function personPrompt(def){const opts=L().personOpts;
+  const listStr=opts.map((o,i)=>`${i+1}=${o[1]}`).join(" · ");
+  const v=prompt((LANG==="vi"?"Ai: ":"Wer: ")+listStr,String(opts.findIndex(o=>o[0]===def)+1||1));
+  if(v===null)return def;
+  const idx=parseInt(v,10)-1;return (opts[idx]||opts.find(o=>o[0]===def)||opts[0])[0];}
+function addApptPrompt(){const t=prompt(LANG==="vi"?"Tên lịch/sự kiện:":"Titel:");if(!t||!t.trim())return;
+  const d=prompt(LANG==="vi"?"Ngày (YYYY-MM-DD):":"Datum (JJJJ-MM-TT):",iso(new Date()));if(!d)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){alert(LANG==="vi"?"Định dạng ngày sai (YYYY-MM-DD)":"Falsches Datumsformat (JJJJ-MM-TT)");return;}
+  const p=personPrompt("an");addEvent(t.trim(),d,p);}
+function editApptPrompt(id){const a=dlItems(),e=a.find(x=>String(x.id)===String(id));if(!e)return;
+  const t=prompt(LANG==="vi"?"Sửa tên:":"Titel bearbeiten:",e.t);if(t===null)return;
+  const d=prompt(LANG==="vi"?"Ngày (YYYY-MM-DD):":"Datum (JJJJ-MM-TT):",e.d);if(d===null)return;
+  if(d&&!/^\d{4}-\d{2}-\d{2}$/.test(d)){alert(LANG==="vi"?"Định dạng ngày sai (YYYY-MM-DD)":"Falsches Datumsformat (JJJJ-MM-TT)");return;}
+  const p=personPrompt(e.p);
+  if(t.trim())e.t=t.trim();if(d)e.d=d;e.p=p;saveDl(a);renderAppt();}
+function renderAppt(){$("h_appt").textContent=L().appt;
   const t0=new Date();t0.setHours(0,0,0,0);
   const dl=dlItems().filter(x=>!doneFlag(x.id)).map(x=>({...x,days:Math.round((new Date(x.d+"T00:00:00")-t0)/864e5)})).sort((a,b)=>a.days-b.days);
   const col=d=>d<=30?"var(--r)":d<=90?"var(--o)":d<=180?"var(--y)":"var(--g)";
@@ -581,21 +603,13 @@ function renderAppt(){$("h_appt").textContent=L().appt;renderApptForm();
       <span class="box" data-done="${x.id}">○</span>
       <span class="ic2" data-cyc="${x.id}">${PICON[x.p]||"🩺"}</span>
       <span class="ttl">${x.t}<div class="when">${when(x.d)}</div></span>
-      <span class="cd" style="color:${col(x.days)}">${cd(x.days)}</span>
-      <span class="ic" data-evedit="${x.id}">✏️</span><span class="ic" data-del="${x.id}">✕</span></div>`).join("")
+      <span class="cd" style="color:${col(x.days)}">${cd(x.days)}</span></div>`).join("")
     ||`<div class="empty">${L().noAppt}</div>`;
   const hid=dlItems().filter(x=>doneFlag(x.id));
   if(hid.length){h+=`<div class="t2lbl" data-togglehidden="1" style="cursor:pointer">${L().hiddenLbl(hid.length)} ${showHidden?'▲':'▼'}</div>`;
     if(showHidden)h+=hid.map(x=>`<div class="dl" style="opacity:.6"><span class="ttl">${x.t}<div class="when">${when(x.d)}</div></span>
-      <span class="ic" data-undone="${x.id}">↩</span><span class="ic" data-del="${x.id}">✕</span></div>`).join("");}
+      <span class="ic" data-undone="${x.id}">↩</span></div>`).join("");}
   $("apptList").innerHTML=h;}
-$("addAppt").onclick=()=>{const f=$("apptForm");if(f.hidden){editId=null;$("evT").value="";$("evD").value="";}f.hidden=!f.hidden;};
-$("evCancel").onclick=()=>{editId=null;$("apptForm").hidden=true;};
-$("evSave").onclick=()=>{const t=$("evT").value.trim(),d=$("evD").value,p=$("evP").value;
-  if(!t||!d){alert(LANG==="vi"?"Nhập tên + ngày":"Name + Datum eingeben");return;}
-  if(editId!=null){const a=dlItems(),e=a.find(x=>x.id===editId);if(e){e.t=t;e.d=d;e.p=p;saveDl(a);}editId=null;renderAppt();}
-  else addEvent(t,d,p);
-  $("evT").value="";$("evD").value="";$("apptForm").hidden=true;};
 
 /* ============ Log sức khỏe ============ */
 function addLog(o){const a=ld("fam.health.logs");a.push({id:newId(),date:iso(new Date()),...o});sv("fam.health.logs",a);renderHealth();}
@@ -698,40 +712,141 @@ function csvExport(){
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(";")).join("\r\n");
   downloadFile("Gesundheitsbericht_"+iso(new Date())+".csv","﻿"+csv,"text/csv;charset=utf-8");}
 
-/* ============ Cấm game + Kẹo ============ */
-const GKEY="fam.game", DELTA={cn:-2,n:-1,bt:0,h:1,ch:2};
-function gstate(){const v=localStorage.getItem(GKEY);if(v){try{const s=JSON.parse(v);if(!s.gumLog)s.gumLog=[];if(!s.scores)s.scores=[];return s;}catch(e){}}
-  const s={start:iso(new Date()),initial:0,scores:[],gum:0,gumLog:[]};localStorage.setItem(GKEY,JSON.stringify(s));return s;}
-function gsave(s){localStorage.setItem(GKEY,JSON.stringify(s));}
-const gElapsed=s=>Math.max(0,Math.round((new Date(iso(new Date())+"T00:00:00")-new Date(s.start+"T00:00:00"))/864e5));
-const gAdj=s=>s.scores.reduce((a,e)=>a+e.delta,0);
-function scoreToday(k){const s=gstate(),t=iso(new Date());s.scores=s.scores.filter(e=>e.date!==t);s.scores.push({date:t,key:k,delta:DELTA[k]});gsave(s);renderGame();}
-const todayScore=s=>s.scores.find(e=>e.date===iso(new Date()));
-function renderGame(){const s=gstate(),active=s.initial>0,raw=s.initial-gElapsed(s)+gAdj(s),tr=todayScore(s);
-  $("h_game").textContent=L().game;$("gameUnit").textContent=L().gameUnit;$("critBtn").textContent=L().critBtn;$("gSetDays").textContent=L().gSetDays;
-  $("gameDays").textContent=active?Math.max(0,raw):"–";
-  $("gameBreak").innerHTML=active?L().gbreak(s.initial,gElapsed(s),gAdj(s)):L().gNotSet;
-  $("doneMsg").style.display=(active&&raw<=0)?"block":"none";$("doneMsg").textContent=L().done;
-  $("gameBtns").innerHTML=L().ratings.map(r=>`<button class="gbtn g_${r[0]}${tr&&tr.key===r[0]?' sel':''}" data-score="${r[0]}">${r[1]}<br>${r[2]}</button>`).join("");
-  $("gameStatus").textContent=L().gameStatus(tr?L().ratings.find(r=>r[0]===tr.key)[1]:null);}
-function gSetDaysFn(){const v=prompt(L().gSetAsk,"42");if(v===null)return;const n=parseInt(v,10);if(isNaN(n))return;
-  const s=gstate();s.start=iso(new Date());s.initial=Math.max(0,n);s.scores=[];gsave(s);renderGame();}
-function renderGum(){const s=gstate();$("h_gum").textContent=L().gum;$("gumUnit").textContent=L().gumUnit;
-  $("gumNum").textContent=s.gum;$("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
-  $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;$("gSetGum").textContent=L().gSetGum;$("gumLogT").textContent=L().gumLogT;
-  $("gumLog").innerHTML=(s.gumLog||[]).slice().reverse().slice(0,12).map(e=>`<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta} 🍬 — ${e.reason||''}</div>`).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;}
-function addGum(n,reason){const s=gstate();s.gum=Math.max(0,s.gum+n);s.gumLog.push({date:iso(new Date()),delta:n,reason:reason||""});gsave(s);renderGum();}
-function payGum(){const v=prompt(L().gPayAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(n)addGum(-n,L().gReasonPay);}
-function gumManual(sign){const v=prompt(L().gAmtAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(!n)return;const r=prompt(L().gWhyAsk,"");addGum(sign*n,(r||"").trim()||(sign>0?L().gPlusDef:L().gMinusDef));}
-function gSetGumFn(){const s=gstate();const v=prompt(L().gGumAsk,String(s.gum));if(v===null)return;const n=parseInt(v,10);if(isNaN(n)||n<0)return;
-  const diff=n-s.gum;s.gum=n;s.gumLog.push({date:iso(new Date()),delta:diff,reason:L().gSetReason});gsave(s);renderGum();}
+/* ============ Kinh tế thưởng: ⭐ Sao + 🍬 Kẹo (fam.kid) ============ */
+const KIDKEY="fam.kid";
+const EVAL_DELTA={cn:2,n:1,bt:0,h:-1,ch:-2};
+function kidRaw(){try{return JSON.parse(localStorage.getItem(KIDKEY))||{};}catch(e){return {};}}
+function defaultTiers(){return [
+  {id:"t1",t:5, e:"🌱",name:"Mầm chăm",   bonus:1,reward:""},
+  {id:"t2",t:10,e:"⭐",name:"Ngôi sao nhỏ",bonus:2,reward:""},
+  {id:"t3",t:20,e:"🏅",name:"Huy chương",  bonus:3,reward:""},
+  {id:"t4",t:35,e:"🏆",name:"Cúp vàng",    bonus:5,reward:""},
+  {id:"t5",t:50,e:"👑",name:"Nhà vô địch", bonus:8,reward:""}];}
+function defaultShop(){return [
+  {id:"s1",e:"🎮",name:"Chơi game 10 phút",cost:1,cur:"keo"},
+  {id:"s2",e:"📺",name:"Xem hoạt hình 10 phút",cost:1,cur:"keo"},
+  {id:"s3",e:"🎮",name:"Chơi game 30 phút",cost:3,cur:"keo"},
+  {id:"s4",e:"🍦",name:"1 que kem",cost:5,cur:"keo"},
+  {id:"s5",e:"🛌",name:"Thức khuya thêm 20 phút (cuối tuần)",cost:6,cur:"keo"},
+  {id:"s6",e:"🎬",name:"Chọn phim cả nhà xem tối nay",cost:8,cur:"sao"},
+  {id:"s7",e:"🧩",name:"Bố/mẹ chơi cùng 1 ván",cost:10,cur:"sao"}];}
+function defaultGoals(){const wk=isoWeek(iso(new Date()));return [
+  {id:"g1",text:"Giơ tay phát biểu ở lớp",emoji:"✋",week:wk,done:false},
+  {id:"g2",text:"Không cáu gắt / kiếm cớ",emoji:"😌",week:wk,done:false},
+  {id:"g3",text:"Tự tin bắt chuyện với người khác",emoji:"🤝",week:wk,done:false}];}
+// Migration idempotent: fam.kid cũ {stars,streak,goal,...} + fam.game cũ {gum,gumLog} -> fam.kid v2. KHÔNG mất data thật.
+function migrateKid(){
+  const raw=kidRaw();
+  if(raw.v===2)return; // đã migrate — không chạy lại
+  const out={};
+  out.avatar=raw.avatar||"🦊";out.color=raw.color||"#5fd08a";
+  const oldStars=raw.stars||0;
+  out.sao=oldStars;out.saoLife=oldStars;
+  out.streak=raw.streak||0;out.lastAllDone=raw.lastStar||"";
+  out.handRaise={date:"",count:0};out.checkAward=null;out.eval=null;
+  out.goals=[];
+  if(raw.goal&&raw.goal.text)out.goals.push({id:newId(),text:raw.goal.text,emoji:"🎯",week:raw.goal.week||isoWeek(iso(new Date())),done:!!raw.goal.done});
+  if(!out.goals.length)out.goals=defaultGoals();
+  out.tiers=defaultTiers();out.shop=defaultShop();out.keoLog=[];
+  let gRaw=null;try{gRaw=JSON.parse(localStorage.getItem("fam.game"));}catch(e){}
+  out.keo=(gRaw&&typeof gRaw.gum==="number")?gRaw.gum:0;
+  if(gRaw&&Array.isArray(gRaw.gumLog))out.keoLog=gRaw.gumLog.map(x=>({date:x.date,delta:x.delta,reason:x.reason||"",cur:"keo"}));
+  out.badgesGot=out.tiers.filter(t=>t.t<=out.saoLife).map(t=>t.id);
+  out.v=2;
+  kidSave(out);
+}
+function ensureGoalsThisWeek(s){const wk=isoWeek(iso(new Date()));let changed=false;
+  (s.goals||[]).forEach(g=>{if(g.week!==wk){g.week=wk;g.done=false;changed=true;}});
+  if(changed)kidSave(s);return s;}
+function kidState(){const s=kidRaw();
+  s.avatar=s.avatar||"🦊";s.color=s.color||"#5fd08a";
+  s.sao=s.sao||0;s.saoLife=s.saoLife||0;s.keo=s.keo||0;s.streak=s.streak||0;
+  s.goals=s.goals||[];s.tiers=s.tiers||defaultTiers();s.shop=s.shop||defaultShop();
+  s.keoLog=s.keoLog||[];s.badgesGot=s.badgesGot||[];
+  return ensureGoalsThisWeek(s);}
+function kidSave(s){localStorage.setItem(KIDKEY,JSON.stringify(s));}
+function todayCheckAward(s){return s.checkAward&&s.checkAward.date===iso(new Date())?s.checkAward:null;}
+function todayEval(s){return s.eval&&s.eval.date===iso(new Date())?s.eval:null;}
+function todayHandCount(s){return s.handRaise&&s.handRaise.date===iso(new Date())?(s.handRaise.count||0):0;}
+function checkBadges(s){let any=false;
+  while(true){const sorted=s.tiers.slice().sort((a,b)=>a.t-b.t);
+    const nb=sorted.find(b=>s.saoLife>=b.t&&!s.badgesGot.includes(b.id));
+    if(!nb)break;
+    s.badgesGot.push(nb.id);s.keo=(s.keo||0)+nb.bonus;
+    s.keoLog.unshift({date:iso(new Date()),delta:nb.bonus,reason:(LANG==="vi"?"Mở khoá ":"Freigeschaltet: ")+nb.e+" "+nb.name,cur:"keo"});
+    kidCheer=KL().badgeUnlock(nb);any=true;}
+  return any;}
+/* --- Checklist ngày (tab Trực) → hỏi "tự làm?" → +2/+1 sao --- */
+function renderDutyAsk(){
+  const s=kidState(),ca=todayCheckAward(s),done=allRoutineDone();
+  let html="";
+  if(done){
+    if(ca)html=`<div class="kidask" style="border-color:var(--bd)"><div class="q" style="font-size:15px">${ca.kind==="self"?KL().askDoneSelf:KL().askDoneHelp}</div></div>`;
+    else html=`<div class="kidask"><div class="q">${KL().askQ}</div>
+      <div class="kidrow" style="gap:10px"><button id="aSelf" class="askyes">${KL().askYes}</button><button id="aHelp" class="askno">${KL().askNo}</button></div></div>`;
+  }
+  $("dutyAsk").innerHTML=html;
+  if($("aSelf"))$("aSelf").onclick=()=>answerChecklist(true);
+  if($("aHelp"))$("aHelp").onclick=()=>answerChecklist(false);
+}
+function dutyToggle(id){
+  anToggle(id);
+  const s=kidState();
+  if(!allRoutineDone()){const ca=todayCheckAward(s);
+    if(ca){const n=ca.kind==="self"?2:1;s.sao-=n;s.saoLife-=n;s.checkAward=null;kidSave(s);}}
+  renderRewardAll();
+}
+function answerChecklist(self){
+  const s=kidState(),today=iso(new Date()),y=iso(new Date(Date.now()-864e5));
+  const n=self?2:1;s.sao=(s.sao||0)+n;s.saoLife=(s.saoLife||0)+n;
+  s.checkAward={date:today,kind:self?"self":"help"};
+  if(self){s.streak=(s.lastAllDone===y)?(s.streak||0)+1:1;s.lastAllDone=today;}
+  checkBadges(s);kidSave(s);
+  kidCheer=self?KL().selfCheer:KL().helpCheer;
+  renderRewardAll();
+}
+/* --- Bố mẹ đánh giá 5 mức (chỉ đụng sao) --- */
+function applyEval(key){
+  const s=kidState(),today=iso(new Date()),delta=EVAL_DELTA[key],cur=todayEval(s);
+  if(cur)s.sao-=cur.delta;
+  if(cur&&cur.key===key)s.eval=null;
+  else{s.sao+=delta;s.eval={date:today,key,delta};}
+  kidSave(s);renderRewardAll();
+}
+/* --- Kẹo: thao tác tay + đúng bài + König --- */
+function addKeo(n,reason){const s=kidState();s.keo=(s.keo||0)+n;s.keoLog.unshift({date:iso(new Date()),delta:n,reason:reason||"",cur:"keo"});kidSave(s);renderRewardAll();}
+function payKeo(){const v=prompt(L().gPayAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(n)addKeo(-n,L().gReasonPay);}
+function keoManual(sign){const v=prompt(L().gAmtAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(!n)return;const r=prompt(L().gWhyAsk,"");addKeo(sign*n,(r||"").trim()||(sign>0?L().gPlusDef:L().gMinusDef));}
+/* --- Đổi 3⭐→1🍬 --- */
+function convertStars(){const s=kidState();
+  if((s.sao||0)<3){kidCheer=KL().convertBlocked;renderRewardAll();return;}
+  s.sao-=3;s.keo=(s.keo||0)+1;s.keoLog.unshift({date:iso(new Date()),delta:1,reason:KL().convertReason,cur:"keo"});
+  kidSave(s);kidCheer=KL().convertOk;renderRewardAll();}
+/* --- Giơ tay ✋ --- */
+function raiseHand(){const s=kidState(),today=iso(new Date());
+  if(!s.handRaise||s.handRaise.date!==today)s.handRaise={date:today,count:0};
+  s.handRaise.count++;s.sao=(s.sao||0)+1;s.saoLife=(s.saoLife||0)+1;
+  checkBadges(s);kidSave(s);kidCheer=KL().handCheer;renderRewardAll();}
+/* --- Mục tiêu tuần (nhiều mục) --- */
+function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)return;
+  if(!g.done){g.done=true;s.sao+=3;s.saoLife+=3;checkBadges(s);kidCheer=KL().goalDoneCheer(g.text);}
+  else{g.done=false;s.sao-=3;s.saoLife-=3;kidCheer="";}
+  kidSave(s);renderRewardAll();}
+/* --- 🛒 Cửa hàng đổi thưởng (tap-to-buy ở tab Thưởng) --- */
+function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)return;
+  const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0);
+  if(bal<it.cost){alert(L().shopBlocked(it.cost,icon,it.name,bal));return;}
+  if(!confirm(L().shopConfirm(it.name,it.cost,icon)))return;
+  if(it.cur==="sao")s.sao-=it.cost;else s.keo-=it.cost;
+  s.keoLog.unshift({date:iso(new Date()),delta:-it.cost,reason:it.name,cur:it.cur});
+  kidSave(s);kidCheer=L().shopOk(it.name,it.cost,icon);renderRewardAll();}
 
 const CRIT=[
- {col:"#16a34a",vi:["Cực ngoan (−2)","Bước dũng cảm thật sự: giơ tay phát biểu, nói trước lớp, kết bạn mới, thử việc mới dù ngại, chủ động giúp bạn."],de:["Sehr brav (−2)","Ein mutiger Schritt: sich melden, vor der Klasse sprechen, neue Freunde finden, Neues trotz Angst probieren, von sich aus helfen."]},
- {col:"#65a30d",vi:["Ngoan (−1)","Có tham gia, có cố gắng: trả lời cô, chơi cùng bạn, vào nhóm, tự uống thuốc + làm việc không càu nhàu."],de:["Brav (−1)","Mitgemacht und sich bemüht: geantwortet, mit Freunden gespielt, mitgemacht, selbstständig Medizin genommen."]},
+ {col:"#16a34a",vi:["Cực ngoan (+2)","Bước dũng cảm thật sự: giơ tay phát biểu, nói trước lớp, kết bạn mới, thử việc mới dù ngại, chủ động giúp bạn."],de:["Sehr brav (+2)","Ein mutiger Schritt: sich melden, vor der Klasse sprechen, neue Freunde finden, Neues trotz Angst probieren, von sich aus helfen."]},
+ {col:"#65a30d",vi:["Ngoan (+1)","Có tham gia, có cố gắng: trả lời cô, chơi cùng bạn, vào nhóm, tự uống thuốc + làm việc không càu nhàu."],de:["Brav (+1)","Mitgemacht und sich bemüht: geantwortet, mit Freunden gespielt, mitgemacht, selbstständig Medizin genommen."]},
  {col:"#64748b",vi:["Bình thường (0)","Một ngày yên ổn, làm xong việc của mình — mặc định."],de:["Normal (0)","Ein ruhiger Tag, Aufgaben erledigt — Standard."]},
- {col:"#ea580c",vi:["Hư (+1)","Sai nhỏ: cãi lại/nói trống không, không chịu làm bài sau nhiều lần nhắc, nói dối nhỏ."],de:["Unartig (+1)","Kleines Fehlverhalten: widersprochen, Hausaufgaben verweigert, kleine Lüge."]},
- {col:"#dc2626",vi:["Cực hư (+2)","Nghiêm trọng, hiếm: đánh/làm đau người khác, nói dối lớn, đập phá, nguy hiểm, chống đối lặp lại."],de:["Sehr unartig (+2)","Ernst und selten: jemanden verletzt, große Lüge, Wutanfall, gefährlich, wiederholter Trotz."]}];
+ {col:"#ea580c",vi:["Hư (−1)","Sai nhỏ: cãi lại/nói trống không, không chịu làm bài sau nhiều lần nhắc, nói dối nhỏ."],de:["Unartig (−1)","Kleines Fehlverhalten: widersprochen, Hausaufgaben verweigert, kleine Lüge."]},
+ {col:"#dc2626",vi:["Cực hư (−2)","Nghiêm trọng, hiếm: đánh/làm đau người khác, nói dối lớn, đập phá, nguy hiểm, chống đối lặp lại."],de:["Sehr unartig (−2)","Ernst und selten: jemanden verletzt, große Lüge, Wutanfall, gefährlich, wiederholter Trotz."]}];
 function openCrit(){open(`<h3>${L().critTitle}</h3>`+CRIT.map(c=>{const x=c[LANG];
   return `<div style="border-left:4px solid ${c.col};padding:4px 0 4px 12px;margin:10px 0"><b>${x[0]}</b><div style="font-size:13px;color:#c7ccd6;margin-top:3px">${x[1]}</div></div>`;}).join("")
   +`<div class="acts"><button class="cancel" id="cCancel">${L().cancel}</button></div>`);$("cCancel").onclick=close;}
@@ -785,26 +900,18 @@ function openGrowth(){open(`<h3>${SL().growth}</h3><div class="lbl">${SL().heigh
 
 /* ============ click handlers (CRUD + scores) ============ */
 document.addEventListener("click",e=>{
-  const sc=e.target.closest("[data-score]");if(sc){scoreToday(sc.dataset.score);return;}
-  const ed=e.target.closest("[data-ded]");if(ed){const a=anItems(),it=a.find(x=>x.id===ed.dataset.ded);const t=prompt(LANG==="vi"?"Sửa việc:":"Bearbeiten:",it.t);if(t&&t.trim()){it.t=t.trim();saveAn(a);renderDaily();}return;}
-  const dl=e.target.closest("[data-ddel]");if(dl){if(confirm(LANG==="vi"?"Xoá việc này?":"Löschen?")){saveAn(anItems().filter(x=>x.id!==dl.dataset.ddel));localStorage.removeItem(anChkKey(dl.dataset.ddel));renderDaily();}return;}
-  const dk=e.target.closest("[data-dk]");if(dk){anToggle(dk.dataset.dk);return;}
+  const dk=e.target.closest("[data-dk]");if(dk){dutyToggle(dk.dataset.dk);return;}
   const ch=e.target.closest("[data-chore]");if(ch){choreDoneFn(ch.dataset.chore);return;}
-  const cad=e.target.closest("[data-choreadd]");if(cad){addChore();return;}
-  const cce=e.target.closest("[data-choreedit]");if(cce){editChore(cce.dataset.choreedit);return;}
-  const ccd=e.target.closest("[data-choredel]");if(ccd){delChore(ccd.dataset.choredel);return;}
   const dn=e.target.closest("[data-done]");if(dn){confirmDone(dn.dataset.done);return;}
-  const ee=e.target.closest("[data-evedit]");if(ee){editEvent(ee.dataset.evedit);return;}
-  const dv=e.target.closest("[data-del]");if(dv){delEvent(dv.dataset.del);return;}
   const cy=e.target.closest("[data-cyc]");if(cy){cyclePerson(cy.dataset.cyc);return;}
   const th=e.target.closest("[data-togglehidden]");if(th){showHidden=!showHidden;renderAppt();return;}
   const un=e.target.closest("[data-undone]");if(un){undone(un.dataset.undone);return;}
-  const xd=e.target.closest("[data-xdel]");if(xd){delEntry(xd.dataset.xdel,xd.dataset.xid);return;}});
-$("addDaily").onclick=()=>{const t=prompt(LANG==="vi"?"Việc hằng ngày mới:":"Neue tägliche Aufgabe:");if(t&&t.trim()){const a=anItems();a.push({id:"a"+Date.now(),t:t.trim()});saveAn(a);renderDaily();}};
-$("choreMng").onclick=()=>{manageCh=!manageCh;renderChores();};
-$("gTest").onclick=()=>addGum(2,L().gReasonTest);$("gKonig").onclick=()=>addGum(10,L().gReasonKonig);$("gPay").onclick=payGum;
-$("gPlus").onclick=()=>gumManual(1);$("gMinus").onclick=()=>gumManual(-1);$("critBtn").onclick=openCrit;$("repBtn").onclick=openReport;
-$("gSetDays").onclick=gSetDaysFn;$("gSetGum").onclick=gSetGumFn;
+  const xd=e.target.closest("[data-xdel]");if(xd){delEntry(xd.dataset.xdel,xd.dataset.xid);return;}
+  const ma=e.target.closest("[data-mgadd]");if(ma){mgAdd(ma.dataset.mgadd);return;}
+  const me=e.target.closest("[data-mgedit]");if(me){mgEdit(me.dataset.mgedit);return;}
+  const md=e.target.closest("[data-mgdel]");if(md){mgDel(md.dataset.mgdel);return;}});
+$("gTest").onclick=()=>addKeo(2,L().gReasonTest);$("gKonig").onclick=()=>addKeo(10,L().gReasonKonig);$("gPay").onclick=payKeo;
+$("gPlus").onclick=()=>keoManual(1);$("gMinus").onclick=()=>keoManual(-1);$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
 
 /* ============ Sao lưu + Nhập (backup app này HOẶC export /lich) ============ */
@@ -904,89 +1011,84 @@ function acariBuyFn(){const s0=acari();const v=prompt(L().acariAsk,"4");if(v===n
 /* ============ View của Con (Kid mode) + Tối ban đêm ============ */
 const KX={
  vi:{morning:"Chào buổi sáng",afternoon:"Chào buổi chiều",evening:"Chào buổi tối",close:"✓ Xong",
-   routine:"Việc của con hôm nay — chạm khi làm xong",noTasks:"Chưa có việc — nhờ bố mẹ thêm nhé.",
-   streak:n=>n>1?`🔥 ${n} ngày liền con tự làm hết!`:"Làm hết việc để được 1 ⭐ nhé!",
-   allDone:"🎉 Giỏi quá! Con tự làm hết — +1 ⭐",
-   askQ:"Con đã làm xong hết! Con TỰ làm, không ai nhắc đúng không?",askYes:"Đúng, con tự làm! 🌟",askNo:"Bố mẹ có nhắc 🙂",
-   askNoCheer:"Làm xong hết rồi, giỏi lắm! Lần sau con thử tự làm nhé 💚",tasksDone:"việc xong",
-   badgesT:"🏅 Huy hiệu của con",badgeGet:nb=>`🎉 Mở huy hiệu mới: ${nb.e} ${nb.vi}!`,badgeLock:t=>`cần ${t}⭐`,pickColor:"Chọn màu của con",
-   goalT:"🎯 Mục tiêu tuần này",goalPh:"Hoặc tự viết mục tiêu…",goalSet:"Đặt",goalDoneBtn:"✓ Làm được rồi!",goalDone:"🌟 Hoàn thành mục tiêu — +1 ⭐",
-   goalHint:"Con tự chọn 1 việc nhỏ để cố gắng tuần này:",goalCheer:"Tuần này con làm được rồi, giỏi ghê! 🎉",goalsCount:n=>`đã đạt ${n} mục tiêu`,goalUndo:"↩ Quay lại (chưa xong)",
-   goalSugg:["✋ Giơ tay phát biểu","🤝 Bắt chuyện với 1 bạn","🧸 Tự dọn đồ chơi","📚 Tự làm bài không cần nhắc","😊 Nói cảm ơn / xin lỗi"],
+   streak:n=>n>0?`🔥 ${n} ngày liền con tự làm hết!`:"Làm hết việc để được thưởng sao nhé!",
+   badgesT:"🏅 Huy hiệu của con",badgeLock:t=>`cần ${t}⭐`,pickColor:"Chọn màu của con",
+   badgeUnlock:nb=>`🏅 Mở khoá ${nb.e} ${nb.name}! +${nb.bonus}🍬`+(nb.reward?` + phần thưởng: ${nb.reward}`:""),
+   walletSaoSub:"sao của con",walletKeoSub:n=>`= ${n} phút màn hình`,
+   convertBtn:"🔄 Đổi 3 ⭐ → 1 🍬",convertBlocked:"Chưa đủ 3 ⭐ để đổi.",convertOk:"🍬 Đổi được 1 kẹo! (= 10 phút màn hình)",convertReason:"Đổi 3⭐ → 1🍬",
+   shopPreviewT:"🛒 Con có thể đổi (nhờ bố mẹ ở tab 🎁 Thưởng)",
+   handQ:"✋ Hôm nay con giơ tay phát biểu chưa?",handSub:"Mỗi lần con giơ tay ở lớp = +1 ⭐",
+   handCnt:n=>`Hôm nay: ${n} lần 🙌`,handBtn:"✋ Con vừa giơ tay! +1 ⭐",handCheer:"✋ Hoan hô con dũng cảm giơ tay! +1 ⭐",
+   goalsT:"🎯 Mục tiêu tuần này — mỗi mục = +3 ⭐",goalsEmpty:"Chưa có mục tiêu — nhờ bố mẹ thêm ở ⚙️.",
+   goalDoneCheer:t=>`🌟 Đạt mục tiêu tuần "${t}" — +3 ⭐!`,
+   askQ:"🎉 Con làm xong hết rồi! Con TỰ làm đúng không?",askYes:"Tự làm hết! 🌟 +2⭐",askNo:"Có nhắc +1⭐",
+   askDoneSelf:"✓ Đã thưởng +2⭐ (con tự làm hết 🌟) hôm nay",askDoneHelp:"✓ Đã thưởng +1⭐ (có bố mẹ nhắc) hôm nay",
+   selfCheer:"🌟 Con tự làm hết, giỏi lắm! +2 ⭐",helpCheer:"👍 Làm xong rồi, +1 ⭐ · lần sau thử tự làm nhé 💚",
    moodT:"Hôm nay con thấy thế nào?",goodT:"✨ Điều hay hôm nay",goodPh:"Hôm nay có gì vui?…",goodSave:"Lưu",thanks:"Cảm ơn con đã ghi! 💚",
    nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
  de:{morning:"Guten Morgen",afternoon:"Guten Tag",evening:"Guten Abend",close:"✓ Fertig",
-   routine:"Deine Aufgaben heute — antippen wenn erledigt",noTasks:"Noch keine Aufgaben — bitte Eltern fragen.",
-   streak:n=>n>1?`🔥 ${n} Tage in Folge selbst gemacht!`:"Mach alles fertig für 1 ⭐!",
-   allDone:"🎉 Super! Alles selbst erledigt — +1 ⭐",
-   askQ:"Alles erledigt! Hast du ALLES selbst gemacht, ohne Erinnerung?",askYes:"Ja, ganz allein! 🌟",askNo:"Mama/Papa hat erinnert 🙂",
-   askNoCheer:"Alles fertig, super! Versuch es nächstes Mal allein 💚",tasksDone:"erledigt",
-   badgesT:"🏅 Deine Abzeichen",badgeGet:nb=>`🎉 Neues Abzeichen: ${nb.e} ${nb.de}!`,badgeLock:t=>`${t}⭐ nötig`,pickColor:"Wähle deine Farbe",
-   goalT:"🎯 Wochenziel",goalPh:"Oder eigenes Ziel schreiben…",goalSet:"OK",goalDoneBtn:"✓ Geschafft!",goalDone:"🌟 Ziel erreicht — +1 ⭐",
-   goalHint:"Wähle eine kleine Sache für diese Woche:",goalCheer:"Diese Woche geschafft, super! 🎉",goalsCount:n=>`${n} Ziele erreicht`,goalUndo:"↩ Zurück (doch nicht)",
-   goalSugg:["✋ Im Unterricht melden","🤝 Ein Kind ansprechen","🧸 Spielzeug aufräumen","📚 Hausaufgaben allein machen","😊 Danke / Entschuldigung sagen"],
+   streak:n=>n>0?`🔥 ${n} Tage in Folge selbst gemacht!`:"Mach alles fertig für eine Belohnung!",
+   badgesT:"🏅 Deine Abzeichen",badgeLock:t=>`${t}⭐ nötig`,pickColor:"Wähle deine Farbe",
+   badgeUnlock:nb=>`🏅 Abzeichen freigeschaltet: ${nb.e} ${nb.name}! +${nb.bonus}🍬`+(nb.reward?` + Belohnung: ${nb.reward}`:""),
+   walletSaoSub:"Sterne des Kindes",walletKeoSub:n=>`= ${n} Min. Bildschirmzeit`,
+   convertBtn:"🔄 3 ⭐ → 1 🍬 tauschen",convertBlocked:"Noch nicht genug ⭐ (3 nötig).",convertOk:"🍬 1 Süßigkeit erhalten! (= 10 Min. Bildschirmzeit)",convertReason:"3⭐ → 1🍬 getauscht",
+   shopPreviewT:"🛒 Das kannst du einlösen (Eltern im Tab 🎁 fragen)",
+   handQ:"✋ Hast du dich heute im Unterricht gemeldet?",handSub:"Jedes Mal Melden = +1 ⭐",
+   handCnt:n=>`Heute: ${n} Mal 🙌`,handBtn:"✋ Ich habe mich gemeldet! +1 ⭐",handCheer:"✋ Bravo, du hast dich gemeldet! +1 ⭐",
+   goalsT:"🎯 Wochenziele — jedes Ziel = +3 ⭐",goalsEmpty:"Noch keine Ziele — Eltern fragen unter ⚙️.",
+   goalDoneCheer:t=>`🌟 Wochenziel "${t}" erreicht — +3 ⭐!`,
+   askQ:"🎉 Alles erledigt! Hast du ALLES selbst gemacht?",askYes:"Ganz allein! 🌟 +2⭐",askNo:"Mit Erinnerung +1⭐",
+   askDoneSelf:"✓ Heute +2⭐ (ganz allein 🌟)",askDoneHelp:"✓ Heute +1⭐ (mit Erinnerung)",
+   selfCheer:"🌟 Super, ganz allein gemacht! +2 ⭐",helpCheer:"👍 Alles fertig, +1 ⭐ · versuch's nächstes Mal allein 💚",
    moodT:"Wie fühlst du dich heute?",goodT:"✨ Schönes heute",goodPh:"Was war heute schön?…",goodSave:"Speichern",thanks:"Danke fürs Eintragen! 💚",
    nightHint:"Schlafenszeit 🌙 · tippen zum Ansehen",nightT:"🌙 Nachtmodus",nightOn:"Nachts automatisch abdunkeln",nightFrom:"Von",nightTo:"Bis"}
 };
 const KL=()=>KX[LANG];
 const AVATARS=["🦊","🐯","🐼","🐰","🦁","🐸","🐥","🦄","🐳","🤖","🦖","🌟"];
 const KCOLORS=["#5fd08a","#3f6fd0","#c0407f","#ffa53a","#a855f7","#ef4444","#06b6d4","#eab308"];
-const BADGES=[{t:5,e:"🌱",vi:"Mầm chăm",de:"Fleißiger Spross"},{t:10,e:"⭐",vi:"Ngôi sao nhỏ",de:"Kleiner Stern"},
- {t:20,e:"🏅",vi:"Huy chương",de:"Medaille"},{t:35,e:"🏆",vi:"Cúp vàng",de:"Pokal"},{t:50,e:"👑",vi:"Nhà vô địch",de:"Champion"}];
-const badgeUnlocked=(before,after)=>BADGES.find(b=>b.t>before&&b.t<=after)||null;
 function taskEmoji(t){t=(t||"").toLowerCase();
   const map=[[/bài|hausauf|haus|lernen|học/,"📚"],[/mũi|nase/,"👃"],[/acari|thuốc|medi|tablet/,"💊"],
    [/răng|zähne|zahn/,"🪥"],[/tắm|dusch|bad/,"🛁"],[/ăn|essen|frühstück|cơm/,"🍚"],[/ngủ|schlaf|bett/,"😴"],
    [/đọc|lesen|sách|buch/,"📖"],[/nước|wasser|uống|trink/,"💧"],[/dọn|aufräum|räum|cất/,"🧸"]];
   for(const[re,e]of map)if(re.test(t))return e;return "✅";}
-function kidState(){const d={avatar:"🦊",color:"#5fd08a",stars:0,streak:0,lastStar:"",asked:"",goal:null,goalsDone:0};
-  try{const s=JSON.parse(localStorage.getItem("fam.kid"));if(s)return Object.assign(d,s);}catch(e){}return d;}
-function kidSave(s){localStorage.setItem("fam.kid",JSON.stringify(s));}
 function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18?KL().afternoon:KL().evening;}
 function allRoutineDone(){const a=anItems();return a.length>0&&a.every(it=>anDone(it.id));}
-function routineProgress(){const a=anItems();return {done:a.filter(it=>anDone(it.id)).length,total:a.length};}
-// Tự động khi tick hết: tặng sao nếu con tự làm (self=true). Không mặc cả — chỉ 1 câu hỏi.
-function giveStar(self){const s=kidState(),today=iso(new Date()),y=iso(new Date(Date.now()-864e5));
-  s.asked=today;
-  if(self){s.streak=(s.lastStar===y)?(s.streak||0)+1:1;s.stars=(s.stars||0)+1;s.lastStar=today;}
-  kidSave(s);}
-let kidCheer="",kidAsk=false;
-function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date()));
-  const goal=s.goal&&s.goal.week===wk?s.goal:null;
-  const cards=items.length?items.map(it=>{const dn=anDone(it.id);
-    return `<div class="kidcard${dn?' done':''}" data-kid="${it.id}"><div class="em">${taskEmoji(it.t)}${dn?" ✓":""}</div><div class="lb">${it.t}</div></div>`;}).join("")
-    :`<div class="empty">${KL().noTasks}</div>`;
+let kidCheer="";
+function renderKid(){const s=kidState();
+  const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
+  const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
+    return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?b.name:KL().badgeLock(b.t)}</span></div>`;}).join("");
+  const shopChips=s.shop.length?s.shop.map(it=>{const icon=it.cur==="sao"?"⭐":"🍬";
+    return `<div class="kidbadge got">${it.e}<span>${it.cost}${icon}</span></div>`;}).join(""):`<div class="empty">—</div>`;
+  const goals=s.goals.length?s.goals.map(g=>`<div class="chk${g.done?' done':''}" data-gk="${g.id}">
+      <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji||'🎯'} ${g.text}</span></div>`).join("")
+    :`<div class="empty">${KL().goalsEmpty}</div>`;
   const diary=ld("fam.kid.diary").slice(-3).reverse().map(d=>`<div class="row">✨ ${dmy(d.date)} — ${d.text}</div>`).join("");
-  const pr=routineProgress();
-  const badges=BADGES.map(b=>{const got=(s.stars||0)>=b.t;
-    return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?b[LANG]:KL().badgeLock(b.t)}</span></div>`;}).join("");
   $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
      <div class="kidhi">${greetWord()}, ${CHILD()}! 🌟</div></div>
-   <div class="kidstar"><div class="n">⭐ ${s.stars||0}</div><div class="sub">${KL().streak(s.streak||0)}</div></div>
-   <div class="kidsec" style="margin-top:10px">${KL().badgesT}</div>
+   <div class="wallets">
+     <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
+     <div class="wallet keo"><div class="n${negK}">🍬 ${s.keo||0}</div><div class="sub">${KL().walletKeoSub((s.keo||0)*10)}</div></div>
+   </div>
+   <button class="gumbtn gold2" id="kConvert" ${(s.sao||0)<3?'disabled':''}>${KL().convertBtn}</button>
+   <div style="font-size:13px;color:#ffd98a;text-align:center;margin:2px 0 10px">${KL().streak(s.streak||0)}</div>
+   <div class="kidsec" style="margin-top:0">${KL().shopPreviewT}</div>
+   <div class="kidbadges">${shopChips}</div>
+   <div class="kidsec">${KL().badgesT}</div>
    <div class="kidbadges">${badges}</div>
-   ${kidAsk?`<div class="kidask"><div class="q">🎉 ${KL().askQ}</div>
-     <div class="kidrow" style="gap:10px"><button id="kAskYes" class="askyes">${KL().askYes}</button><button id="kAskNo" class="askno">${KL().askNo}</button></div></div>`:""}
    ${kidCheer?`<div class="kidcheer">${kidCheer}</div>`:""}
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
      <div style="width:100%;height:1px;background:var(--bd);margin:6px 0"></div>
      ${KCOLORS.map(c=>`<span class="kcolor${c===s.color?' sel':''}" data-color="${c}" style="background:${c}"></span>`).join("")}
    </div>
-   <div class="kidsec">${KL().routine}</div>
-   ${pr.total?`<div class="kidprog"><div class="bar" style="width:${Math.round(pr.done/pr.total*100)}%"></div></div><div class="kidprogn">${pr.done}/${pr.total} ${KL().tasksDone}</div>`:""}
-   <div class="kidcards">${cards}</div>
-   <div class="kidsec">${KL().goalT}${(s.goalsDone||0)>0?` · <span style="color:#ffd98a">${KL().goalsCount(s.goalsDone)}</span>`:""}</div>
-   ${goal
-     ?(goal.done
-        ?`<div class="kidgoal done"><div class="gt">🌟 ${goal.text}</div><div class="ksub">${KL().goalCheer}</div>
-            <div class="kidrow" style="margin-top:8px"><button id="kGoalUndo" class="goaledit" style="flex:1">${KL().goalUndo}</button></div></div>`
-        :`<div class="kidgoal active"><div class="gt">🎯 ${goal.text}</div>
-            <div class="kidrow"><button id="kGoalDone" class="goalbtn">${KL().goalDoneBtn}</button><button id="kGoalEdit" class="goaledit">✎</button></div></div>`)
-     :`<div class="kidgoal"><div class="ksub">${KL().goalHint}</div>
-        <div class="kidchips">${KL().goalSugg.map(g=>`<span class="kidchip" data-goal="${g}">${g}</span>`).join("")}</div>
-        <div class="kidrow"><input id="kGoalIn" placeholder="${KL().goalPh}"><button id="kGoalSet">${KL().goalSet}</button></div></div>`}
+   <div class="kidsec">${KL().handQ}</div>
+   <div class="hand"><div class="q">${KL().handSub}</div>
+     <div class="cnt">${KL().handCnt(todayHandCount(s))}</div>
+     <button class="handbtn" id="kHand">${KL().handBtn}</button></div>
+   <div class="kidsec">${KL().goalsT}</div>
+   ${goals}
    <div class="kidsec">${KL().moodT}</div>
    <div class="kidmood" id="kMood">${L().moods.map((m,i)=>`<button data-mi="${i}">${m.split(" ")[0]}</button>`).join("")}</div>
    <div class="kidsec">${KL().goodT}</div>
@@ -996,22 +1098,156 @@ function renderKid(){const s=kidState(),items=anItems(),wk=isoWeek(iso(new Date(
   P.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
   P.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{const st=kidState();st.color=b.dataset.color;kidSave(st);renderKid();});
   $("kAv").onclick=()=>{$("kAvPick").hidden=!$("kAvPick").hidden;};
-  P.querySelectorAll("[data-kid]").forEach(c=>c.onclick=()=>{anToggle(c.dataset.kid);
-    const st=kidState(),today=iso(new Date());
-    if(allRoutineDone()&&st.lastStar!==today&&st.asked!==today)kidAsk=true;
-    renderKid();});
-  if($("kAskYes"))$("kAskYes").onclick=()=>{const b=kidState().stars||0;giveStar(true);const nb=badgeUnlocked(b,kidState().stars||0);
-    kidAsk=false;kidCheer=nb?KL().badgeGet(nb):KL().allDone;renderKid();};
-  if($("kAskNo"))$("kAskNo").onclick=()=>{giveStar(false);kidAsk=false;kidCheer=KL().askNoCheer;renderKid();};
+  $("kConvert").onclick=convertStars;
+  $("kHand").onclick=raiseHand;
+  P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=()=>toggleGoal(g.dataset.gk));
   P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;renderKid();});
-  P.querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{const st=kidState();st.goal={text:b.dataset.goal,week:wk,done:false};kidSave(st);renderKid();});
-  if($("kGoalSet"))$("kGoalSet").onclick=()=>{const v=$("kGoalIn").value.trim();if(v){const st=kidState();st.goal={text:v,week:wk,done:false};kidSave(st);renderKid();}};
-  if($("kGoalEdit"))$("kGoalEdit").onclick=()=>{const st=kidState();st.goal=null;kidSave(st);renderKid();};
-  if($("kGoalDone"))$("kGoalDone").onclick=()=>{const st=kidState();if(st.goal&&!st.goal.done){const b=st.stars||0;st.goal.done=true;st.stars=b+1;st.goalsDone=(st.goalsDone||0)+1;kidSave(st);const nb=badgeUnlocked(b,st.stars);kidCheer=nb?KL().badgeGet(nb):KL().goalDone;renderKid();}};
-  if($("kGoalUndo"))$("kGoalUndo").onclick=()=>{const st=kidState();if(st.goal&&st.goal.done){st.goal.done=false;st.stars=Math.max(0,(st.stars||0)-1);st.goalsDone=Math.max(0,(st.goalsDone||0)-1);kidSave(st);kidCheer="";renderKid();}};
   if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;renderKid();}};}
-function enterKidTab(){const st=kidState(),today=iso(new Date());
-  kidAsk=allRoutineDone()&&st.lastStar!==today&&st.asked!==today;kidCheer="";renderKid();}
+function enterKidTab(){kidCheer="";renderKid();}
+function renderParentReward(){const s=kidState();
+  const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
+  $("h_sao").textContent=L().h_sao;$("h_badges").textContent=L().h_badges;$("h_keo").textContent=L().h_keo;$("h_shop").textContent=L().h_shop;
+  $("pSao").textContent=s.sao||0;$("pSao").className="bignum gold"+negS;
+  $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
+  $("critBtn").textContent=L().critBtn;
+  const ev=todayEval(s);
+  $("evalBtns").innerHTML=L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}${ev&&ev.key===r[0]?' sel':''}" data-eval="${r[0]}">${r[1]}<br>${r[2]}</button>`).join("");
+  $("evalStatus").textContent=L().evalStatus(ev?L().evalRatings.find(r=>r[0]===ev.key)[1]:null);
+  $("rwList").innerHTML=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
+    return `<div class="row" style="${got?'':'opacity:.55'}">${got?b.e:'🔒'} <b>${b.name}</b> · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().mgEmpty}</div>`;
+  $("rwHint").textContent=L().rwHint;
+  $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
+  $("keoUnit").textContent=L().keoUnit;
+  $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
+  $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;$("keoLogT").textContent=L().keoLogT;
+  $("keoLog").innerHTML=(s.keoLog||[]).slice(0,12).map(e=>{const ic=e.cur==="sao"?"⭐":"🍬";
+    return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta} ${ic} — ${e.reason||''}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;
+  $("shopHint").textContent=L().shopHint;
+  $("shopList").innerHTML=s.shop.length?s.shop.map(it=>{const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0),ok=bal>=it.cost;
+    return `<div class="chk${ok?'':' shopbuy'}" data-shop="${it.id}"><span class="nm">${it.e} ${it.name}</span><span style="font-weight:800;color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${icon}</span></div>`;}).join(""):`<div class="empty">${L().mgEmpty}</div>`;
+  document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
+  document.querySelectorAll("[data-shop]").forEach(el=>el.onclick=()=>buyShopItem(el.dataset.shop));
+  $("critBtn").onclick=openCrit;}
+function renderRewardAll(){renderDutyAsk();renderParentReward();renderKid();}
+/* --- Checklist ngày: seed 1 lần các việc mới (idempotent, không trùng) --- */
+function seedDailyChecklist(){
+  if(localStorage.getItem("fam.an.seeded_v2")==="1")return;
+  const defaults=["🪥 Sáng — tự vệ sinh răng miệng","🛁 Tối — tự vệ sinh thân thể","🧸 Tự dọn đồ chơi","💊 Uống Omega3 + Magie"];
+  const a=anItems();defaults.forEach(t=>{if(!a.some(it=>it.t===t))a.push({id:newId(),t});});
+  saveAn(a);localStorage.setItem("fam.an.seeded_v2","1");
+}
+/* --- CRUD prompt-based cho checklist / mục tiêu tuần (dùng trong ⚙️ menu quản lý) --- */
+function addAnItemPrompt(){const t=prompt(LANG==="vi"?"Việc hằng ngày mới:":"Neue tägliche Aufgabe:");if(t&&t.trim()){const a=anItems();a.push({id:newId(),t:t.trim()});saveAn(a);renderDaily();}}
+function editAnItemPrompt(id){const a=anItems(),it=a.find(x=>x.id===id);if(!it)return;
+  const t=prompt(LANG==="vi"?"Sửa việc:":"Bearbeiten:",it.t);if(t&&t.trim()){it.t=t.trim();saveAn(a);renderDaily();}}
+function delAnItemPrompt(id){if(!confirm(LANG==="vi"?"Xoá việc này?":"Löschen?"))return;
+  saveAn(anItems().filter(x=>x.id!==id));localStorage.removeItem(anChkKey(id));renderDaily();}
+function addGoalPrompt(){const t=prompt(LANG==="vi"?"Mục tiêu tuần mới:":"Neues Wochenziel:");if(!t||!t.trim())return;
+  const s=kidState();s.goals.push({id:newId(),text:t.trim(),emoji:"🎯",week:isoWeek(iso(new Date())),done:false});kidSave(s);renderRewardAll();}
+function editGoalPrompt(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)return;
+  const t=prompt(LANG==="vi"?"Sửa mục tiêu:":"Ziel bearbeiten:",g.text);if(t&&t.trim()){g.text=t.trim();kidSave(s);renderRewardAll();}}
+function delGoalPrompt(id){if(!confirm(LANG==="vi"?"Xoá mục tiêu này?":"Ziel löschen?"))return;
+  const s=kidState();s.goals=s.goals.filter(x=>x.id!==id);kidSave(s);renderRewardAll();}
+/* --- CRUD prompt-based cho 🏅 mốc huy hiệu --- */
+function addTierPrompt(){const s=kidState();
+  const name=prompt(LANG==="vi"?"Tên mốc mới:":"Name der neuen Stufe:","Mốc mới");if(name===null)return;
+  const t=parseInt(prompt(LANG==="vi"?"Mốc — tổng số ⭐ để mở:":"Schwelle — Gesamt-⭐:","15"),10);if(!t||t<1)return;
+  const bonus=parseInt(prompt(LANG==="vi"?"Bonus kẹo khi mở:":"Bonus-Süßigkeiten:","2"),10);
+  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:","🎖️")||"🎖️";
+  const reward=prompt(LANG==="vi"?"Phần thưởng đời thực (có thể để trống):":"Reale Belohnung (optional):","")||"";
+  s.tiers.push({id:newId(),t,e:e.trim()||"🎖️",name:(name||"Mốc mới").trim()||"Mốc mới",bonus:isNaN(bonus)?0:Math.max(0,bonus),reward:reward.trim()});
+  checkBadges(s);kidSave(s);renderRewardAll();}
+function editTierPrompt(id){const s=kidState(),b=s.tiers.find(x=>x.id===id);if(!b)return;
+  const name=prompt(LANG==="vi"?"Tên mốc:":"Name der Stufe:",b.name);if(name===null)return;
+  const t=parseInt(prompt(LANG==="vi"?"Mốc — tổng số ⭐ để mở:":"Schwelle — Gesamt-⭐:",b.t),10);
+  const bonus=parseInt(prompt(LANG==="vi"?"Bonus kẹo khi mở:":"Bonus-Süßigkeiten:",b.bonus),10);
+  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:",b.e);
+  const reward=prompt(LANG==="vi"?"Phần thưởng đời thực (có thể để trống):":"Reale Belohnung (optional):",b.reward||"");
+  if(name&&name.trim())b.name=name.trim();
+  if(t&&t>=1)b.t=t;
+  if(!isNaN(bonus)&&bonus>=0)b.bonus=bonus;
+  if(e&&e.trim())b.e=e.trim();
+  if(reward!==null)b.reward=reward.trim();
+  checkBadges(s);kidSave(s);renderRewardAll();}
+function delTierPrompt(id){if(!confirm(LANG==="vi"?"Xoá mốc huy hiệu này?":"Diese Stufe löschen?"))return;
+  const s=kidState();s.tiers=s.tiers.filter(x=>x.id!==id);s.badgesGot=s.badgesGot.filter(g=>g!==id);kidSave(s);renderRewardAll();}
+/* --- CRUD prompt-based cho 🛒 cửa hàng đổi thưởng --- */
+function addShopPrompt(){const s=kidState();
+  const name=prompt(LANG==="vi"?"Tên món mới:":"Name des neuen Artikels:","Món mới");if(name===null)return;
+  const cost=parseInt(prompt(LANG==="vi"?"Giá (số điểm):":"Preis (Punkte):","5"),10);if(!cost||cost<1)return;
+  const curV=prompt(LANG==="vi"?"Tiêu bằng loại điểm nào? 1=⭐ Sao · 2=🍬 Kẹo":"Welche Punkte? 1=⭐ Sterne · 2=🍬 Süßigkeiten","2");
+  const cur=curV==="1"?"sao":"keo";
+  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:","🎁")||"🎁";
+  s.shop.push({id:newId(),e:e.trim()||"🎁",name:(name||"Món mới").trim()||"Món mới",cost,cur});
+  kidSave(s);renderRewardAll();}
+function editShopPrompt(id){const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)return;
+  const name=prompt(LANG==="vi"?"Tên món:":"Name:",it.name);if(name===null)return;
+  const cost=parseInt(prompt(LANG==="vi"?"Giá (số điểm):":"Preis (Punkte):",it.cost),10);
+  const curV=prompt(LANG==="vi"?"Tiêu bằng loại điểm nào? 1=⭐ Sao · 2=🍬 Kẹo":"Welche Punkte? 1=⭐ Sterne · 2=🍬 Süßigkeiten",it.cur==="sao"?"1":"2");
+  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:",it.e);
+  if(name&&name.trim())it.name=name.trim();
+  if(cost&&cost>=1)it.cost=cost;
+  if(curV==="1"||curV==="2")it.cur=curV==="1"?"sao":"keo";
+  if(e&&e.trim())it.e=e.trim();
+  kidSave(s);renderRewardAll();}
+function delShopPrompt(id){if(!confirm(LANG==="vi"?"Xoá món này?":"Diesen Artikel löschen?"))return;
+  const s=kidState();s.shop=s.shop.filter(x=>x.id!==id);kidSave(s);renderRewardAll();}
+/* --- ↺ Reset sao & kẹo --- */
+function resetPoints(){if(!confirm(L().mgResetConfirm))return;
+  const s=kidState();
+  s.sao=0;s.saoLife=0;s.keo=0;s.badgesGot=[];s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};
+  s.goals.forEach(g=>g.done=false);
+  kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
+/* --- ⚙️ Menu quản lý cuối trang — CRUD tập trung mọi danh sách --- */
+function openManage(){open(`<h3>${L().mgTitle}</h3><div id="mgBody"></div>
+    <button class="gumbtn ghost" id="mgReset" style="margin-top:16px;color:#ffb0b0">${L().mgReset}</button>
+    <button class="gumbtn" id="mgClose" style="margin-top:8px;background:var(--g);color:#06210f">${L().mgClose}</button>`);
+  renderManageBody();
+  $("mgReset").onclick=()=>{resetPoints();if($("mgBody"))renderManageBody();};
+  $("mgClose").onclick=close;}
+function renderManageBody(){
+  const s=kidState();
+  const row=(nm,tok)=>`<div class="chk" style="cursor:default"><span class="nm">${nm}</span>
+    <span class="ic" data-mgedit="${tok}">✏️</span><span class="ic" data-mgdel="${tok}">✕</span></div>`;
+  const sec=(title,rowsHtml,addKind,addLabel)=>`<div class="lbl" style="margin-top:14px">${title}</div>
+    ${rowsHtml||`<div class="empty">${L().mgEmpty}</div>`}
+    <button class="add" data-mgadd="${addKind}">${addLabel}</button>`;
+  const t0=new Date();t0.setHours(0,0,0,0);
+  $("mgBody").innerHTML=
+     sec(L().mgSecCheck, anItems().map(c=>row(c.t,"check:"+c.id)).join(""), "check", L().mgAddCheck)
+    +sec(L().mgSecGoal, s.goals.map(g=>row(`${g.emoji||'🎯'} ${g.text}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
+    +sec(L().mgSecShop, s.shop.map(it=>row(`${it.e} ${it.name} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${it.cur==='sao'?'⭐':'🍬'}</b>`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
+    +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${b.e} ${b.name} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
+    +sec(L().mgSecChore, chores().map(c=>row(c.t,"chore:"+c.id)).join(""), "chore", L().mgAddChore)
+    +sec(L().mgSecAppt, dlItems().map(x=>row(x.t+" · "+x.d.split("-").reverse().join("/"),"appt:"+x.id)).join(""), "appt", L().mgAddAppt);
+  document.querySelectorAll("[data-mgadd]").forEach(b=>b.onclick=()=>mgAdd(b.dataset.mgadd));
+  document.querySelectorAll("[data-mgedit]").forEach(b=>b.onclick=()=>mgEdit(b.dataset.mgedit));
+  document.querySelectorAll("[data-mgdel]").forEach(b=>b.onclick=()=>mgDel(b.dataset.mgdel));
+}
+function mgAdd(kind){
+  if(kind==="check")addAnItemPrompt();
+  else if(kind==="goal")addGoalPrompt();
+  else if(kind==="shop")addShopPrompt();
+  else if(kind==="tier")addTierPrompt();
+  else if(kind==="chore")addChore();
+  else if(kind==="appt")addApptPrompt();
+  if($("mgBody"))renderManageBody();}
+function mgEdit(tok){const[t,id]=tok.split(":");
+  if(t==="check")editAnItemPrompt(id);
+  else if(t==="goal")editGoalPrompt(id);
+  else if(t==="shop")editShopPrompt(id);
+  else if(t==="tier")editTierPrompt(id);
+  else if(t==="chore")editChore(id);
+  else if(t==="appt")editApptPrompt(id);
+  if($("mgBody"))renderManageBody();}
+function mgDel(tok){const[t,id]=tok.split(":");
+  if(t==="check")delAnItemPrompt(id);
+  else if(t==="goal")delGoalPrompt(id);
+  else if(t==="shop")delShopPrompt(id);
+  else if(t==="tier")delTierPrompt(id);
+  else if(t==="chore")delChore(id);
+  else if(t==="appt")delEvent(id);
+  if($("mgBody"))renderManageBody();}
 /* --- Tối ban đêm (tự chuyển theo giờ) --- */
 let manualNight=false,wakeUntil=0;
 function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c)return Object.assign({on:true,from:"21:30",to:"06:30"},c);}catch(e){}return {on:true,from:"21:30",to:"06:30"};}
@@ -1035,15 +1271,31 @@ function renderAll(){
   $("tab_kid").textContent="🧒 "+CHILD();
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
   $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;
-  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderGame();renderGum();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();}
+  $("h_manage").textContent=L().h_manage;$("mgOpenBtn").textContent=L().mgOpenBtn;
+  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();
+  if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
-autoSnapshot();renderAll();setTab(TAB);
+seedDailyChecklist();migrateKid();autoSnapshot();renderAll();setTab(TAB);
+$("mgOpenBtn").onclick=openManage;
 $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEventListener("change",importFile);
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
 tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},12000);
-setInterval(renderDuty,60000);
+/* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~04:00 ============ */
+let _lastDate=iso(new Date()),_reloaded4=false;
+function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;renderAll();}}
+function autoRefreshTick(){
+  checkDateChange();renderDuty();
+  const now=new Date();
+  if(!_reloaded4&&now.getHours()===4&&document.visibilityState==="visible"){_reloaded4=true;location.reload();}
+  if(now.getHours()!==4)_reloaded4=false;
+}
+setInterval(autoRefreshTick,60000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();renderAll();}});
+window.addEventListener("focus",()=>{checkDateChange();renderAll();});
+/* ============ PWA: đăng ký service worker (offline) ============ */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 </script>
 </body>
 </html>
