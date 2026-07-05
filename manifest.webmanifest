@@ -1,0 +1,25 @@
+{
+  "name": "Gia đình",
+  "short_name": "Gia đình",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1115",
+  "theme_color": "#0f1115",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMDQiIGZpbGw9IiMwZjExMTUiLz48cmVjdCB4PSIyNCIgeT0iMjQiIHdpZHRoPSI0NjQiIGhlaWdodD0iNDY0IiByeD0iODQiIGZpbGw9IiMxYTFkMjQiLz48cG9seWdvbiBwb2ludHM9IjI1Ni4wLDg4LjAgMjk0LjgsMjAyLjYgNDE1LjgsMjA0LjEgMzE4LjgsMjc2LjQgMzU0LjcsMzkxLjkgMjU2LjAsMzIyLjAgMTU3LjMsMzkxLjkgMTkzLjIsMjc2LjQgOTYuMiwyMDQuMSAyMTcuMiwyMDIuNiIgZmlsbD0iI2ZmZDg0ZCIvPjwvc3ZnPg==",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMDQiIGZpbGw9IiMwZjExMTUiLz48cmVjdCB4PSIyNCIgeT0iMjQiIHdpZHRoPSI0NjQiIGhlaWdodD0iNDY0IiByeD0iODQiIGZpbGw9IiMxYTFkMjQiLz48cG9seWdvbiBwb2ludHM9IjI1Ni4wLDg4LjAgMjk0LjgsMjAyLjYgNDE1LjgsMjA0LjEgMzE4LjgsMjc2LjQgMzU0LjcsMzkxLjkgMjU2LjAsMzIyLjAgMTU3LjMsMzkxLjkgMTkzLjIsMjc2LjQgOTYuMiwyMDQuMSAyMTcuMiwyMDIuNiIgZmlsbD0iI2ZmZDg0ZCIvPjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
