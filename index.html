@@ -271,12 +271,9 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
         <button class="gumbtn ghost" id="mMinus" style="margin:0;flex:1"></button>
       </div>
       <button class="gumbtn ghost" id="mPfand" style="margin-top:8px;background:rgba(95,208,138,0.06);border-color:#3d5644;color:#5fd08a;width:100%"></button>
-    </div>
-    <h2 id="h_shop"></h2>
-   <div id="shopList"></div>
-   <div class="empty" id="shopHint" style="text-align:left;font-size:12.5px"></div>
   </div>
  </div>
+</div>
 </div>
 
 <!-- ===== TAB: VIEW CỦA CON ===== -->
@@ -1165,11 +1162,16 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)re
 /* --- 🛒 Cửa hàng đổi thưởng (tap-to-buy ở tab Thưởng) --- */
 function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)return;
   const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0);
-  if(bal<it.cost){alert(L().shopBlocked(it.cost,icon,it.name,bal));return;}
-  if(!confirm(L().shopConfirm(it.name,it.cost,icon)))return;
+  const nameTr = T_val(it.name);
+  if(bal<it.cost){alert(L().shopBlocked(it.cost,icon,nameTr,bal));return;}
+  if(!confirm(L().shopConfirm(nameTr,it.cost,icon)))return;
   if(it.cur==="sao")s.sao-=it.cost;else s.keo-=it.cost;
   s.keoLog.unshift({date:iso(new Date()),delta:-it.cost,reason:it.name,cur:it.cur});
-  kidSave(s);kidCheer=L().shopOk(it.name,it.cost,icon);renderRewardAll();}
+  kidSave(s);
+  kidCheer=L().shopOk(nameTr,it.cost,icon);
+  triggerConfetti();
+  playSound('success');
+  renderRewardAll();}
 
 const CRIT=[
  {col:"#16a34a",vi:["Cực ngoan (+2)","Bước dũng cảm thật sự: giơ tay phát biểu, nói trước lớp, kết bạn mới, thử việc mới dù ngại, chủ động giúp bạn."],de:["Sehr brav (+2)","Ein mutiger Schritt: sich melden, vor der Klasse sprechen, neue Freunde finden, Neues trotz Angst probieren, von sich aus helfen."]},
@@ -1401,7 +1403,7 @@ function renderKid(){const s=kidState();
   const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
     return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?T_val(b.name):KL().badgeLock(b.t)}</span></div>`;}).join("");
   const shopChips=s.shop.length?s.shop.map(it=>{const icon=it.cur==="sao"?"⭐":"🍬";
-    return `<div class="kidbadge got">${it.e}<span>${it.cost}${icon}</span></div>`;}).join(""):`<div class="empty">—</div>`;
+    return `<button class="kidbadge got" data-kidshop="${it.id}" style="cursor:pointer;outline:none">${it.e}<span>${T_val(it.name)} (${it.cost}${icon})</span></button>`;}).join(""):`<div class="empty">—</div>`;
   const goals=s.goals.length?s.goals.map(g=>`<div class="chk${g.done?' done':''}" data-gk="${g.id}">
       <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji||'🎯'} ${T_val(g.text)}</span></div>`).join("")
     :`<div class="empty">${KL().goalsEmpty}</div>`;
@@ -1444,11 +1446,12 @@ function renderKid(){const s=kidState();
   $("kHand").onclick=raiseHand;
   P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=()=>toggleGoal(g.dataset.gk));
   P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{if(!confirm(LANG==="vi"?"Lưu cảm xúc này?":"Diese Stimmung speichern?"))return;addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;playSound('click');renderKid();});
-  if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){if(!confirm(LANG==="vi"?"Lưu điều hay hôm nay?":"Diesen Eintrag speichern?"))return;const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;playSound('click');renderKid();}};}
+  if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){if(!confirm(LANG==="vi"?"Lưu điều hay hôm nay?":"Diesen Eintrag speichern?"))return;const a=ld("fam.kid.diary");a.push({date:iso(new Date()),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;playSound('click');renderKid();}}
+  P.querySelectorAll("[data-kidshop]").forEach(el=>el.onclick=()=>buyShopItem(el.dataset.kidshop));}
 function enterKidTab(){kidCheer="";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
-  $("h_sao").textContent=L().h_sao;$("h_badges").textContent=L().h_badges;$("h_keo").textContent=L().h_keo;$("h_shop").textContent=L().h_shop;
+  $("h_sao").textContent=L().h_sao;$("h_badges").textContent=L().h_badges;$("h_keo").textContent=L().h_keo;
   $("pSao").textContent=s.sao||0;$("pSao").className="bignum gold"+negS;
   $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
   $("critBtn").textContent=L().critBtn;
@@ -1473,11 +1476,7 @@ function renderParentReward(){const s=kidState();
   $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;$("keoLogT").textContent=L().keoLogT;
   $("keoLog").innerHTML=(s.keoLog||[]).slice(0,12).map(e=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
     return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':' '}${ic} — ${T_val(e.reason||'')}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;
-  $("shopHint").textContent=L().shopHint;
-  $("shopList").innerHTML=s.shop.length?s.shop.map(it=>{const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0),ok=bal>=it.cost;
-    return `<div class="chk${ok?'':' shopbuy'}" data-shop="${it.id}"><span class="nm">${it.e} ${T_val(it.name)}</span><span style="font-weight:800;color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${icon}</span></div>`;}).join(""):`<div class="empty">${L().mgEmpty}</div>`;
   document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
-  document.querySelectorAll("[data-shop]").forEach(el=>el.onclick=()=>buyShopItem(el.dataset.shop));
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=()=>saoManual(1);
   $("sMinus").onclick=()=>saoManual(-1);
