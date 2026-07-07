@@ -1,0 +1,22 @@
+# ⚠️ RIÊNG TƯ — KHÔNG đẩy lên repo/Pages công khai.
+# Chỉ duy nhất index.html (vỏ rỗng, noindex) được phép công khai.
+
+# Ghi chú gia đình + sức khỏe của con
+CLAUDE.md
+docs/
+
+# Mockup CÓ dữ liệu mẫu (sức khỏe) — không công khai
+mockup*.html
+
+# Bản tải về app cũ — chứa PIN hard-code
+_ref_lich.html
+
+# File sao lưu dữ liệu thật (nếu lỡ để trong thư mục)
+*.json
+gia-dinh-backup-*.json
+Gesundheitsbericht_*.csv
+
+# Log/script build tự động (có thể chứa bối cảnh khi đọc docs)
+*.log
+_run-oneshot-build.cmd
+*.bak
