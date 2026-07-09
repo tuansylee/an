@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-09·6";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-09·7";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1809,8 +1809,8 @@ function autoRefreshTick(){
   if(now.getHours()!==12)_reloaded12=false;
 }
 setInterval(autoRefreshTick,300000);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();renderAll();}});
-window.addEventListener("focus",()=>{checkDateChange();renderAll();});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();}});
+window.addEventListener("focus",()=>{checkDateChange();});
 /* ============ PWA: đăng ký service worker (offline) ============ */
 function showUpdateBanner() {
   const el = $("swUpdateReminder");
