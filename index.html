@@ -192,6 +192,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 </div>
 <div class="mockbanner" id="backupReminder" hidden style="cursor:pointer;background:#1a2a16;border-color:#3a5a40;color:#9fe0b0"></div>
 <div class="mockbanner" id="acariReminder" hidden style="cursor:pointer"></div>
+<div class="mockbanner" id="swUpdateReminder" hidden style="cursor:pointer;background:#1d3557;border-color:#457b9d;color:#f1faee;text-align:center" onclick="location.reload()"></div>
 
 <div class="tabs">
   <button data-tab="truc" id="tab_truc"></button>
@@ -317,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-09·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-09·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -410,8 +411,11 @@ const T={
    sDelay:"⏳ Trì hoãn / Câu giờ (−1⭐)", sDelayReason:"Câu giờ (trì hoãn)", sDelayConfirm:"Trừ 1 sao vì con câu giờ / trì hoãn?",
    h_money:"💶 Tiền tiêu vặt của con (bố mẹ nợ)", moneyUnit:"euro bố mẹ nợ con (+2€ mỗi thứ Hai)",
    mPlus:"＋ Cộng tiền", mMinus:"－ Trừ tiền", mPlusDef:"Bố mẹ cộng tiền tiêu vặt", mMinusDef:"Con tiêu tiền tiêu vặt",
-   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfand:"🍾 Nhặt vỏ chai (+0.20€)", mPfandConfirm:"Cộng +0.20€ tiền nhặt chai Pfand cho con?", mPfandReason:"Nhặt vỏ chai Pfand",
+   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfandSelf:"🍾 Tự trả chai (+0.25€)", mPfandSelfConfirm:"Cộng +0.25€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
+   mPfandDad:"👨 nhờ Bố trả (+0.15€)", mPfandDadConfirm:"Cộng +0.15€ tiền nhờ bố trả chai Pfand cho con?", mPfandDadReason:"Nhờ bố trả chai Pfand",
    moneyInterest: accrued => `Lãi tích luỹ: +${fmtInterest(accrued)} (2%/năm)`,
+   storageUsage: "Bộ nhớ đã dùng",
+   swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    h_shop:"🛒 Cửa hàng đổi thưởng — chỗ tiêu",
    shopHint:"Chạm 1 món để đổi cho con (trừ điểm + ghi log) · phải đủ điểm · thêm/sửa/xóa món & giá ở ⚙️ menu quản lý cuối trang.",
    shopBlocked:(cost,icon,name,bal)=>`Chưa đủ ${cost}${icon} để đổi "${name}" (đang có ${bal}${icon}).`,
@@ -477,8 +481,11 @@ const T={
    sDelay:"⏳ Zeit schinden (−1⭐)", sDelayReason:"Zeit schinden", sDelayConfirm:"1 Stern abziehen wegen Zeit schinden?",
    h_money:"💶 Taschengeld (Eltern schulden)", moneyUnit:"Euro von Eltern geschuldet (+2€ jeden Montag)",
    mPlus:"＋ Geld dazu", mMinus:"－ Geld weg", mPlusDef:"Taschengeld von Eltern erhalten", mMinusDef:"Taschengeld ausgegeben",
-   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfand:"🍾 Pfand (+0.20€)", mPfandConfirm:"Bestätigen: +0.20€ für Pfandflasche gutschreiben?", mPfandReason:"Pfandflasche abgegeben",
+   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfandSelf:"🍾 Selbst abgeben (+0.25€)", mPfandSelfConfirm:"Bestätigen: +0.25€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
+   mPfandDad:"👨 Hilfe von Papa (+0.15€)", mPfandDadConfirm:"Bestätigen: +0.15€ (Flasche durch Papa abgegeben)?", mPfandDadReason:"Pfandflasche durch Papa abgegeben",
    moneyInterest: accrued => `Zinsguthaben: +${fmtInterest(accrued)} (2%/Jahr)`,
+   storageUsage: "Speicherbelegung",
+   swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    h_shop:"🛒 Belohnungs-Shop — Ausgabestelle",
    shopHint:"Artikel antippen, um für das Kind einzulösen (zieht Punkte ab + Protokoll) · Punkte müssen reichen · Artikel/Preise bearbeiten unter ⚙️ Verwaltung unten.",
    shopBlocked:(cost,icon,name,bal)=>`Nicht genug ${cost}${icon} für "${name}" (aktuell ${bal}${icon}).`,
@@ -518,6 +525,16 @@ const T={
 };
 const L=()=>T[LANG];
 const $=id=>document.getElementById(id);
+function getStorageUsage() {
+  let total = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k) total += k.length + (localStorage.getItem(k) || "").length;
+  }
+  const kb = total / 1024;
+  const pct = (kb / 5000) * 100;
+  return { kb: Math.round(kb), pct: Math.round(pct) };
+}
 
 /* ============ Hiệu ứng pháo hoa & âm thanh (offline) ============ */
 function triggerConfetti() {
@@ -1135,9 +1152,13 @@ function addMoneyManual(n, reason) {
   playSound('click');
   renderRewardAll();
 }
-function pfandAction() {
-  if (!confirm(L().mPfandConfirm)) return;
-  addMoneyManual(0.20, L().mPfandReason);
+function pfandSelfAction() {
+  if (!confirm(L().mPfandSelfConfirm)) return;
+  addMoneyManual(0.25, L().mPfandSelfReason);
+}
+function pfandDadAction() {
+  if (!confirm(L().mPfandDadConfirm)) return;
+  addMoneyManual(0.15, L().mPfandDadReason);
 }
 /* --- Tính lãi tiền gửi (2%/năm) --- */
 function checkPocketMoneyInterest() {
@@ -1378,6 +1399,7 @@ function openCog(){
     <div style="font-size:13px;color:#c7ccd6;margin-bottom:8px">${L().autoOn}<br>${L().lastSnap}: <b>${last?last.split("-").reverse().join("/"):"–"}</b></div>
     ${warn?`<div class="mockbanner" style="margin:0 0 10px">${L().backupWarn}</div>`:""}
     <div class="acts" style="margin-top:0"><button class="cancel" id="bImp">📂 ${L().importFile}</button><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
+    <div style="font-size:12px;color:var(--mut);margin-top:6px;display:flex;justify-content:space-between"><span>📊 ${L().storageUsage}: <b>${getStorageUsage().kb} KB / 5000 KB (${getStorageUsage().pct}%)</b></span></div>
     <div class="lbl" style="margin-top:14px">${L().pasteT}</div>
     <textarea id="ioBox" placeholder="${L().pastePh}" style="font:12px/1.4 monospace;min-height:96px"></textarea>
     <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
@@ -1442,6 +1464,8 @@ const KX={
    convertMoneyConfirm:"Xác nhận đổi 1 Kẹo 🍬 lấy 0.20 € tiền tiêu vặt?",
    convertMoneyOk:"💶 Đổi được 0.20 € tiền tiêu vặt! 🍬",
    moneyInterest: accrued => `Lãi: +${fmtInterest(accrued)} (2%/năm)`,
+   moneyHistoryT: "Lịch sử số dư của con",
+   swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    shopPreviewT:"🛒 Con có thể đổi (nhờ bố mẹ ở tab 🎁 Thưởng)",
    handQ:"✋ Hôm nay con giơ tay phát biểu chưa?",
    handSub:"Hôm nay con đã giơ tay phát biểu ở lớp chưa? (+1 ⭐)",
@@ -1469,6 +1493,8 @@ const KX={
    convertMoneyConfirm:"Möchtest du wirklich 1 Süßigkeit 🍬 gegen 0.20 € Taschengeld tauschen?",
    convertMoneyOk:"💶 0.20 € Taschengeld erhalten! 🍬",
    moneyInterest: accrued => `Zins: +${fmtInterest(accrued)} (2%/J)`,
+   moneyHistoryT: "Mein Taschengeld-Verlauf",
+   swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    shopPreviewT:"🛒 Das kannst du einlösen (Eltern im Tab 🎁 fragen)",
    handQ:"✋ Hast du dich heute im Unterricht gemeldet?",
    handSub:"Hast du dich heute bereits im Unterricht gemeldet? (+1 ⭐)",
@@ -1495,6 +1521,38 @@ function taskEmoji(t){t=(t||"").toLowerCase();
 function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18?KL().afternoon:KL().evening;}
 function allRoutineDone(){const a=anItems();return a.length>0&&a.every(it=>anDone(it.id));}
 let kidCheer="";
+
+function getMoneyHistory(s) {
+  let bal = s.pocketMoney || 0;
+  const points = [{ date: iso(new Date()), bal: bal }];
+  const logs = (s.keoLog || []).filter(x => x.cur === "euro").slice(0, 5);
+  for (const log of logs) {
+    bal -= log.delta;
+    points.push({ date: log.date, bal: bal });
+  }
+  points.reverse();
+  return points;
+}
+function renderMoneyChart(s) {
+  const history = getMoneyHistory(s);
+  const maxBal = Math.max(...history.map(p => p.bal), 1);
+  const minBal = Math.min(...history.map(p => p.bal), 0);
+  const range = maxBal - minBal || 1;
+  const barsHtml = history.map(p => {
+    const height = Math.max(5, Math.min(60, Math.round(((p.bal - minBal) / range) * 60))) + 10;
+    const displayDate = p.date.split("-").reverse().slice(0, 2).join("/");
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:10px;color:#9fe0b0;font-weight:700">€${p.bal.toFixed(2)}</div>
+      <div style="width:100%;height:${height}px;background:linear-gradient(to top,#102a1e,#5fd08a);border-radius:4px;border:1px solid #3a5a40"></div>
+      <div style="font-size:10px;color:var(--mut)">${displayDate}</div>
+    </div>`;
+  }).join("");
+  return `<div class="kidsec" style="margin-top:14px">${KL().moneyHistoryT}</div>
+    <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 10px;display:flex;align-items:flex-end;gap:12px;height:120px;margin-top:6px">
+      ${barsHtml}
+    </div>`;
+}
+
 function renderKid(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
   const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
@@ -1518,6 +1576,7 @@ function renderKid(){const s=kidState();
      <button class="gumbtn indigo" id="kConvertMoney" ${(s.keo||0)<1?'disabled':''}>${KL().convertMoneyBtn}</button>
    </div>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:2px 0 10px">${KL().streak(s.streak||0)}</div>
+   ${renderMoneyChart(s)}
    <div class="kidsec" style="margin-top:0">${KL().shopPreviewT}</div>
    <div class="kidbadges">${shopChips}</div>
    <div class="kidsec">${KL().badgesT}</div>
@@ -1739,21 +1798,45 @@ $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEve
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
-tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},12000);
-/* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~04:00 ============ */
-let _lastDate=iso(new Date()),_reloaded4=false;
+tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},30000);
+/* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~12:00 ============ */
+let _lastDate=iso(new Date()),_reloaded12=false;
 function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;checkPocketMoneyAllowance();checkPocketMoneyInterest();renderAll();}}
 function autoRefreshTick(){
   checkDateChange();renderDuty();
   const now=new Date();
-  if(!_reloaded4&&now.getHours()===4&&document.visibilityState==="visible"){_reloaded4=true;location.reload();}
-  if(now.getHours()!==4)_reloaded4=false;
+  if(!_reloaded12&&now.getHours()===12&&$("night").hidden&&document.visibilityState==="visible"){_reloaded12=true;location.reload();}
+  if(now.getHours()!==12)_reloaded12=false;
 }
 setInterval(autoRefreshTick,60000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();renderAll();}});
 window.addEventListener("focus",()=>{checkDateChange();renderAll();});
 /* ============ PWA: đăng ký service worker (offline) ============ */
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
+function showUpdateBanner() {
+  const el = $("swUpdateReminder");
+  if (el) {
+    el.textContent = L().swUpdate;
+    el.hidden = false;
+  }
+}
+/* ============ PWA: đăng ký service worker (offline) ============ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").then(reg=>{
+      reg.addEventListener("updatefound", () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener("statechange", () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            showUpdateBanner();
+          }
+        });
+      });
+      if (reg.waiting) {
+        showUpdateBanner();
+      }
+    }).catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
