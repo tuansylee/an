@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-09·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-09·6";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1798,17 +1798,17 @@ $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEve
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
-tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},30000);
+tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},120000);
 /* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~12:00 ============ */
 let _lastDate=iso(new Date()),_reloaded12=false;
 function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;checkPocketMoneyAllowance();checkPocketMoneyInterest();renderAll();}}
 function autoRefreshTick(){
-  checkDateChange();renderDuty();
+  checkDateChange();
   const now=new Date();
   if(!_reloaded12&&now.getHours()===12&&$("night").hidden&&document.visibilityState==="visible"){_reloaded12=true;location.reload();}
   if(now.getHours()!==12)_reloaded12=false;
 }
-setInterval(autoRefreshTick,60000);
+setInterval(autoRefreshTick,300000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();renderAll();}});
 window.addEventListener("focus",()=>{checkDateChange();renderAll();});
 /* ============ PWA: đăng ký service worker (offline) ============ */
