@@ -244,7 +244,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
         <button class="gumbtn ghost" id="sPlus" style="margin:0;flex:1"></button>
         <button class="gumbtn ghost" id="sMinus" style="margin:0;flex:1"></button>
       </div>
-      <button class="gumbtn ghost" id="sDelay" style="margin-top:8px;border-color:var(--r);color:var(--r);width:100%"></button>
+      <div id="saoAdjustsContainer" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;width:100%"></div>
     </div>
    <h2 id="h_badges"></h2>
    <div class="hist" id="rwList"></div>
@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-09·7";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-09·8";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -643,6 +643,9 @@ const fmtInterest=val=>{
 const dmy=d=>d.split("-").reverse().slice(0,2).join("/");
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
 const sv=(k,a)=>localStorage.setItem(k,JSON.stringify(a));
+const defaultSaoAdjusts=()=>[{id:"delay",emoji:"⏳",text:"Trì hoãn / Câu giờ",textDe:"Zeit schinden",delta:-1}];
+const saoAdjusts=()=>{const a=ld("fam.saoAdjusts");return a.length?a:defaultSaoAdjusts();};
+const saveSaoAdjusts=a=>sv("fam.saoAdjusts",a);
 const CHILD=()=>localStorage.getItem("fam.childname")||L().childDefault;
 let _idc=0;const newId=()=>"r"+Date.now().toString(36)+(_idc++).toString(36);
 function ensureIds(key){const a=ld(key);let ch=false;a.forEach(x=>{if(!x.id){x.id=newId();ch=true;}});if(ch)sv(key,a);return a;}
@@ -1125,14 +1128,48 @@ function addSaoManual(n, reason) {
   playSound('click');
   renderRewardAll();
 }
-function delayPenalty() {
-  if (!confirm(L().sDelayConfirm)) return;
-  const s = kidState();
-  s.sao = (s.sao || 0) - 1;
-  s.keoLog.unshift({ date: iso(new Date()), delta: -1, reason: L().sDelayReason, cur: "sao" });
-  kidSave(s);
-  playSound('click');
-  renderRewardAll();
+function addSaoAdjPrompt() {
+  const emoji = prompt(LANG === "vi" ? "Nhập Emoji đại diện (ví dụ: ⏳):" : "Emoji eingeben (z.B. ⏳):", "⭐") || "⭐";
+  const text = prompt(LANG === "vi" ? "Tên tiếng Việt (ví dụ: Trì hoãn / Câu giờ):" : "Vietnamesischer Text:");
+  if (!text || !text.trim()) return;
+  const textDe = prompt(LANG === "vi" ? "Tên tiếng Đức (ví dụ: Zeit schinden):" : "Deutscher Text:") || text;
+  const deltaStr = prompt(LANG === "vi" ? "Số sao cộng hoặc trừ (ví dụ: -1 hoặc 2):" : "Sterne (z.B. -1 oder 2):", "-1");
+  const delta = parseInt(deltaStr, 10);
+  if (isNaN(delta) || delta === 0) return;
+
+  const list = saoAdjusts();
+  const id = "sa_" + Date.now();
+  list.push({ id, emoji, text: text.trim(), textDe: textDe.trim(), delta });
+  saveSaoAdjusts(list);
+  renderAll();
+}
+
+function editSaoAdjPrompt(id) {
+  const list = saoAdjusts();
+  const item = list.find(x => x.id === id);
+  if (!item) return;
+
+  const emoji = prompt(LANG === "vi" ? "Emoji đại diện:" : "Emoji:", item.emoji || "⭐") || "⭐";
+  const text = prompt(LANG === "vi" ? "Tên tiếng Việt:" : "Vietnamesischer Text:", item.text);
+  if (!text || !text.trim()) return;
+  const textDe = prompt(LANG === "vi" ? "Tên tiếng Đức:" : "Deutscher Text:", item.textDe || item.text) || text;
+  const deltaStr = prompt(LANG === "vi" ? "Số sao cộng hoặc trừ:" : "Sterne:", String(item.delta));
+  const delta = parseInt(deltaStr, 10);
+  if (isNaN(delta) || delta === 0) return;
+
+  item.emoji = emoji;
+  item.text = text.trim();
+  item.textDe = textDe.trim();
+  item.delta = delta;
+  saveSaoAdjusts(list);
+  renderAll();
+}
+
+function delSaoAdjPrompt(id) {
+  if (!confirm(LANG === "vi" ? "Xoá nút điều chỉnh sao này?" : "Diesen Sterne-Button löschen?")) return;
+  const list = saoAdjusts().filter(x => x.id !== id);
+  saveSaoAdjusts(list);
+  renderAll();
 }
 function moneyManual(sign) {
   const v = prompt(L().mAmtAsk, "1");
@@ -1615,7 +1652,17 @@ function renderParentReward(){const s=kidState();
   $("pSao").textContent=s.sao||0;$("pSao").className="bignum gold"+negS;
   $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
   $("critBtn").textContent=L().critBtn;
-  $("sPlus").textContent=L().sPlus;$("sMinus").textContent=L().sMinus;$("sDelay").textContent=L().sDelay;
+  $("sPlus").textContent=L().sPlus;$("sMinus").textContent=L().sMinus;
+  const container = $("saoAdjustsContainer");
+  const adjusts = saoAdjusts();
+  container.innerHTML = adjusts.map(adj => {
+    const isNeg = adj.delta < 0;
+    const border = isNeg ? "var(--r)" : "var(--g)";
+    const color = isNeg ? "var(--r)" : "var(--g)";
+    const signStr = adj.delta > 0 ? `+${adj.delta}` : `${adj.delta}`;
+    const displayName = LANG === "vi" ? adj.text : (adj.textDe || adj.text);
+    return `<button class="gumbtn ghost" data-sao-adj-id="${adj.id}" style="margin:0;border-color:${border};color:${color};width:100%;font-size:13px;padding:8px 4px">${adj.emoji || "⭐"} ${displayName} (${signStr}⭐)</button>`;
+  }).join("");
   
   $("h_money").textContent=L().h_money;
   $("pMoney").textContent=Number((s.pocketMoney||0).toFixed(2))+" €";
@@ -1641,7 +1688,33 @@ function renderParentReward(){const s=kidState();
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=()=>saoManual(1);
   $("sMinus").onclick=()=>saoManual(-1);
-  $("sDelay").onclick=delayPenalty;
+  $("saoAdjustsContainer").querySelectorAll("[data-sao-adj-id]").forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.saoAdjId;
+      const adj = saoAdjusts().find(x => x.id === id);
+      if (!adj) return;
+      const displayName = LANG === "vi" ? adj.text : (adj.textDe || adj.text);
+      const signWord = adj.delta > 0 ? (LANG === "vi" ? "cộng" : "hinzufügen") : (LANG === "vi" ? "trừ" : "abziehen");
+      const absDelta = Math.abs(adj.delta);
+      const confirmMsg = LANG === "vi" 
+        ? `Xác nhận ${signWord} ${absDelta} sao vì con ${displayName}?`
+        : `Bestätigen: ${absDelta} Sterne ${signWord} wegen "${displayName}"?`;
+      if (!confirm(confirmMsg)) return;
+      
+      const s = kidState();
+      s.sao = (s.sao || 0) + adj.delta;
+      if (adj.delta > 0) s.saoLife = (s.saoLife || 0) + adj.delta;
+      s.keoLog.unshift({
+        date: iso(new Date()),
+        delta: adj.delta,
+        reason: displayName,
+        cur: "sao"
+      });
+      kidSave(s);
+      playSound('click');
+      renderRewardAll();
+    };
+  });
   $("mPlus").onclick=()=>moneyManual(1);
   $("mMinus").onclick=()=>moneyManual(-1);
   $("mPfand").onclick=pfandAction;}
@@ -1732,6 +1805,7 @@ function renderManageBody(){
   const t0=new Date();t0.setHours(0,0,0,0);
   $("mgBody").innerHTML=
      sec(L().mgSecCheck, anItems().map(c=>row(T_val(c.t),"check:"+c.id)).join(""), "check", L().mgAddCheck)
+    +sec(L().mgSecSaoAdjust, saoAdjusts().map(adj => row(`${adj.emoji || '⭐'} ${adj.text} / ${adj.textDe || adj.text} · <b style="color:${adj.delta < 0 ? 'var(--r)' : 'var(--g)'}">${adj.delta > 0 ? '+' : ''}${adj.delta}⭐</b>`, "saoadj:" + adj.id)).join(""), "saoadj", L().mgAddSaoAdjust)
     +sec(L().mgSecGoal, s.goals.map(g=>row(`${g.emoji||'🎯'} ${T_val(g.text)}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
     +sec(L().mgSecShop, s.shop.map(it=>row(`${it.e} ${T_val(it.name)} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${it.cur==='sao'?'⭐':'🍬'}</b>`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
     +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${b.e} ${T_val(b.name)} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
@@ -1742,7 +1816,8 @@ function renderManageBody(){
   document.querySelectorAll("[data-mgdel]").forEach(b=>b.onclick=()=>mgDel(b.dataset.mgdel));
 }
 function mgAdd(kind){
-  if(kind==="check")addAnItemPrompt();
+  if(kind==="saoadj")addSaoAdjPrompt();
+  else if(kind==="check")addAnItemPrompt();
   else if(kind==="goal")addGoalPrompt();
   else if(kind==="shop")addShopPrompt();
   else if(kind==="tier")addTierPrompt();
@@ -1750,7 +1825,8 @@ function mgAdd(kind){
   else if(kind==="appt")addApptPrompt();
   if($("mgBody"))renderManageBody();}
 function mgEdit(tok){const[t,id]=tok.split(":");
-  if(t==="check")editAnItemPrompt(id);
+  if(t==="saoadj")editSaoAdjPrompt(id);
+  else if(t==="check")editAnItemPrompt(id);
   else if(t==="goal")editGoalPrompt(id);
   else if(t==="shop")editShopPrompt(id);
   else if(t==="tier")editTierPrompt(id);
@@ -1758,7 +1834,8 @@ function mgEdit(tok){const[t,id]=tok.split(":");
   else if(t==="appt")editApptPrompt(id);
   if($("mgBody"))renderManageBody();}
 function mgDel(tok){const[t,id]=tok.split(":");
-  if(t==="check")delAnItemPrompt(id);
+  if(t==="saoadj")delSaoAdjPrompt(id);
+  else if(t==="check")delAnItemPrompt(id);
   else if(t==="goal")delGoalPrompt(id);
   else if(t==="shop")delShopPrompt(id);
   else if(t==="tier")delTierPrompt(id);
