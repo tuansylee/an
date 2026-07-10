@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-10·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-10·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1893,13 +1893,16 @@ $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
 tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},120000);
 /* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~06:00 ============ */
-let _lastDate=iso(new Date()),_reloaded6=false;
+let _lastDate=iso(new Date());
 function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;checkPocketMoneyAllowance();checkPocketMoneyInterest();renderAll();}}
 function autoRefreshTick(){
   checkDateChange();
   const now=new Date();
-  if(!_reloaded6&&now.getHours()===6&&$("night").hidden&&document.visibilityState==="visible"){_reloaded6=true;location.reload();}
-  if(now.getHours()!==6)_reloaded6=false;
+  const today=iso(now);
+  if(now.getHours()===6&&$("night").hidden&&document.visibilityState==="visible"&&localStorage.getItem("fam.last_reload_6")!==today){
+    localStorage.setItem("fam.last_reload_6", today);
+    location.reload();
+  }
 }
 setInterval(autoRefreshTick,300000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();}});
