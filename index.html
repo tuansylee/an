@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-09·8";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-10·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1463,7 +1463,7 @@ function openCog(){
     renderAll();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteOk(n);};
   $("bName").onclick=()=>{const v=prompt(L().nameAsk,CHILD());if(v!==null){if(v.trim())localStorage.setItem("fam.childname",v.trim());else localStorage.removeItem("fam.childname");renderAll();openCog();}};
   (()=>{const nc=nightCfg();$("nOn").checked=nc.on;$("nFrom").value=nc.from;$("nTo").value=nc.to;
-    const sN=()=>nightSave({on:$("nOn").checked,from:$("nFrom").value||"21:30",to:$("nTo").value||"06:30"});
+    const sN=()=>nightSave({on:$("nOn").checked,from:$("nFrom").value||"23:00",to:$("nTo").value||"06:00"});
     $("nOn").onchange=sN;$("nFrom").onchange=sN;$("nTo").onchange=sN;})();
   $("bClose").onclick=close;
   sheet.querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>{if(confirm(L().restoreAsk)){const s=localStorage.getItem("fam.snap."+b.dataset.restore);if(s){famRestore(JSON.parse(s));renderAll();}close();}});
@@ -1844,7 +1844,7 @@ function mgDel(tok){const[t,id]=tok.split(":");
   if($("mgBody"))renderManageBody();}
 /* --- Tối ban đêm (tự chuyển theo giờ) --- */
 let manualNight=false,wakeUntil=0;
-function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c)return Object.assign({on:true,from:"21:30",to:"06:30"},c);}catch(e){}return {on:true,from:"21:30",to:"06:30"};}
+function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c){const res=Object.assign({on:true,from:"23:00",to:"06:00"},c);if(res.from==="21:30")res.from="23:00";if(res.to==="06:30")res.to="06:00";return res;}}catch(e){}return {on:true,from:"23:00",to:"06:00"};}
 function nightSave(c){localStorage.setItem("fam.night",JSON.stringify(c));}
 function inWin(now,from,to){const m=now.getHours()*60+now.getMinutes(),f=from.split(":").map(Number),t=to.split(":").map(Number),a=f[0]*60+f[1],b=t[0]*60+t[1];return a<=b?(m>=a&&m<b):(m>=a||m<b);}
 function showNight(){const now=new Date();
@@ -1876,14 +1876,14 @@ $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health")
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
 tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},120000);
-/* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~12:00 ============ */
-let _lastDate=iso(new Date()),_reloaded12=false;
+/* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~06:00 ============ */
+let _lastDate=iso(new Date()),_reloaded6=false;
 function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;checkPocketMoneyAllowance();checkPocketMoneyInterest();renderAll();}}
 function autoRefreshTick(){
   checkDateChange();
   const now=new Date();
-  if(!_reloaded12&&now.getHours()===12&&$("night").hidden&&document.visibilityState==="visible"){_reloaded12=true;location.reload();}
-  if(now.getHours()!==12)_reloaded12=false;
+  if(!_reloaded6&&now.getHours()===6&&$("night").hidden&&document.visibilityState==="visible"){_reloaded6=true;location.reload();}
+  if(now.getHours()!==6)_reloaded6=false;
 }
 setInterval(autoRefreshTick,300000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){checkDateChange();}});
