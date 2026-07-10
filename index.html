@@ -411,7 +411,7 @@ const T={
    sDelay:"⏳ Trì hoãn / Câu giờ (−1⭐)", sDelayReason:"Câu giờ (trì hoãn)", sDelayConfirm:"Trừ 1 sao vì con câu giờ / trì hoãn?",
    h_money:"💶 Tiền tiêu vặt của con (bố mẹ nợ)", moneyUnit:"euro bố mẹ nợ con (+2€ mỗi thứ Hai)",
    mPlus:"＋ Cộng tiền", mMinus:"－ Trừ tiền", mPlusDef:"Bố mẹ cộng tiền tiêu vặt", mMinusDef:"Con tiêu tiền tiêu vặt",
-   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfandSelf:"🍾 Tự trả chai (+0.25€)", mPfandSelfConfirm:"Cộng +0.25€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
+   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfand:"🍾 Nhặt chai (Pfand)", mPfandSelf:"🍾 Tự trả chai (+0.25€)", mPfandSelfConfirm:"Cộng +0.25€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
    mPfandDad:"👨 nhờ Bố trả (+0.15€)", mPfandDadConfirm:"Cộng +0.15€ tiền nhờ bố trả chai Pfand cho con?", mPfandDadReason:"Nhờ bố trả chai Pfand",
    moneyInterest: accrued => `Lãi tích luỹ: +${fmtInterest(accrued)} (2%/năm)`,
    storageUsage: "Bộ nhớ đã dùng",
@@ -481,7 +481,7 @@ const T={
    sDelay:"⏳ Zeit schinden (−1⭐)", sDelayReason:"Zeit schinden", sDelayConfirm:"1 Stern abziehen wegen Zeit schinden?",
    h_money:"💶 Taschengeld (Eltern schulden)", moneyUnit:"Euro von Eltern geschuldet (+2€ jeden Montag)",
    mPlus:"＋ Geld dazu", mMinus:"－ Geld weg", mPlusDef:"Taschengeld von Eltern erhalten", mMinusDef:"Taschengeld ausgegeben",
-   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfandSelf:"🍾 Selbst abgeben (+0.25€)", mPfandSelfConfirm:"Bestätigen: +0.25€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
+   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfand:"🍾 Pfandflasche", mPfandSelf:"🍾 Selbst abgeben (+0.25€)", mPfandSelfConfirm:"Bestätigen: +0.25€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
    mPfandDad:"👨 Hilfe von Papa (+0.15€)", mPfandDadConfirm:"Bestätigen: +0.15€ (Flasche durch Papa abgegeben)?", mPfandDadReason:"Pfandflasche durch Papa abgegeben",
    moneyInterest: accrued => `Zinsguthaben: +${fmtInterest(accrued)} (2%/Jahr)`,
    storageUsage: "Speicherbelegung",
@@ -1196,6 +1196,15 @@ function pfandSelfAction() {
 function pfandDadAction() {
   if (!confirm(L().mPfandDadConfirm)) return;
   addMoneyManual(0.15, L().mPfandDadReason);
+}
+function pfandAction() {
+  open(`<h3>${L().mPfand}</h3>
+    <button class="gumbtn" id="pfSelf">${L().mPfandSelf}</button>
+    <button class="gumbtn ghost" id="pfDad" style="margin-top:8px">${L().mPfandDad}</button>
+    <button class="gumbtn ghost" id="pfClose" style="margin-top:24px">${L().cancel||"✕"}</button>`);
+  $("pfSelf").onclick = () => { close(); pfandSelfAction(); };
+  $("pfDad").onclick = () => { close(); pfandDadAction(); };
+  $("pfClose").onclick = close;
 }
 /* --- Tính lãi tiền gửi (2%/năm) --- */
 function checkPocketMoneyInterest() {
