@@ -318,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-10·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-10·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -425,6 +425,7 @@ const T={
    mgReset:"↺ Reset sao & kẹo về 0", mgResetConfirm:"Reset toàn bộ SAO và KẸO về 0?\n(xóa nhật ký + huy hiệu đã mở · mục tiêu tuần bỏ đánh dấu)",
    mgResetDone:"↺ Đã reset sao & kẹo về 0.", mgClose:"Xong",
    mgSecCheck:"📝 Checklist hằng ngày", mgAddCheck:"＋ Thêm việc",
+   mgSecSaoAdjust:"⭐ Nút điều chỉnh sao", mgAddSaoAdjust:"＋ Thêm nút điều chỉnh",
    mgSecGoal:"🎯 Mục tiêu tuần", mgAddGoal:"＋ Thêm mục tiêu",
    mgSecShop:"🛒 Cửa hàng đổi thưởng", mgAddShop:"＋ Thêm món",
    mgSecTier:"🏅 Mốc huy hiệu", mgAddTier:"＋ Thêm mốc",
@@ -495,6 +496,7 @@ const T={
    mgReset:"↺ Sterne & Süßigkeiten zurücksetzen", mgResetConfirm:"Alle STERNE und SÜSSIGKEITEN auf 0 zurücksetzen?\n(löscht Protokoll + freigeschaltete Abzeichen · Wochenziele werden zurückgesetzt)",
    mgResetDone:"↺ Sterne & Süßigkeiten zurückgesetzt.", mgClose:"Fertig",
    mgSecCheck:"📝 Tägliche Checkliste", mgAddCheck:"＋ Aufgabe hinzufügen",
+   mgSecSaoAdjust:"⭐ Sterne-Anpassungsbuttons", mgAddSaoAdjust:"＋ Button hinzufügen",
    mgSecGoal:"🎯 Wochenziele", mgAddGoal:"＋ Ziel hinzufügen",
    mgSecShop:"🛒 Belohnungs-Shop", mgAddShop:"＋ Artikel hinzufügen",
    mgSecTier:"🏅 Abzeichen-Stufen", mgAddTier:"＋ Stufe hinzufügen",
@@ -1820,9 +1822,7 @@ function renderManageBody(){
     +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${b.e} ${T_val(b.name)} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
     +sec(L().mgSecChore, chores().map(c=>row(c.t,"chore:"+c.id)).join(""), "chore", L().mgAddChore)
     +sec(L().mgSecAppt, dlItems().map(x=>row(x.t+" · "+x.d.split("-").reverse().join("/"),"appt:"+x.id)).join(""), "appt", L().mgAddAppt);
-  document.querySelectorAll("[data-mgadd]").forEach(b=>b.onclick=()=>mgAdd(b.dataset.mgadd));
-  document.querySelectorAll("[data-mgedit]").forEach(b=>b.onclick=()=>mgEdit(b.dataset.mgedit));
-  document.querySelectorAll("[data-mgdel]").forEach(b=>b.onclick=()=>mgDel(b.dataset.mgdel));
+  // [data-mgadd/mgedit/mgdel] handled by global delegate at document level
 }
 function mgAdd(kind){
   if(kind==="saoadj")addSaoAdjPrompt();
@@ -1905,7 +1905,6 @@ function showUpdateBanner() {
     el.hidden = false;
   }
 }
-/* ============ PWA: đăng ký service worker (offline) ============ */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
     navigator.serviceWorker.register("sw.js").then(reg=>{
