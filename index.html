@@ -188,7 +188,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <div class="bar">
   <div><div class="d" id="dateLbl"></div><div class="t" id="weekLbl"></div></div>
-  <div class="lang"><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
+  <div class="lang"><button id="statsBtn" title="Thống kê">📊</button><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
 </div>
 <div class="mockbanner" id="backupReminder" hidden style="cursor:pointer;background:#1a2a16;border-color:#3a5a40;color:#9fe0b0"></div>
 <div class="mockbanner" id="acariReminder" hidden style="cursor:pointer"></div>
@@ -234,6 +234,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 <div class="panel" data-panel="con" hidden>
  <div class="page">
   <div class="col">
+   <div id="undoBar"></div>
    <h2 id="h_sao"></h2>
     <div class="gamebox">
       <div class="bignum gold" id="pSao">–</div><div class="gunit" id="pSaoUnit"></div>
@@ -318,7 +319,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-10·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-18·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -449,6 +450,17 @@ const T={
    acariAsk:"Mua thêm mấy hộp?", acariPpb:"Mỗi hộp mấy viên?", acariPerDay:"Dùng mấy viên/ngày? (vd 2 = bố + con)",
    acariRemind:d=>`💊 Acarizax sắp hết — còn ~${d} ngày, nên đặt mua thêm.`,
    noDue:"Không có việc tới hạn ✅",
+   undoBtn:l=>`↩ Hoàn tác: ${l}`, undoConfirm:l=>`Hoàn tác thao tác gần nhất (${l})?\nSao/kẹo/tiền sẽ trở về trạng thái trước đó.`, undoDone:"↺ Đã hoàn tác.",
+   rsCheckSelf:"Checklist xong — tự làm", rsCheckHelp:"Checklist xong — có nhắc", rsCheckUndo:"Bỏ tick checklist",
+   rsEval:n=>`Đánh giá: ${n}`, rsEvalUndo:n=>`Hủy đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
+   importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
+   importModeHint:"Ghi đè: thay toàn bộ dữ liệu máy này bằng file. Gộp: giữ dữ liệu hiện tại, chỉ thêm bản ghi chưa có (theo id) — dùng để lấy dữ liệu từ máy khác.",
+   mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`,
+   statsT:"📊 Thống kê", statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
+   statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
+   statsLog:"📒 Nhật ký đầy đủ", statsLogAll:"Tất cả", statsMore:"Xem thêm 50",
+   statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày",
+   statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
    t2lbl:"🔧 Bảo trì nhà (ít quan trọng)", tier1:"Quan trọng", tier2:"Bảo trì nhà",
    addAppt:"＋ Thêm lịch bác sĩ / sự kiện", apptPh:"Vd: Khám dị ứng – BS Müller", evSave:"Lưu", evCancel:"Huỷ",
    noAppt:"Chưa có lịch nào 🎉", hiddenLbl:n=>`↩ Mục đã ẩn (${n})`,
@@ -520,6 +532,17 @@ const T={
    acariAsk:"Wie viele Packungen?", acariPpb:"Tabletten pro Packung?", acariPerDay:"Tabletten pro Tag? (z.B. 2 = Papa + Kind)",
    acariRemind:d=>`💊 Acarizax fast leer — noch ~${d} Tage, bitte nachbestellen.`,
    noDue:"Keine fälligen Aufgaben ✅",
+   undoBtn:l=>`↩ Rückgängig: ${l}`, undoConfirm:l=>`Letzte Aktion rückgängig machen (${l})?\nSterne/Süßigkeiten/Geld werden zurückgesetzt.`, undoDone:"↺ Rückgängig gemacht.",
+   rsCheckSelf:"Checkliste fertig — allein", rsCheckHelp:"Checkliste fertig — mit Erinnerung", rsCheckUndo:"Checkliste zurückgenommen",
+   rsEval:n=>`Bewertung: ${n}`, rsEvalUndo:n=>`Bewertung entfernt: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
+   importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
+   importModeHint:"Überschreiben: ersetzt alle Daten dieses Geräts. Zusammenführen: behält aktuelle Daten, ergänzt nur fehlende Einträge (per id) — für Daten von einem zweiten Gerät.",
+   mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`,
+   statsT:"📊 Statistik", statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
+   statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
+   statsLog:"📒 Vollständiges Protokoll", statsLogAll:"Alle", statsMore:"50 weitere",
+   statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage",
+   statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
    t2lbl:"🔧 Hauspflege (weniger wichtig)", tier1:"Wichtig", tier2:"Hauspflege",
    addAppt:"＋ Arzttermin / Ereignis hinzufügen", apptPh:"z.B. Allergietest – Dr. Müller", evSave:"Speichern", evCancel:"Abbrechen",
    noAppt:"Noch keine Termine 🎉", hiddenLbl:n=>`↩ Ausgeblendet (${n})`,
@@ -650,8 +673,13 @@ const fmtInterest=val=>{
   return val.toFixed(2)+" €";
 };
 const dmy=d=>d.split("-").reverse().slice(0,2).join("/");
+const esc=s=>String(s==null?"":s).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
-const sv=(k,a)=>localStorage.setItem(k,JSON.stringify(a));
+const sv=(k,a)=>{try{localStorage.setItem(k,JSON.stringify(a));}catch(e){storageFull(e);}};
+function storageFull(e){
+  // Quota đầy: xoá snapshot cũ nhất rồi báo — dữ liệu thao tác hiện tại có thể chưa lưu được.
+  const ss=snaps();if(ss.length>1)localStorage.removeItem("fam.snap."+ss[ss.length-1]);
+  alert(LANG==="vi"?"⚠️ Bộ nhớ đầy — đã xoá bớt bản tự lưu cũ. Hãy Xuất file backup rồi thử lại.":"⚠️ Speicher voll — älteste Auto-Sicherung gelöscht. Bitte Backup exportieren und erneut versuchen.");}
 const defaultSaoAdjusts=()=>[{id:"delay",emoji:"⏳",text:"Trì hoãn / Câu giờ",textDe:"Zeit schinden",delta:-1}];
 const saoAdjusts=()=>{const a=ld("fam.saoAdjusts");return a.length?a:defaultSaoAdjusts();};
 const saveSaoAdjusts=a=>sv("fam.saoAdjusts",a);
@@ -742,7 +770,7 @@ function renderDaily(){$("h_daily").textContent=L().daily+" "+CHILD();
   const a=anItems();
   $("dailyList").innerHTML=a.length?a.map(it=>{const dn=anDone(it.id);
     return `<div class="chk${dn?' done':''}" data-dk="${it.id}"><span class="box">${dn?'✓':''}</span>
-      <span class="nm">${taskEmoji(it.t)} ${T_val(it.t)}</span></div>`;}).join("")
+      <span class="nm">${taskEmoji(it.t)} ${esc(T_val(it.t))}</span></div>`;}).join("")
     :`<div class="empty">${LANG==='vi'?'Chưa có việc — thêm ở ⚙️ menu quản lý cuối trang.':'Noch keine Aufgaben — unter ⚙️ Verwaltung hinzufügen.'}</div>`;
   renderDutyAsk();}
 
@@ -761,15 +789,23 @@ function choreDue(c){const l=choreLeft(c);return l===null||l<=0;}
 function choreDoneFn(id){const c=chores().find(x=>x.id===id);if(!c)return;
   if(!confirm((LANG==="vi"?"Đã làm xong: ":"Erledigt: ")+c.t+" ?\n"+(LANG==="vi"?"Ẩn và nhắc lại sau ":"Ausblenden, erneut nach ")+everyLabel(c.days)+"."))return;
   localStorage.setItem(choreKey(id),iso(new Date()));renderChores();}
-function askTier(def){return parseInt(prompt(LANG==="vi"?"Mức độ: 1 = quan trọng, 2 = bảo trì nhà":"Stufe: 1 = wichtig, 2 = Hauspflege",def),10)===1?1:2;}
-function addChore(){const t=prompt(LANG==="vi"?"Tên việc định kỳ mới:":"Neue wiederkehrende Aufgabe:");if(!t||!t.trim())return;
-  const n=parseInt(prompt(LANG==="vi"?"Lặp lại mỗi bao nhiêu NGÀY? (7=1 tuần · 14=2 tuần · 30=1 tháng):":"Wiederholung alle wie viele TAGE? (7=1 Woche · 30=1 Monat):"),10);
-  if(!n||n<1){alert(LANG==="vi"?"Số ngày không hợp lệ":"Ungültige Tageszahl");return;}
-  const tier=askTier("2");const a=chores();a.push({id:"c"+Date.now(),t:t.trim(),days:n,tier});saveChores(a);renderChores();}
+function choreForm(title,init,save){
+  openForm({title,fields:[
+    {key:"t",label:LANG==="vi"?"Tên việc":"Aufgabe",type:"text",value:init.t,required:true},
+    {key:"quick",label:LANG==="vi"?"Chu kỳ nhanh":"Schnellauswahl",type:"chips",
+      options:[["7",LANG==="vi"?"Mỗi tuần":"Wöchentlich"],["14",LANG==="vi"?"2 tuần":"14 Tage"],["30",LANG==="vi"?"Mỗi tháng":"Monatlich"],["90",LANG==="vi"?"3 tháng":"3 Monate"]],
+      value:["7","14","30","90"].includes(String(init.days))?String(init.days):null},
+    {key:"days",label:LANG==="vi"?"Hoặc số ngày tùy chỉnh":"Oder Tage (frei)",type:"number",min:1,value:["7","14","30","90"].includes(String(init.days))?"":init.days},
+    {key:"tier",label:LANG==="vi"?"Mức độ":"Stufe",type:"chips",options:[["1","❗ "+L().tier1],["2","🔧 "+L().tier2]],value:String(init.tier||2)}],
+   onSave:v=>{
+     const days=v.days&&v.days>=1?Math.round(v.days):parseInt(v.quick||"0",10);
+     if(!days||days<1){alert(LANG==="vi"?"Số ngày không hợp lệ":"Ungültige Tageszahl");return;}
+     save(v.t,days,v.tier==="1"?1:2);}});}
+function addChore(){choreForm(LANG==="vi"?"Việc định kỳ mới":"Neue wiederkehrende Aufgabe",{t:"",days:7,tier:2},
+  (t,days,tier)=>{const a=chores();a.push({id:"c"+Date.now(),t,days,tier});saveChores(a);renderChores();if($("mgBody"))renderManageBody();});}
 function editChore(id){const a=chores(),c=a.find(x=>x.id===id);if(!c)return;
-  const t=prompt(LANG==="vi"?"Sửa tên việc:":"Name bearbeiten:",c.t);if(t===null)return;if(t.trim())c.t=t.trim();
-  const n=parseInt(prompt(LANG==="vi"?"Lặp lại mỗi bao nhiêu ngày:":"Wiederholung alle wie viele Tage:",c.days),10);if(n&&n>=1)c.days=n;
-  c.tier=askTier(c.tier||1);saveChores(a);renderChores();}
+  choreForm(LANG==="vi"?"Sửa việc định kỳ":"Aufgabe bearbeiten",c,
+  (t,days,tier)=>{c.t=t;c.days=days;c.tier=tier;saveChores(a);renderChores();if($("mgBody"))renderManageBody();});}
 function delChore(id){if(!confirm(LANG==="vi"?"Xoá việc định kỳ này?":"Diese Aufgabe löschen?"))return;
   saveChores(chores().filter(x=>x.id!==id));localStorage.removeItem(choreKey(id));renderChores();}
 function renderChores(){$("h_chores").textContent=L().chores;
@@ -778,7 +814,7 @@ function renderChores(){$("h_chores").textContent=L().chores;
   const sortf=(a,b)=>lv(a)-lv(b)||a.days-b.days;
   const due1=due.filter(c=>(c.tier||1)===1).sort(sortf),due2=due.filter(c=>(c.tier||1)===2).sort(sortf);
   const card=(c,m)=>`<div class="chore${m?' t2':''}" data-chore="${c.id}"><span class="box">○</span>
-    <span class="nm">${c.t}<div class="sub">${LANG==="vi"?"mỗi":"alle"} ${everyLabel(c.days)} · ${LANG==="vi"?"chạm khi xong":"antippen wenn fertig"}</div></span></div>`;
+    <span class="nm">${esc(c.t)}<div class="sub">${LANG==="vi"?"mỗi":"alle"} ${everyLabel(c.days)} · ${LANG==="vi"?"chạm khi xong":"antippen wenn fertig"}</div></span></div>`;
   let h="";if(due1.length)h+=due1.map(c=>card(c,false)).join("");
   if(due2.length)h+=`<div class="t2lbl">${L().t2lbl}</div>`+due2.map(c=>card(c,true)).join("");
   $("choreList").innerHTML=h||`<div class="empty">${L().noDue}</div>`;}
@@ -798,21 +834,15 @@ function cyclePerson(id){const a=dlItems(),e=a.find(x=>String(x.id)===String(id)
 function confirmDone(id){if(!confirm(LANG==="vi"?"Đánh dấu ĐÃ XONG và ẩn mục này?":"Als ERLEDIGT markieren und ausblenden?"))return;
   localStorage.setItem("fam.done."+id,"1");renderAppt();}
 function undone(id){localStorage.removeItem("fam.done."+id);renderAppt();}
-function personPrompt(def){const opts=L().personOpts;
-  const listStr=opts.map((o,i)=>`${i+1}=${o[1]}`).join(" · ");
-  const v=prompt((LANG==="vi"?"Ai: ":"Wer: ")+listStr,String(opts.findIndex(o=>o[0]===def)+1||1));
-  if(v===null)return def;
-  const idx=parseInt(v,10)-1;return (opts[idx]||opts.find(o=>o[0]===def)||opts[0])[0];}
-function addApptPrompt(){const t=prompt(LANG==="vi"?"Tên lịch/sự kiện:":"Titel:");if(!t||!t.trim())return;
-  const d=prompt(LANG==="vi"?"Ngày (YYYY-MM-DD):":"Datum (JJJJ-MM-TT):",iso(new Date()));if(!d)return;
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){alert(LANG==="vi"?"Định dạng ngày sai (YYYY-MM-DD)":"Falsches Datumsformat (JJJJ-MM-TT)");return;}
-  const p=personPrompt("an");addEvent(t.trim(),d,p);}
+function apptForm(title,init,save){
+  openForm({title,fields:[
+    {key:"t",label:LANG==="vi"?"Tên lịch / sự kiện":"Titel",type:"text",value:init.t,placeholder:L().apptPh,required:true},
+    {key:"d",label:LANG==="vi"?"Ngày":"Datum",type:"date",value:init.d,required:true},
+    {key:"p",label:LANG==="vi"?"Ai":"Wer",type:"chips",options:L().personOpts,value:init.p}],
+   onSave:v=>save(v.t,v.d,v.p||init.p||"an")});}
+function addApptPrompt(){apptForm(L().addAppt.replace(/^＋ /,""),{t:"",d:iso(new Date()),p:"an"},(t,d,p)=>addEvent(t,d,p));}
 function editApptPrompt(id){const a=dlItems(),e=a.find(x=>String(x.id)===String(id));if(!e)return;
-  const t=prompt(LANG==="vi"?"Sửa tên:":"Titel bearbeiten:",e.t);if(t===null)return;
-  const d=prompt(LANG==="vi"?"Ngày (YYYY-MM-DD):":"Datum (JJJJ-MM-TT):",e.d);if(d===null)return;
-  if(d&&!/^\d{4}-\d{2}-\d{2}$/.test(d)){alert(LANG==="vi"?"Định dạng ngày sai (YYYY-MM-DD)":"Falsches Datumsformat (JJJJ-MM-TT)");return;}
-  const p=personPrompt(e.p);
-  if(t.trim())e.t=t.trim();if(d)e.d=d;e.p=p;saveDl(a);renderAppt();}
+  apptForm(LANG==="vi"?"Sửa lịch / sự kiện":"Termin bearbeiten",e,(t,d,p)=>{e.t=t;e.d=d;e.p=p;saveDl(a);renderAppt();if($("mgBody"))renderManageBody();});}
 function renderAppt(){$("h_appt").textContent=L().appt;
   const t0=new Date();t0.setHours(0,0,0,0);
   const dl=dlItems().filter(x=>!doneFlag(x.id)).map(x=>({...x,days:Math.round((new Date(x.d+"T00:00:00")-t0)/864e5)})).sort((a,b)=>a.days-b.days);
@@ -822,12 +852,12 @@ function renderAppt(){$("h_appt").textContent=L().appt;
   let h=dl.map(x=>`<div class="dl p${x.p||'all'}${x.days<0?' late':''}">
       <span class="box" data-done="${x.id}">○</span>
       <span class="ic2" data-cyc="${x.id}">${PICON[x.p]||"🩺"}</span>
-      <span class="ttl">${x.t}<div class="when">${when(x.d)}</div></span>
+      <span class="ttl">${esc(x.t)}<div class="when">${when(x.d)}</div></span>
       <span class="cd" style="color:${col(x.days)}">${cd(x.days)}</span></div>`).join("")
     ||`<div class="empty">${L().noAppt}</div>`;
   const hid=dlItems().filter(x=>doneFlag(x.id));
   if(hid.length){h+=`<div class="t2lbl" data-togglehidden="1" style="cursor:pointer">${L().hiddenLbl(hid.length)} ${showHidden?'▲':'▼'}</div>`;
-    if(showHidden)h+=hid.map(x=>`<div class="dl" style="opacity:.6"><span class="ttl">${x.t}<div class="when">${when(x.d)}</div></span>
+    if(showHidden)h+=hid.map(x=>`<div class="dl" style="opacity:.6"><span class="ttl">${esc(x.t)}<div class="when">${when(x.d)}</div></span>
       <span class="ic" data-undone="${x.id}">↩</span></div>`).join("");}
   $("apptList").innerHTML=h;}
 
@@ -836,7 +866,7 @@ function addLog(o){const a=ld("fam.health.logs");a.push({id:newId(),date:iso(new
 function summ(x){const e={pain:"🤕",nose:"🩸",mood:"🙂"}[x.type];let s=e+" ";
   if(x.type==="pain")s+=`${x.part} · ${L().level} ${x.level}`;
   else if(x.type==="nose")s+=`${x.amount} · ${x.duration}`+(x.side?` · ${x.side}`:"");
-  else s+=x.mood;if(x.note)s+=` — "${x.note}"`;return s;}
+  else s+=x.mood;if(x.note)s+=` — "${esc(x.note)}"`;return s;}
 function renderHealth(){
   $("h_health").textContent=L().health;$("b_pain").textContent=L().pain;$("b_nose").textContent=L().nose;$("b_mood").textContent=L().mood;
   const today=ensureIds("fam.health.logs").filter(x=>x.date===iso(new Date())).slice(-6).reverse();
@@ -847,6 +877,48 @@ function close(){ov.hidden=true;}
 ov.addEventListener("click",e=>{if(e.target===ov)close();});
 let draft={};
 function chipRow(key,arr){return `<div class="chips">`+arr.map(v=>`<span class="chip" data-pick="${key}" data-val="${v}">${v}</span>`).join("")+`</div>`;}
+
+/* --- Form builder dùng chung (thay prompt()) ---
+   openForm({title, fields:[{key,label,type,value,options,placeholder,required,min,step}], onSave})
+   type: text | number | date | time | textarea | chips (options=[[val,label],...] hoặc ["v1","v2"]) | emoji */
+const EMOJI_SUGGEST=["⭐","🍬","🎁","📺","⚽","🎬","🍦","📚","🪥","🛁","🧸","💊","😴","✋","🎯","🏅","🏆","👑","⏳","🌱","🎖️","🍾"];
+let formBack=null;   // sheet mở form đè lên (menu ⚙️/cog) -> quay lại sau khi lưu/huỷ
+function openForm(cfg){
+  const back=formBack;formBack=null;
+  const F=cfg.fields||[];
+  const fieldHtml=f=>{
+    const lbl=`<div class="lbl">${esc(f.label||"")}${f.required?' *':''}</div>`;
+    const v=f.value==null?"":f.value;
+    if(f.type==="chips"){
+      const opts=(f.options||[]).map(o=>Array.isArray(o)?o:[o,o]);
+      return lbl+`<div class="chips">`+opts.map(o=>`<span class="chip${String(v)===String(o[0])?' sel':''}" data-fchip="${esc(f.key)}" data-fval="${esc(o[0])}">${esc(o[1])}</span>`).join("")+`</div>`;}
+    if(f.type==="emoji"){
+      return lbl+`<input id="ff_${f.key}" type="text" value="${esc(v)}" maxlength="4" style="width:90px;text-align:center;font-size:22px">
+        <div class="chips" style="margin:6px 0 10px">${EMOJI_SUGGEST.map(e=>`<span class="chip" data-femoji="${f.key}">${e}</span>`).join("")}</div>`;}
+    if(f.type==="textarea")return lbl+`<textarea id="ff_${f.key}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
+    const extra=(f.type==="number"?` inputmode="decimal" step="${f.step||1}"${f.min!=null?` min="${f.min}"`:""}`:"");
+    return lbl+`<input id="ff_${f.key}" type="${f.type||"text"}" value="${esc(v)}" placeholder="${esc(f.placeholder||"")}"${extra}>`;};
+  open(`<h3>${esc(cfg.title||"")}</h3><div class="addform" style="border:0;padding:0;margin:0;background:transparent">${F.map(fieldHtml).join("")}</div>
+    <div class="acts"><button class="cancel" id="fCancel">${L().cancel}</button><button class="save" id="fSave">${L().save}</button></div>`);
+  const chipVals={};F.forEach(f=>{if(f.type==="chips")chipVals[f.key]=f.value==null?null:String(f.value);});
+  sheet.querySelectorAll("[data-fchip]").forEach(c=>c.onclick=()=>{
+    sheet.querySelectorAll(`[data-fchip="${c.dataset.fchip}"]`).forEach(x=>x.classList.remove("sel"));
+    c.classList.add("sel");chipVals[c.dataset.fchip]=c.dataset.fval;});
+  sheet.querySelectorAll("[data-femoji]").forEach(c=>c.onclick=()=>{const inp=$("ff_"+c.dataset.femoji);if(inp)inp.value=c.textContent;});
+  $("fCancel").onclick=()=>{close();if(back)back();};
+  $("fSave").onclick=()=>{
+    const out={};let ok=true;
+    F.forEach(f=>{
+      let val;
+      if(f.type==="chips")val=chipVals[f.key];
+      else{const el=$("ff_"+f.key);val=el?el.value:"";
+        if(f.type!=="textarea")val=(val||"").trim();
+        if(f.type==="number"){val=val===""?null:parseFloat(val);if(val!=null&&isNaN(val))val=null;}}
+      if(f.required&&(val==null||val==="")){ok=false;const el=$("ff_"+f.key);if(el){el.style.borderColor="var(--r)";el.focus();}}
+      out[f.key]=val;});
+    if(!ok)return;
+    close();cfg.onSave(out);if(back)back();};
+  const first=sheet.querySelector("input[type=text],input[type=number],textarea");if(first)first.focus();}
 function openHealth(type){draft={type};let body="";
   if(type==="pain")body=`<h3>🤕 ${L().pain}</h3><div class="lbl">${L().part}</div>${chipRow("part",L().bodyparts)}<div class="lbl">${L().level}</div>${chipRow("level",["1","2","3","4","5"])}`;
   else if(type==="nose")body=`<h3>🩸 ${L().nose}</h3><div class="lbl">${L().amount}</div>${chipRow("amount",L().amounts)}<div class="lbl">${L().duration}</div>${chipRow("duration",["<5′","5–15′",">15′"])}<div class="lbl">${L().side}</div>${chipRow("side",L().sides)}`;
@@ -890,7 +962,6 @@ function openReport(){
 function buildPrintHtml(){
   const H=ld("fam.health.logs"),noses=H.filter(x=>x.type==="nose"),pains=H.filter(x=>x.type==="pain"),moods=H.filter(x=>x.type==="mood");
   const temps=ld("fam.temp"),sleeps=ld("fam.sleep"),grows=ld("fam.growth"),missed=acariMissed();
-  const esc=s=>String(s==null?"":s).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
   const tbl=(head,rows)=>rows.length?`<table><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.join("")}</table>`:`<p style="color:#666">— keine Einträge —</p>`;
   return `<h1>Gesundheitsbericht — ${esc(CHILD())}</h1>
    <div style="color:#444;font-size:12px">Erstellt am ${dd(iso(new Date()))} · gesamter erfasster Verlauf</div>
@@ -1017,8 +1088,23 @@ function kidState(){const s=kidRaw();
   if(!s.interestLastDate){s.interestLastDate=iso(new Date());}
   s.goals=s.goals||[];s.tiers=s.tiers||defaultTiers();s.shop=s.shop||defaultShop();
   s.keoLog=s.keoLog||[];s.badgesGot=s.badgesGot||[];
+  s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   return ensureGoalsThisWeek(s);}
-function kidSave(s){localStorage.setItem(KIDKEY,JSON.stringify(s));}
+function kidSave(s){try{localStorage.setItem(KIDKEY,JSON.stringify(s));}catch(e){storageFull(e);}}
+/* --- ↩ Hoàn tác (snapshot fam.kid trước mỗi thao tác tay) --- */
+const UNDO_KEY="fam.undo";
+function undoPush(label){
+  const a=ld(UNDO_KEY);
+  a.push({ts:Date.now(),label:String(label||"").slice(0,60),data:localStorage.getItem(KIDKEY)||"{}"});
+  while(a.length>10)a.shift();
+  sv(UNDO_KEY,a);}
+function undoPop(){
+  const a=ld(UNDO_KEY);if(!a.length)return;
+  const last=a[a.length-1];
+  if(!confirm(L().undoConfirm(last.label)))return;
+  a.pop();sv(UNDO_KEY,a);
+  try{localStorage.setItem(KIDKEY,last.data);}catch(e){storageFull(e);}
+  kidCheer=L().undoDone;playSound('click');renderRewardAll();}
 function checkPocketMoneyAllowance() {
   const s = kidState();
   const today = new Date();
@@ -1087,14 +1173,22 @@ function dutyToggle(id){
   anToggle(id);
   const s=kidState();
   if(!allRoutineDone()){const ca=todayCheckAward(s);
-    if(ca){const n=ca.kind==="self"?2:1;s.sao-=n;s.saoLife-=n;s.checkAward=null;kidSave(s);}}
+    if(ca){const n=ca.kind==="self"?2:1;
+      undoPush(`-${n}⭐ ${L().rsCheckUndo}`);
+      s.sao-=n;s.saoLife-=n;s.checkAward=null;
+      s.keoLog.unshift({date:iso(new Date()),delta:-n,reason:L().rsCheckUndo,cur:"sao"});
+      kidSave(s);}}
   renderRewardAll();
 }
 function answerChecklist(self){
   const s=kidState(),today=iso(new Date()),y=iso(new Date(Date.now()-864e5));
-  const n=self?2:1;s.sao=(s.sao||0)+n;s.saoLife=(s.saoLife||0)+n;
+  const n=self?2:1;
+  undoPush(`+${n}⭐ ${self?L().rsCheckSelf:L().rsCheckHelp}`);
+  s.sao=(s.sao||0)+n;s.saoLife=(s.saoLife||0)+n;
   s.checkAward={date:today,kind:self?"self":"help"};
-  if(self){s.streak=(s.lastAllDone===y)?(s.streak||0)+1:1;s.lastAllDone=today;}
+  if(self){s.streak=(s.lastAllDone===y)?(s.streak||0)+1:1;s.lastAllDone=today;
+    s.bestStreak=Math.max(s.bestStreak||0,s.streak);}
+  s.keoLog.unshift({date:today,delta:n,reason:self?L().rsCheckSelf:L().rsCheckHelp,cur:"sao"});
   checkBadges(s);kidSave(s);
   kidCheer=self?KL().selfCheer:KL().helpCheer;
   triggerConfetti();
@@ -1106,73 +1200,59 @@ function applyEval(key){
   const ratingName = L().evalRatings.find(r=>r[0]===key)[1];
   if(!confirm(LANG==="vi"?`Xác nhận đánh giá con là: ${ratingName}?`:`Bewertung "${ratingName}" für heute abgeben?`))return;
   const s=kidState(),today=iso(new Date()),delta=EVAL_DELTA[key],cur=todayEval(s);
+  undoPush(L().rsEval(ratingName));
+  const pre=s.sao||0;
   if(cur)s.sao-=cur.delta;
-  if(cur&&cur.key===key)s.eval=null;
-  else{s.sao+=delta;s.eval={date:today,key,delta};}
+  if(cur&&cur.key===key){s.eval=null;delete s.evalHist[today];}
+  else{s.sao+=delta;s.eval={date:today,key,delta};s.evalHist[today]=key;}
+  const net=(s.sao||0)-pre;
+  if(net)s.keoLog.unshift({date:today,delta:net,reason:s.eval?L().rsEval(ratingName):L().rsEvalUndo(ratingName),cur:"sao"});
   kidSave(s);
   playSound('click');
   renderRewardAll();
 }
 /* --- Kẹo: thao tác tay + đúng bài + König --- */
-function addKeo(n,reason){const s=kidState();s.keo=(s.keo||0)+n;s.keoLog.unshift({date:iso(new Date()),delta:n,reason:reason||"",cur:"keo"});kidSave(s);renderRewardAll();}
-function payKeo(){const v=prompt(L().gPayAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(n)addKeo(-n,L().gReasonPay);}
-function keoManual(sign){const v=prompt(L().gAmtAsk,"1");if(v===null)return;const n=Math.abs(parseInt(v,10));if(!n)return;const r=prompt(L().gWhyAsk,"");
-  if(!confirm(LANG==="vi"?`Xác nhận ${sign>0?'cộng':'trừ'} ${n} kẹo?`:`${n} Süßigkeiten ${sign>0?'hinzufügen':'abziehen'}?`))return;
-  addKeo(sign*n,(r||"").trim()||(sign>0?L().gPlusDef:L().gMinusDef));}
-function saoManual(sign) {
-  const v = prompt(L().gAmtAsk, "1");
-  if (v === null) return;
-  const n = Math.abs(parseInt(v, 10));
-  if (!n) return;
-  const r = prompt(L().gWhyAsk, "");
-  const reason = (r || "").trim() || (sign > 0 ? L().sPlusDef : L().sMinusDef);
-  if (!confirm(LANG === "vi" ? `Xác nhận ${sign > 0 ? 'cộng' : 'trừ'} ${n} sao cho con?` : `${n} Sterne ${sign > 0 ? 'hinzufügen' : 'abziehen'}?`)) return;
-  addSaoManual(sign * n, reason);
-}
+function addKeo(n,reason){const s=kidState();
+  undoPush(`${n>0?"+":""}${n}🍬 ${reason||""}`);
+  s.keo=(s.keo||0)+n;s.keoLog.unshift({date:iso(new Date()),delta:n,reason:reason||"",cur:"keo"});kidSave(s);renderRewardAll();}
+// Form chung cho cộng/trừ tay: số lượng + lý do trong 1 sheet
+function amountForm(title,defReason,opts,save){
+  openForm({title,fields:[
+    {key:"n",label:L().gAmtAsk.replace(/[?？]$/,""),type:"number",min:0,step:(opts&&opts.step)||1,value:1,required:true},
+    {key:"r",label:L().gWhyAsk.replace(/[?？]$/,""),type:"text",placeholder:defReason}],
+   onSave:v=>{const n=Math.abs((opts&&opts.float)?v.n:Math.round(v.n));if(!n)return;save(n,(v.r||"").trim()||defReason);}});}
+function payKeo(){amountForm(L().gPay.replace(/^🍬 /,""),L().gReasonPay,null,n=>addKeo(-n,L().gReasonPay));}
+function keoManual(sign){
+  amountForm((sign>0?L().gPlus:L().gMinus).replace(/^[＋－] /,"")+" 🍬",sign>0?L().gPlusDef:L().gMinusDef,null,
+    (n,reason)=>addKeo(sign*n,reason));}
+function saoManual(sign){
+  amountForm((sign>0?L().sPlus:L().sMinus).replace(/^[＋－] /,"")+" ⭐",sign>0?L().sPlusDef:L().sMinusDef,null,
+    (n,reason)=>addSaoManual(sign*n,reason));}
 function addSaoManual(n, reason) {
   const s = kidState();
+  undoPush(`${n>0?"+":""}${n}⭐ ${reason||""}`);
   s.sao = (s.sao || 0) + n;
   s.keoLog.unshift({ date: iso(new Date()), delta: n, reason: reason, cur: "sao" });
   kidSave(s);
   playSound('click');
   renderRewardAll();
 }
-function addSaoAdjPrompt() {
-  const emoji = prompt(LANG === "vi" ? "Nhập Emoji đại diện (ví dụ: ⏳):" : "Emoji eingeben (z.B. ⏳):", "⭐") || "⭐";
-  const text = prompt(LANG === "vi" ? "Tên tiếng Việt (ví dụ: Trì hoãn / Câu giờ):" : "Vietnamesischer Text:");
-  if (!text || !text.trim()) return;
-  const textDe = prompt(LANG === "vi" ? "Tên tiếng Đức (ví dụ: Zeit schinden):" : "Deutscher Text:") || text;
-  const deltaStr = prompt(LANG === "vi" ? "Số sao cộng hoặc trừ (ví dụ: -1 hoặc 2):" : "Sterne (z.B. -1 oder 2):", "-1");
-  const delta = parseInt(deltaStr, 10);
-  if (isNaN(delta) || delta === 0) return;
-
-  const list = saoAdjusts();
-  const id = "sa_" + Date.now();
-  list.push({ id, emoji, text: text.trim(), textDe: textDe.trim(), delta });
-  saveSaoAdjusts(list);
-  renderAll();
-}
-
-function editSaoAdjPrompt(id) {
-  const list = saoAdjusts();
-  const item = list.find(x => x.id === id);
-  if (!item) return;
-
-  const emoji = prompt(LANG === "vi" ? "Emoji đại diện:" : "Emoji:", item.emoji || "⭐") || "⭐";
-  const text = prompt(LANG === "vi" ? "Tên tiếng Việt:" : "Vietnamesischer Text:", item.text);
-  if (!text || !text.trim()) return;
-  const textDe = prompt(LANG === "vi" ? "Tên tiếng Đức:" : "Deutscher Text:", item.textDe || item.text) || text;
-  const deltaStr = prompt(LANG === "vi" ? "Số sao cộng hoặc trừ:" : "Sterne:", String(item.delta));
-  const delta = parseInt(deltaStr, 10);
-  if (isNaN(delta) || delta === 0) return;
-
-  item.emoji = emoji;
-  item.text = text.trim();
-  item.textDe = textDe.trim();
-  item.delta = delta;
-  saveSaoAdjusts(list);
-  renderAll();
-}
+function saoAdjForm(title,init,save){
+  openForm({title,fields:[
+    {key:"emoji",label:"Emoji",type:"emoji",value:init.emoji||"⭐"},
+    {key:"text",label:LANG==="vi"?"Tên tiếng Việt":"Vietnamesischer Text",type:"text",value:init.text,required:true},
+    {key:"textDe",label:LANG==="vi"?"Tên tiếng Đức":"Deutscher Text",type:"text",value:init.textDe},
+    {key:"delta",label:LANG==="vi"?"Số sao cộng/trừ (vd: -1 hoặc 2)":"Sterne (z.B. -1 oder 2)",type:"number",step:1,value:init.delta!=null?init.delta:-1,required:true}],
+   onSave:v=>{
+     const delta=Math.round(v.delta||0);
+     if(!delta){alert(LANG==="vi"?"Số sao phải khác 0":"Sterne dürfen nicht 0 sein");return;}
+     save(v.emoji||"⭐",v.text,(v.textDe||v.text),delta);}});}
+function addSaoAdjPrompt(){saoAdjForm(LANG==="vi"?"Nút điều chỉnh sao mới":"Neuer Sterne-Button",{},
+  (emoji,text,textDe,delta)=>{const list=saoAdjusts();list.push({id:"sa_"+Date.now(),emoji,text,textDe,delta});saveSaoAdjusts(list);renderAll();});}
+function editSaoAdjPrompt(id){const item=saoAdjusts().find(x=>x.id===id);if(!item)return;
+  saoAdjForm(LANG==="vi"?"Sửa nút điều chỉnh sao":"Sterne-Button bearbeiten",item,
+  (emoji,text,textDe,delta)=>{const list=saoAdjusts(),it=list.find(x=>x.id===id);if(!it)return;
+    it.emoji=emoji;it.text=text;it.textDe=textDe;it.delta=delta;saveSaoAdjusts(list);renderAll();});}
 
 function delSaoAdjPrompt(id) {
   if (!confirm(LANG === "vi" ? "Xoá nút điều chỉnh sao này?" : "Diesen Sterne-Button löschen?")) return;
@@ -1181,17 +1261,12 @@ function delSaoAdjPrompt(id) {
   renderAll();
 }
 function moneyManual(sign) {
-  const v = prompt(L().mAmtAsk, "1");
-  if (v === null) return;
-  const n = Math.abs(parseFloat(v));
-  if (!n) return;
-  const r = prompt(L().gWhyAsk, "");
-  const reason = (r || "").trim() || (sign > 0 ? L().mPlusDef : L().mMinusDef);
-  if (!confirm(L().mConfirm(sign * n))) return;
-  addMoneyManual(sign * n, reason);
+  amountForm((sign>0?L().mPlus:L().mMinus).replace(/^[＋－] /,"")+" 💶",sign>0?L().mPlusDef:L().mMinusDef,{float:true,step:0.05},
+    (n,reason)=>addMoneyManual(sign*n,reason));
 }
 function addMoneyManual(n, reason) {
   const s = kidState();
+  undoPush(`${n>0?"+":""}${n}€ ${reason||""}`);
   s.pocketMoney = (s.pocketMoney || 0) + n;
   s.keoLog.unshift({ date: iso(new Date()), delta: n, reason: reason, cur: "euro" });
   kidSave(s);
@@ -1274,6 +1349,7 @@ function convertCandyToMoney() {
     return;
   }
   if (!confirm(KL().convertMoneyConfirm)) return;
+  undoPush("1🍬→0.20€");
   s.keo = (s.keo || 0) - 1;
   s.pocketMoney = (s.pocketMoney || 0) + 0.20;
   
@@ -1291,7 +1367,10 @@ function convertCandyToMoney() {
 function convertStars(){const s=kidState();
   if((s.sao||0)<3){kidCheer=KL().convertBlocked;renderRewardAll();return;}
   if(!confirm(KL().convertConfirm))return;
-  s.sao-=3;s.keo=(s.keo||0)+1;s.keoLog.unshift({date:iso(new Date()),delta:1,reason:KL().convertReason,cur:"keo"});
+  undoPush("3⭐→1🍬");
+  s.sao-=3;s.keo=(s.keo||0)+1;
+  s.keoLog.unshift({date:iso(new Date()),delta:-3,reason:KL().convertReason,cur:"sao"});
+  s.keoLog.unshift({date:iso(new Date()),delta:1,reason:KL().convertReason,cur:"keo"});
   kidSave(s);kidCheer=KL().convertOk;
   triggerConfetti();
   playSound('success');
@@ -1300,8 +1379,10 @@ function convertStars(){const s=kidState();
 function raiseHand(){const s=kidState(),today=iso(new Date());
   if(todayHandCount(s) > 0) return;
   if(!confirm(KL().handConfirm))return;
+  undoPush("+1⭐ ✋");
   s.handRaise={date:today,count:1};
   s.sao=(s.sao||0)+1;s.saoLife=(s.saoLife||0)+1;
+  s.keoLog.unshift({date:today,delta:1,reason:"Đã giơ tay! ✋",cur:"sao"});
   checkBadges(s);kidSave(s);kidCheer=KL().handCheer;
   triggerConfetti();
   playSound('success');
@@ -1310,7 +1391,9 @@ function raiseHand(){const s=kidState(),today=iso(new Date());
 function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)return;
   if(!g.done){
     if(!confirm(LANG==="vi"?"Xác nhận đạt mục tiêu tuần này?":"Wochenziel als ERREICHT markieren?"))return;
+    undoPush(`+3⭐ ${g.text}`);
     g.done=true;s.sao+=3;s.saoLife+=3;
+    s.keoLog.unshift({date:iso(new Date()),delta:3,reason:L().rsGoal(g.text),cur:"sao"});
     checkBadges(s);
     kidCheer=KL().goalDoneCheer(g.text);
     triggerConfetti();
@@ -1318,7 +1401,9 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)re
   }
   else{
     if(!confirm(LANG==="vi"?"Hủy đạt mục tiêu tuần này?":"Erreichung des Wochenziels aufheben?"))return;
+    undoPush(`-3⭐ ${g.text}`);
     g.done=false;s.sao-=3;s.saoLife-=3;kidCheer="";
+    s.keoLog.unshift({date:iso(new Date()),delta:-3,reason:L().rsGoalUndo(g.text),cur:"sao"});
     playSound('click');
   }
   kidSave(s);renderRewardAll();}
@@ -1328,6 +1413,7 @@ function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)
   const nameTr = T_val(it.name);
   if(bal<it.cost){alert(L().shopBlocked(it.cost,icon,nameTr,bal));return;}
   if(!confirm(L().shopConfirm(nameTr,it.cost,icon)))return;
+  undoPush(`-${it.cost}${icon} ${nameTr}`);
   if(it.cur==="sao")s.sao-=it.cost;else s.keo-=it.cost;
   s.keoLog.unshift({date:iso(new Date()),delta:-it.cost,reason:it.name,cur:it.cur});
   kidSave(s);
@@ -1366,7 +1452,7 @@ function durH(bed,wake){if(!bed||!wake)return null;const[bh,bm]=bed.split(":").m
   let m=(wh*60+wm)-(bh*60+bm);if(m<0)m+=1440;return(m/60).toFixed(1);}
 function renderSleep(){$("h_sleep").textContent=SL().sleep;$("addSleep").textContent=SL().addSleep;
   const a=ensureIds("fam.sleep").slice(-5).reverse();
-  $("sleepList").innerHTML=a.length?a.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">😴 ${dmy(x.date)} · ${x.bed||"–"}→${x.wake||"–"}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${x.quality}`:""}${x.note?` — "${x.note}"`:""}</span><span class="ic" data-xdel="fam.sleep" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${SL().none}</div>`;}
+  $("sleepList").innerHTML=a.length?a.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">😴 ${dmy(x.date)} · ${x.bed||"–"}→${x.wake||"–"}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${x.quality}`:""}${x.note?` — "${esc(x.note)}"`:""}</span><span class="ic" data-xdel="fam.sleep" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${SL().none}</div>`;}
 function openSleep(){let q=null;
   open(`<h3>${SL().sleep}</h3><div class="lbl">${SL().bed}</div><input id="sBed" type="time" value="21:00">
    <div class="lbl">${SL().wake}</div><input id="sWake" type="time" value="07:00">
@@ -1377,7 +1463,7 @@ function renderTemp(){$("h_temp").textContent=SL().temp;$("addTemp").textContent
   const a=ensureIds("fam.temp").slice(-8);
   const chart=a.length?`<div class="bars">${a.map(x=>{const h=Math.max(4,Math.round((x.v-35)/6*78));
     return `<div class="b" style="height:${h}px;background:${x.v>=38?'var(--r)':'var(--blue)'}"><span>${x.v}</span></div>`;}).join("")}</div>`:"";
-  const list=a.slice().reverse().map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px;color:${x.v>=38?'var(--r)':'#c7ccd6'}"><span style="flex:1">🌡️ ${dmy(x.date)} · ${x.v}°C${x.v>=38?` (${SL().fever})`:""}${x.note?` — "${x.note}"`:""}</span><span class="ic" data-xdel="fam.temp" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
+  const list=a.slice().reverse().map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px;color:${x.v>=38?'var(--r)':'#c7ccd6'}"><span style="flex:1">🌡️ ${dmy(x.date)} · ${x.v}°C${x.v>=38?` (${SL().fever})`:""}${x.note?` — "${esc(x.note)}"`:""}</span><span class="ic" data-xdel="fam.temp" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
   $("tempList").innerHTML=chart+(a.length?list:`<div class="row">${SL().none}</div>`);}
 function openTemp(){open(`<h3>${SL().temp}</h3><div class="lbl">${SL().tempVal}</div>
    <input id="tV" type="number" step="0.1" inputmode="decimal" placeholder="37.0"><textarea id="tNote" placeholder="${SL().note}"></textarea>`+actBtns());
@@ -1409,8 +1495,89 @@ $("gTest").onclick=()=>addKeo(2,L().gReasonTest);$("gKonig").onclick=()=>addKeo(
 $("gPlus").onclick=()=>keoManual(1);$("gMinus").onclick=()=>keoManual(-1);$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
 
+/* ============ 📊 Thống kê ============ */
+const weekMonKey=ds=>iso(mondayOf(new Date(ds+"T00:00:00")));
+function colChart(items,color,fmt){
+  const vals=items.map(i=>i.v);const mx=Math.max(...vals,1),mn=Math.min(...vals,0);const range=mx-mn||1;
+  return `<div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 8px;display:flex;align-items:flex-end;gap:5px;margin:6px 0 14px">${
+    items.map(i=>{const h=Math.max(4,Math.round(((i.v-mn)/range)*58))+8;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0">
+      <div style="font-size:10px;color:${i.v<0?'var(--r)':'#c7ccd6'};font-weight:700">${fmt?fmt(i.v):i.v}</div>
+      <div style="width:100%;height:${h}px;background:${i.color||color||'var(--blue)'};border-radius:4px"></div>
+      <div style="font-size:9.5px;color:var(--mut);white-space:nowrap">${i.label}</div></div>`;}).join("")}</div>`;}
+function openStats(){
+  const s=kidState(),m0=mondayOf(new Date());
+  const lastMons=n=>{const a=[];for(let i=n-1;i>=0;i--){const d=new Date(m0);d.setDate(m0.getDate()-i*7);a.push(iso(d));}return a;};
+  // 1. ⭐ sao theo tuần (8 tuần, từ keoLog cur="sao")
+  const mons8=lastMons(8);
+  const saoWk={};(s.keoLog||[]).forEach(e=>{if(e.cur==="sao"){const k=weekMonKey(e.date);saoWk[k]=(saoWk[k]||0)+e.delta;}});
+  const saoChart=Object.keys(saoWk).length?colChart(mons8.map(k=>({v:saoWk[k]||0,label:dmy(k),color:"#d9a520"})),null,v=>(v>0?"+":"")+v):`<div class="empty">${L().statsNoData}</div>`;
+  // 2. 🗓️ heatmap đánh giá (10 tuần × 7 ngày)
+  const hist=Object.assign({},s.evalHist||{});if(s.eval&&s.eval.date&&s.eval.key)hist[s.eval.date]=s.eval.key;
+  const EVCOL={cn:"#16a34a",n:"#65a30d",bt:"#64748b",h:"#ea580c",ch:"#dc2626"};
+  let heat;
+  if(Object.keys(hist).length){
+    const today=iso(new Date());let cols="";
+    for(let w=9;w>=0;w--){const mon=new Date(m0);mon.setDate(m0.getDate()-w*7);let cells="";
+      for(let d=0;d<7;d++){const dd=new Date(mon);dd.setDate(mon.getDate()+d);const ds=iso(dd),k=hist[ds];
+        cells+=`<div style="width:15px;height:15px;border-radius:3px;background:${k?EVCOL[k]:"#22262e"};${ds===today?'outline:1.5px solid #7da7ff':''}"></div>`;}
+      cols+=`<div style="display:flex;flex-direction:column;gap:3px">${cells}</div>`;}
+    heat=`<div style="display:flex;gap:3px;overflow-x:auto;padding:4px 0">${cols}</div>
+      <div class="legend" style="margin-bottom:12px">${L().evalRatings.map(r=>`<span style="color:${EVCOL[r[0]]}">■</span> ${r[1]}`).join(" · ")}</div>`;
+  }else heat=`<div class="empty">${L().statsEvalNone}</div>`;
+  // 4. 🩺 sức khỏe dài hạn
+  const H=ld("fam.health.logs");
+  const perWeek=(arr)=>{const m={};arr.forEach(x=>{const k=weekMonKey(x.date);m[k]=(m[k]||0)+1;});return m;};
+  const noseWk=perWeek(H.filter(x=>x.type==="nose")),painWk=perWeek(H.filter(x=>x.type==="pain"));
+  const noseChart=Object.keys(noseWk).length?colChart(mons8.map(k=>({v:noseWk[k]||0,label:dmy(k)})),"var(--r)"):`<div class="empty">${L().statsNoData}</div>`;
+  const painChart=Object.keys(painWk).length?colChart(mons8.map(k=>({v:painWk[k]||0,label:dmy(k)})),"var(--o)"):`<div class="empty">${L().statsNoData}</div>`;
+  const moods=H.filter(x=>x.type==="mood"),moodCnt={};moods.forEach(x=>{const e=(x.mood||"").split(" ")[0];moodCnt[e]=(moodCnt[e]||0)+1;});
+  const moodChart=moods.length?colChart(L().moods.map(m=>{const e=m.split(" ")[0];return {v:moodCnt[e]||0,label:e,color:"var(--g)"};})):`<div class="empty">${L().statsNoData}</div>`;
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
+  const temps=ld("fam.temp").filter(x=>x.date>=iso(cutoff)).slice(-12);
+  const tempChart=temps.length?colChart(temps.map(x=>({v:x.v,label:dmy(x.date),color:x.v>=38?"var(--r)":"var(--blue)"})),null,v=>v+"°"):`<div class="empty">${L().statsNoData}</div>`;
+  // 5. 💶 tiền theo thời gian
+  const mh=getMoneyHistory(s,20);
+  const moneyChart=colChart(mh.map(p=>({v:Number(p.bal.toFixed(2)),label:p.date.split("-").reverse().slice(0,2).join("/"),color:"#3a8a5a"})),null,v=>"€"+v.toFixed(2));
+  // 6. 🗓️ ca trực 4 tuần
+  const tal={bo:0,me:0};
+  for(let w=-3;w<=0;w++){const mon=new Date(m0);mon.setDate(m0.getDate()+w*7);
+    for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);SHIFTS.forEach(sh=>{tal[owner(d,sh.k)]++;});}}
+  open(`<h3>${L().statsT}</h3>
+    <div class="lbl">${L().statsSao}</div>${saoChart}
+    <div style="font-size:13px;color:#ffd98a;margin:0 0 12px">${L().statsStreak(s.streak||0,s.bestStreak||0)}</div>
+    <div class="lbl">${L().statsEval}</div>${heat}
+    <div class="lbl">${L().statsLog}</div>
+    <div class="chips" id="stFilter">
+      <span class="chip sel" data-lf="all">${L().statsLogAll}</span>
+      <span class="chip" data-lf="sao">⭐</span><span class="chip" data-lf="keo">🍬</span><span class="chip" data-lf="euro">💶</span></div>
+    <div class="hist" id="stLog" style="max-height:220px;overflow:auto"></div>
+    <button class="notebtn" id="stMore" hidden>${L().statsMore}</button>
+    <div class="lbl" style="margin-top:14px">${L().statsMoney}</div>${moneyChart}
+    <div class="lbl">${L().statsHealth}</div>
+    <div class="lbl" style="text-transform:none">${L().statsNose}</div>${noseChart}
+    <div class="lbl" style="text-transform:none">${L().statsPain}</div>${painChart}
+    <div class="lbl" style="text-transform:none">${L().statsMood}</div>${moodChart}
+    <div class="lbl" style="text-transform:none">${L().statsTemp}</div>${tempChart}
+    <div class="lbl">${L().statsDuty}</div>
+    <div class="tally" style="margin:6px 0 12px">${L().tally(tal)}</div>
+    <div class="acts"><button class="cancel" id="stClose">${L().mgClose}</button></div>`);
+  let logFilter="all",logShow=50;
+  const renderLog=()=>{
+    const logs=(s.keoLog||[]).filter(e=>logFilter==="all"||(e.cur||"keo")===logFilter);
+    $("stLog").innerHTML=logs.slice(0,logShow).map(e=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
+      return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':''}${ic} — ${esc(T_val(e.reason||''))}</div>`;}).join("")
+      ||`<div class="row" style="color:var(--mut)">${L().statsNoData}</div>`;
+    $("stMore").hidden=logs.length<=logShow;};
+  sheet.querySelectorAll("[data-lf]").forEach(c=>c.onclick=()=>{
+    sheet.querySelectorAll("[data-lf]").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");
+    logFilter=c.dataset.lf;logShow=50;renderLog();});
+  $("stMore").onclick=()=>{logShow+=50;renderLog();};
+  $("stClose").onclick=close;
+  renderLog();}
+
 /* ============ Sao lưu + Nhập (backup app này HOẶC export /lich) ============ */
-const isMetaKey=k=>k.indexOf("fam.snap")===0||k.indexOf("fam.exports")===0;
+const isMetaKey=k=>k.indexOf("fam.snap")===0||k.indexOf("fam.exports")===0||k.indexOf("fam.undo")===0;
 function famDump(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
   if(k&&k.indexOf("fam.")===0&&!isMetaKey(k))o[k]=localStorage.getItem(k);}return o;}
 // Lưu 1 bản copy mỗi lần Xuất (trình duyệt không đọc lại file đã tải -> giữ bản trong máy để khôi phục).
@@ -1423,9 +1590,45 @@ function famRestore(o){let n=0;Object.keys(o).forEach(k=>{
   if(k.indexOf("fam.")===0){localStorage.setItem(k,o[k]);n++;}
   else if(k.indexOf("lich.")===0){if(k==="lich.pinok")return;localStorage.setItem("fam."+k.slice(5),o[k]);n++;}});
   return n;}
+// Gộp: mảng có id -> union theo id (trùng id giữ bản local); key khác -> chỉ ghi nếu local chưa có.
+const MERGE_LIST_KEYS=["fam.an.items","fam.chores","fam.dl.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
+function famMerge(o){let n=0;
+  const norm={};Object.keys(o).forEach(k=>{
+    if(k.indexOf("fam.")===0)norm[k]=o[k];
+    else if(k.indexOf("lich.")===0&&k!=="lich.pinok")norm["fam."+k.slice(5)]=o[k];});
+  Object.keys(norm).forEach(k=>{
+    if(isMetaKey(k))return;
+    if(MERGE_LIST_KEYS.includes(k)){
+      let inc;try{inc=JSON.parse(norm[k]);}catch(e){return;}
+      if(!Array.isArray(inc))return;
+      const cur=ld(k);
+      const seen=new Set(cur.map(x=>x&&x.id?String(x.id):JSON.stringify(x)));
+      let added=0;
+      inc.forEach(x=>{if(!x)return;const key=x.id?String(x.id):JSON.stringify(x);
+        if(!seen.has(key)){cur.push(x);seen.add(key);added++;}});
+      if(added){sv(k,cur);n+=added;}
+    }else if(localStorage.getItem(k)===null){
+      try{localStorage.setItem(k,norm[k]);n++;}catch(e){storageFull(e);}
+    }});
+  return n;}
+function askImportMode(o){
+  open(`<h3>📂 ${L().importFile}</h3>
+    <div style="font-size:13px;color:#c7ccd6;margin-bottom:12px">${L().importModeHint}</div>
+    <button class="gumbtn indigo" id="imOver">${L().importOver}</button>
+    <button class="gumbtn gold2" id="imMerge" style="margin-top:8px">${L().importMerge}</button>
+    <button class="gumbtn ghost" id="imCancel" style="margin-top:16px">${L().cancel}</button>`);
+  $("imOver").onclick=()=>{close();
+    if(!confirm(L().restoreAsk))return;
+    const n=famRestore(o);
+    if(!n){alert(L().importNone);return;}
+    renderAll();alert(L().importOk+" ("+n+")");};
+  $("imMerge").onclick=()=>{close();
+    const n=famMerge(o);
+    renderAll();alert(L().mergeOk(n));};
+  $("imCancel").onclick=()=>{close();openCog();};}
 function snaps(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("fam.snap.")===0)a.push(k.slice(9));}return a.sort().reverse();}
 function autoSnapshot(){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
-  localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);
+  try{localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);}catch(e){storageFull(e);}
   snaps().slice(7).forEach(d=>localStorage.removeItem("fam.snap."+d));}
 function exportFile(){const dump=famDump();
   const ok=downloadFile("gia-dinh-backup-"+iso(new Date())+".json",JSON.stringify(dump,null,2),"application/json");
@@ -1436,7 +1639,7 @@ function exportFile(){const dump=famDump();
 function importFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let o;try{o=JSON.parse(r.result);}catch(e){alert(L().importErr);return;}
     if(!o||typeof o!=="object"){alert(L().importErr);return;}
-    const n=famRestore(o);if(!n){alert(L().importNone);return;}renderAll();alert(L().importOk+" ("+n+")");};
+    askImportMode(o);};
   r.readAsText(f);ev.target.value="";}
 function renderBackupReminder(){const el=$("backupReminder"),le=localStorage.getItem("fam.lastexport");
   if(!le){el.hidden=false;el.textContent=L().backupNever;return;}
@@ -1456,11 +1659,11 @@ function openCog(){
     <div class="acts" style="margin-top:0"><button class="cancel" id="bImp">📂 ${L().importFile}</button><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
     <div style="font-size:12px;color:var(--mut);margin-top:6px;display:flex;justify-content:space-between"><span>📊 ${L().storageUsage}: <b>${getStorageUsage().kb} KB / 5000 KB (${getStorageUsage().pct}%)</b></span></div>
     <div class="lbl" style="margin-top:14px">${L().pasteT}</div>
-    <textarea id="ioBox" placeholder="${L().pastePh}" style="font:12px/1.4 monospace;min-height:96px"></textarea>
+    <textarea id="ioBox" placeholder="${esc(L().pastePh)}" style="font:12px/1.4 monospace;min-height:96px"></textarea>
     <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
     <div class="lbl" id="ioStatus" style="min-height:1.2em;text-transform:none;letter-spacing:0;color:var(--g)"></div>
     <div class="lbl" style="margin-top:10px">${L().expHist}</div><div class="hist">${expList}</div>
-    <button class="notebtn" id="bName" style="margin-top:10px">${L().nameSet} — ${CHILD()}</button>
+    <button class="notebtn" id="bName" style="margin-top:10px">${L().nameSet} — ${esc(CHILD())}</button>
     <div class="lbl" style="margin-top:14px">${KL().nightT}</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:#c7ccd6">
       <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nOn" style="width:auto;margin:0"> ${KL().nightOn}</label>
@@ -1477,9 +1680,10 @@ function openCog(){
     if(!v){$("ioStatus").style.color="var(--o)";$("ioStatus").textContent=L().pasteEmpty;return;}
     let o;try{o=JSON.parse(v);}catch(e){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importErr;return;}
     if(!o||typeof o!=="object"){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importErr;return;}
-    const n=famRestore(o);if(!n){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importNone;return;}
-    renderAll();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteOk(n);};
-  $("bName").onclick=()=>{const v=prompt(L().nameAsk,CHILD());if(v!==null){if(v.trim())localStorage.setItem("fam.childname",v.trim());else localStorage.removeItem("fam.childname");renderAll();openCog();}};
+    askImportMode(o);};
+  $("bName").onclick=()=>{formBack=openCog;
+    openForm({title:L().nameSet.replace(/^✏️ /,""),fields:[{key:"n",label:L().nameAsk,type:"text",value:CHILD()}],
+      onSave:v=>{if(v.n)localStorage.setItem("fam.childname",v.n);else localStorage.removeItem("fam.childname");renderAll();}});};
   (()=>{const nc=nightCfg();$("nOn").checked=nc.on;$("nFrom").value=nc.from;$("nTo").value=nc.to;
     const sN=()=>nightSave({on:$("nOn").checked,from:$("nFrom").value||"23:00",to:$("nTo").value||"06:00"});
     $("nOn").onchange=sN;$("nFrom").onchange=sN;$("nTo").onchange=sN;})();
@@ -1498,11 +1702,18 @@ function renderAcari(){const s=acari();$("h_acari").textContent=L().acariH;$("ac
   $("acariBreak").textContent=s?L().acariBreak(acariRemain(s),s.perDay||2):L().acariSetup;}
 function renderAcariReminder(){const el=$("acariReminder"),s=acari();
   if(s&&acariDaysLeft(s)<=14){el.hidden=false;el.textContent=L().acariRemind(acariDaysLeft(s));}else el.hidden=true;}
-function acariBuyFn(){const s0=acari();const v=prompt(L().acariAsk,"4");if(v===null)return;const boxes=parseFloat(v);if(!boxes)return;
-  const ppb=parseFloat(prompt(L().acariPpb,"30"))||30;
-  let perDay=s0?(s0.perDay||2):2;if(!s0){const pd=parseFloat(prompt(L().acariPerDay,"2"));if(pd&&pd>0)perDay=pd;}
-  const s={count:Math.round(boxes*ppb)+acariRemain(s0),perDay,since:iso(new Date())};
-  localStorage.setItem("fam.acari",JSON.stringify(s));renderAll();}
+function acariBuyFn(){const s0=acari();
+  openForm({title:s0?L().acariBuy.replace(/^💊 /,""):L().acariSet.replace(/^💊 /,""),fields:[
+    {key:"boxes",label:L().acariAsk.replace(/[?？]$/,""),type:"number",min:0,step:0.5,value:4,required:true},
+    {key:"ppb",label:L().acariPpb.replace(/[?？]$/,""),type:"number",min:1,value:30},
+    {key:"perDay",label:L().acariPerDay,type:"number",min:1,value:s0?(s0.perDay||2):2}],
+   onSave:v=>{
+     const boxes=v.boxes||0;if(!boxes)return;
+     const ppb=v.ppb&&v.ppb>0?v.ppb:30;
+     const perDay=v.perDay&&v.perDay>0?v.perDay:(s0?(s0.perDay||2):2);
+     const s={count:Math.round(boxes*ppb)+acariRemain(s0),perDay,since:iso(new Date())};
+     try{localStorage.setItem("fam.acari",JSON.stringify(s));}catch(e){storageFull(e);}
+     renderAll();}});}
 
 /* ============ View của Con (Kid mode) + Tối ban đêm ============ */
 const KX={
@@ -1577,10 +1788,10 @@ function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18
 function allRoutineDone(){const a=anItems();return a.length>0&&a.every(it=>anDone(it.id));}
 let kidCheer="";
 
-function getMoneyHistory(s) {
+function getMoneyHistory(s, count) {
   let bal = s.pocketMoney || 0;
   const points = [{ date: iso(new Date()), bal: bal }];
-  const logs = (s.keoLog || []).filter(x => x.cur === "euro").slice(0, 5);
+  const logs = (s.keoLog || []).filter(x => x.cur === "euro").slice(0, count || 5);
   for (const log of logs) {
     bal -= log.delta;
     points.push({ date: log.date, bal: bal });
@@ -1611,16 +1822,16 @@ function renderMoneyChart(s) {
 function renderKid(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
   const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
-    return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?T_val(b.name):KL().badgeLock(b.t)}</span></div>`;}).join("");
+    return `<div class="kidbadge${got?' got':''}">${got?b.e:"🔒"}<span>${got?esc(T_val(b.name)):KL().badgeLock(b.t)}</span></div>`;}).join("");
   const shopChips=s.shop.length?s.shop.map(it=>{const icon=it.cur==="sao"?"⭐":"🍬";
-    return `<button class="kidbadge got" data-kidshop="${it.id}" style="cursor:pointer;outline:none">${it.e}<span>${T_val(it.name)} (${it.cost}${icon})</span></button>`;}).join(""):`<div class="empty">—</div>`;
+    return `<button class="kidbadge got" data-kidshop="${it.id}" style="cursor:pointer;outline:none">${it.e}<span>${esc(T_val(it.name))} (${it.cost}${icon})</span></button>`;}).join(""):`<div class="empty">—</div>`;
   const goals=s.goals.length?s.goals.map(g=>`<div class="chk${g.done?' done':''}" data-gk="${g.id}">
-      <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji||'🎯'} ${T_val(g.text)}</span></div>`).join("")
+      <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji||'🎯'} ${esc(T_val(g.text))}</span></div>`).join("")
     :`<div class="empty">${KL().goalsEmpty}</div>`;
-  const diary=ld("fam.kid.diary").slice(-3).reverse().map(d=>`<div class="row">✨ ${dmy(d.date)} — ${d.text}</div>`).join("");
+  const diary=ld("fam.kid.diary").slice(-3).reverse().map(d=>`<div class="row">✨ ${dmy(d.date)} — ${esc(d.text)}</div>`).join("");
   $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
-     <div class="kidhi">${greetWord()}, ${CHILD()}! 🌟</div></div>
+     <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟</div></div>
    <div class="wallets" style="grid-template-columns:1fr 1fr 1fr">
      <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
      <div class="wallet keo"><div class="n${negK}">🍬 ${s.keo||0}</div><div class="sub">${KL().walletKeoSub((s.keo||0)*10)}</div></div>
@@ -1636,7 +1847,7 @@ function renderKid(){const s=kidState();
    <div class="kidbadges">${shopChips}</div>
    <div class="kidsec">${KL().badgesT}</div>
    <div class="kidbadges">${badges}</div>
-   ${kidCheer?`<div class="kidcheer">${kidCheer}</div>`:""}
+   ${kidCheer?`<div class="kidcheer">${esc(kidCheer)}</div>`:""}
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
      <div style="width:100%;height:1px;background:var(--bd);margin:6px 0"></div>
@@ -1666,6 +1877,9 @@ function renderKid(){const s=kidState();
 function enterKidTab(){kidCheer="";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
+  const undoA=ld(UNDO_KEY),lastU=undoA[undoA.length-1];
+  $("undoBar").innerHTML=lastU?`<button class="critbtn" id="undoBtn" style="margin:6px 0 0;color:#ffd98a;border-color:#6a5520">${esc(L().undoBtn(lastU.label))}</button>`:"";
+  if($("undoBtn"))$("undoBtn").onclick=undoPop;
   $("h_sao").textContent=L().h_sao;$("h_badges").textContent=L().h_badges;$("h_keo").textContent=L().h_keo;
   $("pSao").textContent=s.sao||0;$("pSao").className="bignum gold"+negS;
   $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
@@ -1679,7 +1893,7 @@ function renderParentReward(){const s=kidState();
     const color = isNeg ? "var(--r)" : "var(--g)";
     const signStr = adj.delta > 0 ? `+${adj.delta}` : `${adj.delta}`;
     const displayName = LANG === "vi" ? adj.text : (adj.textDe || adj.text);
-    return `<button class="gumbtn ghost" data-sao-adj-id="${adj.id}" style="margin:0;border-color:${border};color:${color};width:100%;font-size:13px;padding:8px 4px">${adj.emoji || "⭐"} ${displayName} (${signStr}⭐)</button>`;
+    return `<button class="gumbtn ghost" data-sao-adj-id="${adj.id}" style="margin:0;border-color:${border};color:${color};width:100%;font-size:13px;padding:8px 4px">${adj.emoji || "⭐"} ${esc(displayName)} (${signStr}⭐)</button>`;
   }).join("");
   
   $("h_money").textContent=L().h_money;
@@ -1694,14 +1908,14 @@ function renderParentReward(){const s=kidState();
   $("evalBtns").innerHTML=L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}${ev&&ev.key===r[0]?' sel':''}" data-eval="${r[0]}">${r[1]}<br>${r[2]}</button>`).join("");
   $("evalStatus").textContent=L().evalStatus(ev?L().evalRatings.find(r=>r[0]===ev.key)[1]:null);
   $("rwList").innerHTML=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
-    return `<div class="row" style="${got?'':'opacity:.55'}">${got?b.e:'🔒'} <b>${T_val(b.name)}</b> · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().mgEmpty}</div>`;
+    return `<div class="row" style="${got?'':'opacity:.55'}">${got?b.e:'🔒'} <b>${esc(T_val(b.name))}</b> · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+esc(b.reward):''}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().mgEmpty}</div>`;
   $("rwHint").textContent=L().rwHint;
   $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
   $("keoUnit").textContent=L().keoUnit;
   $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
   $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;$("keoLogT").textContent=L().keoLogT;
   $("keoLog").innerHTML=(s.keoLog||[]).slice(0,12).map(e=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
-    return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':' '}${ic} — ${T_val(e.reason||'')}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;
+    return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':' '}${ic} — ${esc(T_val(e.reason||''))}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;
   document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=()=>saoManual(1);
@@ -1718,8 +1932,9 @@ function renderParentReward(){const s=kidState();
         ? `Xác nhận ${signWord} ${absDelta} sao vì con ${displayName}?`
         : `Bestätigen: ${absDelta} Sterne ${signWord} wegen "${displayName}"?`;
       if (!confirm(confirmMsg)) return;
-      
+
       const s = kidState();
+      undoPush(`${adj.delta>0?"+":""}${adj.delta}⭐ ${displayName}`);
       s.sao = (s.sao || 0) + adj.delta;
       if (adj.delta > 0) s.saoLife = (s.saoLife || 0) + adj.delta;
       s.keoLog.unshift({
@@ -1745,64 +1960,68 @@ function seedDailyChecklist(){
   saveAn(a);localStorage.setItem("fam.an.seeded_v2","1");
 }
 /* --- CRUD prompt-based cho checklist / mục tiêu tuần (dùng trong ⚙️ menu quản lý) --- */
-function addAnItemPrompt(){const t=prompt(LANG==="vi"?"Việc hằng ngày mới:":"Neue tägliche Aufgabe:");if(t&&t.trim()){const a=anItems();a.push({id:newId(),t:t.trim()});saveAn(a);renderDaily();}}
+function addAnItemPrompt(){openForm({title:LANG==="vi"?"Việc hằng ngày mới":"Neue tägliche Aufgabe",
+  fields:[{key:"t",label:LANG==="vi"?"Tên việc":"Aufgabe",type:"text",required:true}],
+  onSave:v=>{const a=anItems();a.push({id:newId(),t:v.t});saveAn(a);renderDaily();}});}
 function editAnItemPrompt(id){const a=anItems(),it=a.find(x=>x.id===id);if(!it)return;
-  const t=prompt(LANG==="vi"?"Sửa việc:":"Bearbeiten:",it.t);if(t&&t.trim()){it.t=t.trim();saveAn(a);renderDaily();}}
+  openForm({title:LANG==="vi"?"Sửa việc hằng ngày":"Aufgabe bearbeiten",
+    fields:[{key:"t",label:LANG==="vi"?"Tên việc":"Aufgabe",type:"text",value:it.t,required:true}],
+    onSave:v=>{it.t=v.t;saveAn(a);renderDaily();}});}
 function delAnItemPrompt(id){if(!confirm(LANG==="vi"?"Xoá việc này?":"Löschen?"))return;
   saveAn(anItems().filter(x=>x.id!==id));localStorage.removeItem(anChkKey(id));renderDaily();}
-function addGoalPrompt(){const t=prompt(LANG==="vi"?"Mục tiêu tuần mới:":"Neues Wochenziel:");if(!t||!t.trim())return;
-  const s=kidState();s.goals.push({id:newId(),text:t.trim(),emoji:"🎯",week:isoWeek(iso(new Date())),done:false});kidSave(s);renderRewardAll();}
-function editGoalPrompt(id){const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)return;
-  const t=prompt(LANG==="vi"?"Sửa mục tiêu:":"Ziel bearbeiten:",g.text);if(t&&t.trim()){g.text=t.trim();kidSave(s);renderRewardAll();}}
+function goalForm(title,init,save){
+  openForm({title,fields:[
+    {key:"text",label:LANG==="vi"?"Mục tiêu":"Ziel",type:"text",value:init.text,required:true},
+    {key:"emoji",label:"Emoji",type:"emoji",value:init.emoji||"🎯"}],
+   onSave:v=>save(v.text,v.emoji||"🎯")});}
+function addGoalPrompt(){goalForm(LANG==="vi"?"Mục tiêu tuần mới":"Neues Wochenziel",{},
+  (text,emoji)=>{const s=kidState();s.goals.push({id:newId(),text,emoji,week:isoWeek(iso(new Date())),done:false});kidSave(s);renderRewardAll();});}
+function editGoalPrompt(id){const s0=kidState(),g0=s0.goals.find(x=>x.id===id);if(!g0)return;
+  goalForm(LANG==="vi"?"Sửa mục tiêu tuần":"Wochenziel bearbeiten",g0,
+  (text,emoji)=>{const s=kidState(),g=s.goals.find(x=>x.id===id);if(!g)return;g.text=text;g.emoji=emoji;kidSave(s);renderRewardAll();});}
 function delGoalPrompt(id){if(!confirm(LANG==="vi"?"Xoá mục tiêu này?":"Ziel löschen?"))return;
   const s=kidState();s.goals=s.goals.filter(x=>x.id!==id);kidSave(s);renderRewardAll();}
 /* --- CRUD prompt-based cho 🏅 mốc huy hiệu --- */
-function addTierPrompt(){const s=kidState();
-  const name=prompt(LANG==="vi"?"Tên mốc mới:":"Name der neuen Stufe:","Mốc mới");if(name===null)return;
-  const t=parseInt(prompt(LANG==="vi"?"Mốc — tổng số ⭐ để mở:":"Schwelle — Gesamt-⭐:","15"),10);if(!t||t<1)return;
-  const bonus=parseInt(prompt(LANG==="vi"?"Bonus kẹo khi mở:":"Bonus-Süßigkeiten:","2"),10);
-  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:","🎖️")||"🎖️";
-  const reward=prompt(LANG==="vi"?"Phần thưởng đời thực (có thể để trống):":"Reale Belohnung (optional):","")||"";
-  s.tiers.push({id:newId(),t,e:e.trim()||"🎖️",name:(name||"Mốc mới").trim()||"Mốc mới",bonus:isNaN(bonus)?0:Math.max(0,bonus),reward:reward.trim()});
-  checkBadges(s);kidSave(s);renderRewardAll();}
-function editTierPrompt(id){const s=kidState(),b=s.tiers.find(x=>x.id===id);if(!b)return;
-  const name=prompt(LANG==="vi"?"Tên mốc:":"Name der Stufe:",b.name);if(name===null)return;
-  const t=parseInt(prompt(LANG==="vi"?"Mốc — tổng số ⭐ để mở:":"Schwelle — Gesamt-⭐:",b.t),10);
-  const bonus=parseInt(prompt(LANG==="vi"?"Bonus kẹo khi mở:":"Bonus-Süßigkeiten:",b.bonus),10);
-  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:",b.e);
-  const reward=prompt(LANG==="vi"?"Phần thưởng đời thực (có thể để trống):":"Reale Belohnung (optional):",b.reward||"");
-  if(name&&name.trim())b.name=name.trim();
-  if(t&&t>=1)b.t=t;
-  if(!isNaN(bonus)&&bonus>=0)b.bonus=bonus;
-  if(e&&e.trim())b.e=e.trim();
-  if(reward!==null)b.reward=reward.trim();
-  checkBadges(s);kidSave(s);renderRewardAll();}
+function tierForm(title,init,save){
+  openForm({title,fields:[
+    {key:"name",label:LANG==="vi"?"Tên mốc":"Name der Stufe",type:"text",value:init.name,required:true},
+    {key:"t",label:LANG==="vi"?"Mốc — tổng số ⭐ để mở":"Schwelle — Gesamt-⭐",type:"number",min:1,value:init.t!=null?init.t:15,required:true},
+    {key:"bonus",label:LANG==="vi"?"Bonus kẹo khi mở":"Bonus-Süßigkeiten",type:"number",min:0,value:init.bonus!=null?init.bonus:2},
+    {key:"e",label:"Emoji",type:"emoji",value:init.e||"🎖️"},
+    {key:"reward",label:LANG==="vi"?"Phần thưởng đời thực (tùy chọn)":"Reale Belohnung (optional)",type:"text",value:init.reward||""}],
+   onSave:v=>{
+     const t=Math.round(v.t||0);if(t<1)return;
+     save(v.name,t,Math.max(0,Math.round(v.bonus||0)),v.e||"🎖️",v.reward||"");}});}
+function addTierPrompt(){tierForm(LANG==="vi"?"Mốc huy hiệu mới":"Neue Abzeichen-Stufe",{},
+  (name,t,bonus,e,reward)=>{const s=kidState();s.tiers.push({id:newId(),t,e,name,bonus,reward});checkBadges(s);kidSave(s);renderRewardAll();});}
+function editTierPrompt(id){const b0=kidState().tiers.find(x=>x.id===id);if(!b0)return;
+  tierForm(LANG==="vi"?"Sửa mốc huy hiệu":"Stufe bearbeiten",b0,
+  (name,t,bonus,e,reward)=>{const s=kidState(),b=s.tiers.find(x=>x.id===id);if(!b)return;
+    b.name=name;b.t=t;b.bonus=bonus;b.e=e;b.reward=reward;checkBadges(s);kidSave(s);renderRewardAll();});}
 function delTierPrompt(id){if(!confirm(LANG==="vi"?"Xoá mốc huy hiệu này?":"Diese Stufe löschen?"))return;
   const s=kidState();s.tiers=s.tiers.filter(x=>x.id!==id);s.badgesGot=s.badgesGot.filter(g=>g!==id);kidSave(s);renderRewardAll();}
 /* --- CRUD prompt-based cho 🛒 cửa hàng đổi thưởng --- */
-function addShopPrompt(){const s=kidState();
-  const name=prompt(LANG==="vi"?"Tên món mới:":"Name des neuen Artikels:","Món mới");if(name===null)return;
-  const cost=parseInt(prompt(LANG==="vi"?"Giá (số điểm):":"Preis (Punkte):","5"),10);if(!cost||cost<1)return;
-  const curV=prompt(LANG==="vi"?"Tiêu bằng loại điểm nào? 1=⭐ Sao · 2=🍬 Kẹo":"Welche Punkte? 1=⭐ Sterne · 2=🍬 Süßigkeiten","2");
-  const cur=curV==="1"?"sao":"keo";
-  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:","🎁")||"🎁";
-  s.shop.push({id:newId(),e:e.trim()||"🎁",name:(name||"Món mới").trim()||"Món mới",cost,cur});
-  kidSave(s);renderRewardAll();}
-function editShopPrompt(id){const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)return;
-  const name=prompt(LANG==="vi"?"Tên món:":"Name:",it.name);if(name===null)return;
-  const cost=parseInt(prompt(LANG==="vi"?"Giá (số điểm):":"Preis (Punkte):",it.cost),10);
-  const curV=prompt(LANG==="vi"?"Tiêu bằng loại điểm nào? 1=⭐ Sao · 2=🍬 Kẹo":"Welche Punkte? 1=⭐ Sterne · 2=🍬 Süßigkeiten",it.cur==="sao"?"1":"2");
-  const e=prompt(LANG==="vi"?"Emoji:":"Emoji:",it.e);
-  if(name&&name.trim())it.name=name.trim();
-  if(cost&&cost>=1)it.cost=cost;
-  if(curV==="1"||curV==="2")it.cur=curV==="1"?"sao":"keo";
-  if(e&&e.trim())it.e=e.trim();
-  kidSave(s);renderRewardAll();}
+function shopForm(title,init,save){
+  openForm({title,fields:[
+    {key:"name",label:LANG==="vi"?"Tên món":"Name",type:"text",value:init.name,required:true},
+    {key:"cost",label:LANG==="vi"?"Giá (số điểm)":"Preis (Punkte)",type:"number",min:1,value:init.cost!=null?init.cost:5,required:true},
+    {key:"cur",label:LANG==="vi"?"Tiêu bằng loại điểm":"Punkteart",type:"chips",options:[["sao","⭐ "+(LANG==="vi"?"Sao":"Sterne")],["keo","🍬 "+(LANG==="vi"?"Kẹo":"Süßigkeiten")]],value:init.cur||"keo"},
+    {key:"e",label:"Emoji",type:"emoji",value:init.e||"🎁"}],
+   onSave:v=>{
+     const cost=Math.round(v.cost||0);if(cost<1)return;
+     save(v.name,cost,v.cur==="sao"?"sao":"keo",v.e||"🎁");}});}
+function addShopPrompt(){shopForm(LANG==="vi"?"Món đổi thưởng mới":"Neuer Shop-Artikel",{},
+  (name,cost,cur,e)=>{const s=kidState();s.shop.push({id:newId(),e,name,cost,cur});kidSave(s);renderRewardAll();});}
+function editShopPrompt(id){const it0=kidState().shop.find(x=>x.id===id);if(!it0)return;
+  shopForm(LANG==="vi"?"Sửa món đổi thưởng":"Artikel bearbeiten",it0,
+  (name,cost,cur,e)=>{const s=kidState(),it=s.shop.find(x=>x.id===id);if(!it)return;
+    it.name=name;it.cost=cost;it.cur=cur;it.e=e;kidSave(s);renderRewardAll();});}
 function delShopPrompt(id){if(!confirm(LANG==="vi"?"Xoá món này?":"Diesen Artikel löschen?"))return;
   const s=kidState();s.shop=s.shop.filter(x=>x.id!==id);kidSave(s);renderRewardAll();}
 /* --- ↺ Reset sao & kẹo --- */
 function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   const s=kidState();
+  undoPush("↺ Reset");
   s.sao=0;s.saoLife=0;s.keo=0;s.badgesGot=[];s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
@@ -1822,33 +2041,33 @@ function renderManageBody(){
     <button class="add" data-mgadd="${addKind}">${addLabel}</button>`;
   const t0=new Date();t0.setHours(0,0,0,0);
   $("mgBody").innerHTML=
-     sec(L().mgSecCheck, anItems().map(c=>row(T_val(c.t),"check:"+c.id)).join(""), "check", L().mgAddCheck)
-    +sec(L().mgSecSaoAdjust, saoAdjusts().map(adj => row(`${adj.emoji || '⭐'} ${adj.text} / ${adj.textDe || adj.text} · <b style="color:${adj.delta < 0 ? 'var(--r)' : 'var(--g)'}">${adj.delta > 0 ? '+' : ''}${adj.delta}⭐</b>`, "saoadj:" + adj.id)).join(""), "saoadj", L().mgAddSaoAdjust)
-    +sec(L().mgSecGoal, s.goals.map(g=>row(`${g.emoji||'🎯'} ${T_val(g.text)}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
-    +sec(L().mgSecShop, s.shop.map(it=>row(`${it.e} ${T_val(it.name)} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${it.cur==='sao'?'⭐':'🍬'}</b>`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
-    +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${b.e} ${T_val(b.name)} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+b.reward:''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
-    +sec(L().mgSecChore, chores().map(c=>row(c.t,"chore:"+c.id)).join(""), "chore", L().mgAddChore)
-    +sec(L().mgSecAppt, dlItems().map(x=>row(x.t+" · "+x.d.split("-").reverse().join("/"),"appt:"+x.id)).join(""), "appt", L().mgAddAppt);
+     sec(L().mgSecCheck, anItems().map(c=>row(esc(T_val(c.t)),"check:"+c.id)).join(""), "check", L().mgAddCheck)
+    +sec(L().mgSecSaoAdjust, saoAdjusts().map(adj => row(`${adj.emoji || '⭐'} ${esc(adj.text)} / ${esc(adj.textDe || adj.text)} · <b style="color:${adj.delta < 0 ? 'var(--r)' : 'var(--g)'}">${adj.delta > 0 ? '+' : ''}${adj.delta}⭐</b>`, "saoadj:" + adj.id)).join(""), "saoadj", L().mgAddSaoAdjust)
+    +sec(L().mgSecGoal, s.goals.map(g=>row(`${g.emoji||'🎯'} ${esc(T_val(g.text))}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
+    +sec(L().mgSecShop, s.shop.map(it=>row(`${it.e} ${esc(T_val(it.name))} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${it.cost}${it.cur==='sao'?'⭐':'🍬'}</b>`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
+    +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${b.e} ${esc(T_val(b.name))} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+esc(b.reward):''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
+    +sec(L().mgSecChore, chores().map(c=>row(esc(c.t),"chore:"+c.id)).join(""), "chore", L().mgAddChore)
+    +sec(L().mgSecAppt, dlItems().map(x=>row(esc(x.t)+" · "+x.d.split("-").reverse().join("/"),"appt:"+x.id)).join(""), "appt", L().mgAddAppt);
   // [data-mgadd/mgedit/mgdel] handled by global delegate at document level
 }
 function mgAdd(kind){
+  formBack=openManage;   // form sheet đè lên menu ⚙️ -> mở lại menu sau khi lưu/huỷ
   if(kind==="saoadj")addSaoAdjPrompt();
   else if(kind==="check")addAnItemPrompt();
   else if(kind==="goal")addGoalPrompt();
   else if(kind==="shop")addShopPrompt();
   else if(kind==="tier")addTierPrompt();
   else if(kind==="chore")addChore();
-  else if(kind==="appt")addApptPrompt();
-  if($("mgBody"))renderManageBody();}
+  else if(kind==="appt")addApptPrompt();}
 function mgEdit(tok){const[t,id]=tok.split(":");
+  formBack=openManage;
   if(t==="saoadj")editSaoAdjPrompt(id);
   else if(t==="check")editAnItemPrompt(id);
   else if(t==="goal")editGoalPrompt(id);
   else if(t==="shop")editShopPrompt(id);
   else if(t==="tier")editTierPrompt(id);
   else if(t==="chore")editChore(id);
-  else if(t==="appt")editApptPrompt(id);
-  if($("mgBody"))renderManageBody();}
+  else if(t==="appt")editApptPrompt(id);}
 function mgDel(tok){const[t,id]=tok.split(":");
   if(t==="saoadj")delSaoAdjPrompt(id);
   else if(t==="check")delAnItemPrompt(id);
@@ -1888,6 +2107,7 @@ document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.da
 seedDailyChecklist();migrateKid();checkPocketMoneyAllowance();checkPocketMoneyInterest();autoSnapshot();renderAll();setTab(TAB);
 $("mgOpenBtn").onclick=openManage;
 $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEventListener("change",importFile);
+$("statsBtn").onclick=openStats;
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
