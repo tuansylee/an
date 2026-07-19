@@ -162,8 +162,6 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
 .kidavpick span.sel{background:#2a3550;outline:2px solid var(--blue)}
-.kiddiary{font-size:13px;color:#c7ccd6;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:6px 12px;margin-top:6px}
-.kiddiary .row{padding:6px 0;border-top:1px solid var(--bd)}.kiddiary .row:first-child{border-top:0}
 /* ===== Tối giản ban đêm ===== */
 #night{position:fixed;inset:0;z-index:80;background:#000;color:#3a3f4a;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;cursor:pointer;user-select:none}
@@ -200,6 +198,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
   <button data-tab="kid" id="tab_kid"></button>
   <button data-tab="health" id="tab_health"></button>
   <button data-tab="lich" id="tab_lich"></button>
+  <button data-tab="hist" id="tab_hist"></button>
 </div>
 
 <!-- ===== TAB: TRỰC + việc hằng ngày ===== -->
@@ -262,8 +261,6 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
        <button class="gumbtn ghost" id="gMinus" style="margin:0;flex:1"></button>
      </div>
      <button class="gumbtn ghost" id="gPay"></button>
-     <div class="lbl" id="keoLogT" style="margin-top:12px"></div>
-     <div class="hist" id="keoLog"></div>
     </div>
     <h2 id="h_money"></h2>
     <div class="gamebox" style="background:linear-gradient(155deg,#102a1e,#1a2420);border-color:#3a5a40;margin-bottom:8px">
@@ -282,6 +279,9 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 <!-- ===== TAB: VIEW CỦA CON ===== -->
 <div class="panel" data-panel="kid" hidden><div id="kidPanel"></div></div>
 
+<!-- ===== TAB: LỊCH SỬ (chỉ xem) ===== -->
+<div class="panel" data-panel="hist" hidden><div id="histPanel"></div></div>
+
 <!-- ===== TAB: SỨC KHỎE ===== -->
 <div class="panel" data-panel="health" hidden>
  <div class="page">
@@ -292,9 +292,8 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
      <div class="hbtn nose" data-h="nose"><span class="e">🩸</span><span id="b_nose"></span></div>
      <div class="hbtn mood" data-h="mood"><span class="e">🙂</span><span id="b_mood"></span></div>
    </div>
-   <div class="hist" id="healthHist"></div>
-   <h2 id="h_sleep"></h2><div class="hist" id="sleepList"></div><button class="add" id="addSleep"></button>
-   <h2 id="h_temp"></h2><div class="hist" id="tempList"></div><button class="add" id="addTemp"></button>
+   <h2 id="h_sleep"></h2><button class="add" id="addSleep"></button>
+   <h2 id="h_temp"></h2><button class="add" id="addTemp"></button>
   </div>
   <div class="col">
    <h2 id="h_acari"></h2>
@@ -304,7 +303,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
      <div class="gbreak" id="acariBreak"></div>
      <button class="gumbtn ghost" id="acariBuy" style="margin-top:6px"></button>
    </div>
-   <h2 id="h_growth"></h2><div class="hist" id="growthList"></div><button class="add" id="addGrowth"></button>
+   <h2 id="h_growth"></h2><button class="add" id="addGrowth"></button>
    <h2 id="h_report"></h2><button class="report" id="repBtn"></button>
   </div>
  </div>
@@ -319,7 +318,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-07-18·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-07-19·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -406,7 +405,7 @@ const T={
    h_keo:"🍬 Kẹo (điểm xịn — tiêu ở cửa hàng)", keoUnit:"kẹo đang có",
    gTest:"📝 Đúng hết bài kiểm tra (+2)", gKonig:"👑 König / nhất lớp (+10)", gPay:"🍬 Đã đưa kẹo thật (trừ)",
    gPlus:"＋ Cộng kẹo", gMinus:"－ Trừ kẹo", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
-   gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay", keoLogT:"Nhật ký điểm (ngày · +/− · lý do)",
+   gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay",
    gPayAsk:"Đưa con mấy cái kẹo?", gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
    sPlus:"＋ Cộng sao", sMinus:"－ Trừ sao", sPlusDef:"Cộng sao tay", sMinusDef:"Trừ sao tay",
    sDelay:"⏳ Trì hoãn / Câu giờ (−1⭐)", sDelayReason:"Câu giờ (trì hoãn)", sDelayConfirm:"Trừ 1 sao vì con câu giờ / trì hoãn?",
@@ -458,8 +457,10 @@ const T={
    mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`,
    statsT:"📊 Thống kê", statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
    statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
-   statsLog:"📒 Nhật ký đầy đủ", statsLogAll:"Tất cả", statsMore:"Xem thêm 50",
-   statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày",
+   statsMore:"Xem thêm 50",
+   statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
+   tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử — mọi bản ghi (chỉ xem)",
+   histAll:"Tất cả", histDiem:"⭐🍬€ Điểm", histSk:"🩺 Sức khỏe", histDo:"😴🌡️📈 Đo đạc", histNk:"✨ Nhật ký",
    statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
    t2lbl:"🔧 Bảo trì nhà (ít quan trọng)", tier1:"Quan trọng", tier2:"Bảo trì nhà",
    addAppt:"＋ Thêm lịch bác sĩ / sự kiện", apptPh:"Vd: Khám dị ứng – BS Müller", evSave:"Lưu", evCancel:"Huỷ",
@@ -488,7 +489,7 @@ const T={
    h_keo:"🍬 Süßigkeiten (echte Punkte — im Shop ausgeben)", keoUnit:"Süßigkeiten aktuell",
    gTest:"📝 Test fehlerfrei (+2)", gKonig:"👑 König (+10)", gPay:"🍬 Süßigkeit gegeben (−)",
    gPlus:"＋ Plus", gMinus:"－ Minus", gReasonTest:"Test fehlerfrei", gReasonKonig:"König",
-   gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −", keoLogT:"Verlauf (Datum · +/− · Grund)",
+   gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −",
    gPayAsk:"Wie viele Süßigkeiten gegeben?", gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
    sPlus:"＋ Sterne", sMinus:"－ Sterne", sPlusDef:"Manuell Sterne +", sMinusDef:"Manuell Sterne −",
    sDelay:"⏳ Zeit schinden (−1⭐)", sDelayReason:"Zeit schinden", sDelayConfirm:"1 Stern abziehen wegen Zeit schinden?",
@@ -540,8 +541,10 @@ const T={
    mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`,
    statsT:"📊 Statistik", statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
    statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
-   statsLog:"📒 Vollständiges Protokoll", statsLogAll:"Alle", statsMore:"50 weitere",
-   statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage",
+   statsMore:"50 weitere",
+   statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
+   tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf — alle Einträge (nur Ansicht)",
+   histAll:"Alle", histDiem:"⭐🍬€ Punkte", histSk:"🩺 Gesundheit", histDo:"😴🌡️📈 Messungen", histNk:"✨ Tagebuch",
    statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
    t2lbl:"🔧 Hauspflege (weniger wichtig)", tier1:"Wichtig", tier2:"Hauspflege",
    addAppt:"＋ Arzttermin / Ereignis hinzufügen", apptPh:"z.B. Allergietest – Dr. Müller", evSave:"Speichern", evCancel:"Abbrechen",
@@ -685,10 +688,6 @@ const saoAdjusts=()=>{const a=ld("fam.saoAdjusts");return a.length?a:defaultSaoA
 const saveSaoAdjusts=a=>sv("fam.saoAdjusts",a);
 const CHILD=()=>localStorage.getItem("fam.childname")||L().childDefault;
 let _idc=0;const newId=()=>"r"+Date.now().toString(36)+(_idc++).toString(36);
-function ensureIds(key){const a=ld(key);let ch=false;a.forEach(x=>{if(!x.id){x.id=newId();ch=true;}});if(ch)sv(key,a);return a;}
-function delEntry(key,id){if(!confirm(LANG==="vi"?"Xoá bản ghi này?":"Eintrag löschen?"))return;
-  sv(key,ld(key).filter(x=>x.id!==id));
-  if(key==="fam.health.logs")renderHealth();else if(key==="fam.sleep")renderSleep();else if(key==="fam.temp")renderTemp();else if(key==="fam.growth")renderGrowth();}
 
 /* ============ Tabs ============ */
 let TAB=localStorage.getItem("fam.tab")||"truc";
@@ -696,6 +695,7 @@ function setTab(t){TAB=t;localStorage.setItem("fam.tab",t);
   document.querySelectorAll(".panel").forEach(p=>p.hidden=p.dataset.panel!==t);
   document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   if(t==="kid")enterKidTab();
+  if(t==="hist"){histFilter="all";histShow=50;renderHist();}
   tickNight();}
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 
@@ -868,9 +868,7 @@ function summ(x){const e={pain:"🤕",nose:"🩸",mood:"🙂"}[x.type];let s=e+"
   else if(x.type==="nose")s+=`${x.amount} · ${x.duration}`+(x.side?` · ${x.side}`:"");
   else s+=x.mood;if(x.note)s+=` — "${esc(x.note)}"`;return s;}
 function renderHealth(){
-  $("h_health").textContent=L().health;$("b_pain").textContent=L().pain;$("b_nose").textContent=L().nose;$("b_mood").textContent=L().mood;
-  const today=ensureIds("fam.health.logs").filter(x=>x.date===iso(new Date())).slice(-6).reverse();
-  $("healthHist").innerHTML=today.length?today.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${summ(x)}</span><span class="ic" data-xdel="fam.health.logs" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${L().nohist}</div>`;}
+  $("h_health").textContent=L().health;$("b_pain").textContent=L().pain;$("b_nose").textContent=L().nose;$("b_mood").textContent=L().mood;}
 const ov=$("ov"),sheet=$("sheet");
 function open(html){sheet.innerHTML=html;ov.hidden=false;}
 function close(){ov.hidden=true;}
@@ -1450,31 +1448,18 @@ function pickRow(items){return `<div class="chips">`+items.map(v=>`<span class="
 function bindPick(cb){sheet.querySelectorAll("[data-pk]").forEach(c=>c.onclick=()=>{sheet.querySelectorAll("[data-pk]").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");cb(c.dataset.pk);});}
 function durH(bed,wake){if(!bed||!wake)return null;const[bh,bm]=bed.split(":").map(Number),[wh,wm]=wake.split(":").map(Number);
   let m=(wh*60+wm)-(bh*60+bm);if(m<0)m+=1440;return(m/60).toFixed(1);}
-function renderSleep(){$("h_sleep").textContent=SL().sleep;$("addSleep").textContent=SL().addSleep;
-  const a=ensureIds("fam.sleep").slice(-5).reverse();
-  $("sleepList").innerHTML=a.length?a.map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">😴 ${dmy(x.date)} · ${x.bed||"–"}→${x.wake||"–"}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${x.quality}`:""}${x.note?` — "${esc(x.note)}"`:""}</span><span class="ic" data-xdel="fam.sleep" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join(""):`<div class="row">${SL().none}</div>`;}
+function renderSleep(){$("h_sleep").textContent=SL().sleep;$("addSleep").textContent=SL().addSleep;}
 function openSleep(){let q=null;
   open(`<h3>${SL().sleep}</h3><div class="lbl">${SL().bed}</div><input id="sBed" type="time" value="21:00">
    <div class="lbl">${SL().wake}</div><input id="sWake" type="time" value="07:00">
    <div class="lbl">${SL().quality}</div>${pickRow(SL().qualities)}<textarea id="sNote" placeholder="${SL().note}"></textarea>`+actBtns());
   bindPick(v=>q=v);$("cC").onclick=close;
   $("cS").onclick=()=>{const a=ld("fam.sleep");a.push({id:newId(),date:iso(new Date()),bed:$("sBed").value,wake:$("sWake").value,quality:q,note:$("sNote").value.trim()});sv("fam.sleep",a);renderSleep();close();};}
-function renderTemp(){$("h_temp").textContent=SL().temp;$("addTemp").textContent=SL().addTemp;
-  const a=ensureIds("fam.temp").slice(-8);
-  const chart=a.length?`<div class="bars">${a.map(x=>{const h=Math.max(4,Math.round((x.v-35)/6*78));
-    return `<div class="b" style="height:${h}px;background:${x.v>=38?'var(--r)':'var(--blue)'}"><span>${x.v}</span></div>`;}).join("")}</div>`:"";
-  const list=a.slice().reverse().map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px;color:${x.v>=38?'var(--r)':'#c7ccd6'}"><span style="flex:1">🌡️ ${dmy(x.date)} · ${x.v}°C${x.v>=38?` (${SL().fever})`:""}${x.note?` — "${esc(x.note)}"`:""}</span><span class="ic" data-xdel="fam.temp" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
-  $("tempList").innerHTML=chart+(a.length?list:`<div class="row">${SL().none}</div>`);}
+function renderTemp(){$("h_temp").textContent=SL().temp;$("addTemp").textContent=SL().addTemp;}
 function openTemp(){open(`<h3>${SL().temp}</h3><div class="lbl">${SL().tempVal}</div>
    <input id="tV" type="number" step="0.1" inputmode="decimal" placeholder="37.0"><textarea id="tNote" placeholder="${SL().note}"></textarea>`+actBtns());
   $("cC").onclick=close;$("cS").onclick=()=>{const v=parseFloat($("tV").value);if(v){const a=ld("fam.temp");a.push({id:newId(),date:iso(new Date()),v,note:$("tNote").value.trim()});sv("fam.temp",a);renderTemp();close();}};}
-function renderGrowth(){$("h_growth").textContent=SL().growth;$("addGrowth").textContent=SL().addGrowth;
-  const a=ensureIds("fam.growth");let chart="";
-  if(a.length){const ws=a.map(x=>x.w).filter(Boolean);const mn=Math.min(...ws),mx=Math.max(...ws);
-    chart=`<div style="font-size:12px;color:var(--mut);margin:2px 0">${SL().weightL} (kg)</div><div class="bars">${a.slice(-8).map(x=>{const h=mx>mn?Math.round((x.w-mn)/(mx-mn)*68)+8:40;
-     return `<div class="b" style="height:${h}px"><span>${x.w}</span></div>`;}).join("")}</div>`;}
-  const list=a.slice().reverse().slice(0,5).map(x=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">📈 ${x.date.split("-").reverse().join("/")} · ${x.h||"–"}cm · ${x.w||"–"}kg</span><span class="ic" data-xdel="fam.growth" data-xid="${x.id}" style="min-width:30px;font-size:15px">✕</span></div>`).join("");
-  $("growthList").innerHTML=chart+(a.length?list:`<div class="row">${SL().none}</div>`);}
+function renderGrowth(){$("h_growth").textContent=SL().growth;$("addGrowth").textContent=SL().addGrowth;}
 function openGrowth(){open(`<h3>${SL().growth}</h3><div class="lbl">${SL().height}</div><input id="gH" type="number" step="0.1" inputmode="decimal" placeholder="125">
    <div class="lbl">${SL().weight}</div><input id="gW" type="number" step="0.1" inputmode="decimal" placeholder="24">`+actBtns());
   $("cC").onclick=close;$("cS").onclick=()=>{const h=parseFloat($("gH").value)||null,w=parseFloat($("gW").value)||null;if(h||w){const a=ld("fam.growth");a.push({id:newId(),date:iso(new Date()),h,w});sv("fam.growth",a);renderGrowth();close();}};}
@@ -1487,13 +1472,39 @@ document.addEventListener("click",e=>{
   const cy=e.target.closest("[data-cyc]");if(cy){cyclePerson(cy.dataset.cyc);return;}
   const th=e.target.closest("[data-togglehidden]");if(th){showHidden=!showHidden;renderAppt();return;}
   const un=e.target.closest("[data-undone]");if(un){undone(un.dataset.undone);return;}
-  const xd=e.target.closest("[data-xdel]");if(xd){delEntry(xd.dataset.xdel,xd.dataset.xid);return;}
   const ma=e.target.closest("[data-mgadd]");if(ma){mgAdd(ma.dataset.mgadd);return;}
   const me=e.target.closest("[data-mgedit]");if(me){mgEdit(me.dataset.mgedit);return;}
   const md=e.target.closest("[data-mgdel]");if(md){mgDel(md.dataset.mgdel);return;}});
 $("gTest").onclick=()=>addKeo(2,L().gReasonTest);$("gKonig").onclick=()=>addKeo(10,L().gReasonKonig);$("gPay").onclick=payKeo;
 $("gPlus").onclick=()=>keoManual(1);$("gMinus").onclick=()=>keoManual(-1);$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
+
+/* ============ 🕘 Tab Lịch sử — timeline gộp mọi nguồn, chỉ xem ============ */
+let histFilter="all",histShow=50;
+function histEntries(){
+  const out=[];
+  // rec: càng lớn = càng mới trong cùng ngày (keoLog lưu mới→cũ, các mảng khác cũ→mới)
+  (kidState().keoLog||[]).forEach((e,i)=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
+    out.push({date:e.date,cat:"diem",rec:-i,
+      html:`<span style="color:${e.delta>0?'var(--g)':'var(--r)'}">${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':''}${ic}</span> — ${esc(T_val(e.reason||''))}`});});
+  ld("fam.health.logs").forEach((x,i)=>out.push({date:x.date,cat:"sk",rec:i,html:summ(x)}));
+  ld("fam.sleep").forEach((x,i)=>out.push({date:x.date,cat:"do",rec:i,
+    html:`😴 ${esc(x.bed||"–")}→${esc(x.wake||"–")}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${esc(x.quality)}`:""}${x.note?` — "${esc(x.note)}"`:""}`}));
+  ld("fam.temp").forEach((x,i)=>out.push({date:x.date,cat:"do",rec:i,
+    html:`<span style="color:${x.v>=38?'var(--r)':'inherit'}">🌡️ ${x.v}°C${x.v>=38?` (${SL().fever})`:""}</span>${x.note?` — "${esc(x.note)}"`:""}`}));
+  ld("fam.growth").forEach((x,i)=>out.push({date:x.date,cat:"do",rec:i,html:`📈 ${x.h||"–"}cm · ${x.w||"–"}kg`}));
+  ld("fam.kid.diary").forEach((x,i)=>out.push({date:x.date,cat:"nk",rec:i,html:`✨ ${esc(x.text)}`}));
+  return out.sort((a,b)=>b.date.localeCompare(a.date)||b.rec-a.rec);}
+function renderHist(){
+  const chips=[["all",L().histAll],["diem",L().histDiem],["sk",L().histSk],["do",L().histDo],["nk",L().histNk]];
+  const all=histEntries(),logs=all.filter(e=>histFilter==="all"||e.cat===histFilter);
+  $("histPanel").innerHTML=`<h2>${L().histT}</h2>
+    <div class="chips">${chips.map(c=>`<span class="chip${histFilter===c[0]?' sel':''}" data-hf="${c[0]}">${c[1]}</span>`).join("")}</div>
+    <div class="hist">${logs.slice(0,histShow).map(e=>`<div class="row">${dmy(e.date)} · ${e.html}</div>`).join("")
+      ||`<div class="row" style="color:var(--mut)">${L().statsNoData}</div>`}</div>
+    ${logs.length>histShow?`<button class="notebtn" id="histMore">${L().statsMore}</button>`:""}`;
+  $("histPanel").querySelectorAll("[data-hf]").forEach(c=>c.onclick=()=>{histFilter=c.dataset.hf;histShow=50;renderHist();});
+  if($("histMore"))$("histMore").onclick=()=>{histShow+=50;renderHist();};}
 
 /* ============ 📊 Thống kê ============ */
 const weekMonKey=ds=>iso(mondayOf(new Date(ds+"T00:00:00")));
@@ -1536,6 +1547,8 @@ function openStats(){
   const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
   const temps=ld("fam.temp").filter(x=>x.date>=iso(cutoff)).slice(-12);
   const tempChart=temps.length?colChart(temps.map(x=>({v:x.v,label:dmy(x.date),color:x.v>=38?"var(--r)":"var(--blue)"})),null,v=>v+"°"):`<div class="empty">${L().statsNoData}</div>`;
+  const grows=ld("fam.growth").filter(x=>x.w).slice(-10);
+  const growChart=grows.length?colChart(grows.map(x=>({v:x.w,label:dmy(x.date),color:"#7a5cd0"})),null,v=>v+"kg"):`<div class="empty">${L().statsNoData}</div>`;
   // 5. 💶 tiền theo thời gian
   const mh=getMoneyHistory(s,20);
   const moneyChart=colChart(mh.map(p=>({v:Number(p.bal.toFixed(2)),label:p.date.split("-").reverse().slice(0,2).join("/"),color:"#3a8a5a"})),null,v=>"€"+v.toFixed(2));
@@ -1547,34 +1560,17 @@ function openStats(){
     <div class="lbl">${L().statsSao}</div>${saoChart}
     <div style="font-size:13px;color:#ffd98a;margin:0 0 12px">${L().statsStreak(s.streak||0,s.bestStreak||0)}</div>
     <div class="lbl">${L().statsEval}</div>${heat}
-    <div class="lbl">${L().statsLog}</div>
-    <div class="chips" id="stFilter">
-      <span class="chip sel" data-lf="all">${L().statsLogAll}</span>
-      <span class="chip" data-lf="sao">⭐</span><span class="chip" data-lf="keo">🍬</span><span class="chip" data-lf="euro">💶</span></div>
-    <div class="hist" id="stLog" style="max-height:220px;overflow:auto"></div>
-    <button class="notebtn" id="stMore" hidden>${L().statsMore}</button>
     <div class="lbl" style="margin-top:14px">${L().statsMoney}</div>${moneyChart}
     <div class="lbl">${L().statsHealth}</div>
     <div class="lbl" style="text-transform:none">${L().statsNose}</div>${noseChart}
     <div class="lbl" style="text-transform:none">${L().statsPain}</div>${painChart}
     <div class="lbl" style="text-transform:none">${L().statsMood}</div>${moodChart}
     <div class="lbl" style="text-transform:none">${L().statsTemp}</div>${tempChart}
+    <div class="lbl" style="text-transform:none">${L().statsGrowth}</div>${growChart}
     <div class="lbl">${L().statsDuty}</div>
     <div class="tally" style="margin:6px 0 12px">${L().tally(tal)}</div>
     <div class="acts"><button class="cancel" id="stClose">${L().mgClose}</button></div>`);
-  let logFilter="all",logShow=50;
-  const renderLog=()=>{
-    const logs=(s.keoLog||[]).filter(e=>logFilter==="all"||(e.cur||"keo")===logFilter);
-    $("stLog").innerHTML=logs.slice(0,logShow).map(e=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
-      return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':''}${ic} — ${esc(T_val(e.reason||''))}</div>`;}).join("")
-      ||`<div class="row" style="color:var(--mut)">${L().statsNoData}</div>`;
-    $("stMore").hidden=logs.length<=logShow;};
-  sheet.querySelectorAll("[data-lf]").forEach(c=>c.onclick=()=>{
-    sheet.querySelectorAll("[data-lf]").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");
-    logFilter=c.dataset.lf;logShow=50;renderLog();});
-  $("stMore").onclick=()=>{logShow+=50;renderLog();};
-  $("stClose").onclick=close;
-  renderLog();}
+  $("stClose").onclick=close;}
 
 /* ============ Sao lưu + Nhập (backup app này HOẶC export /lich) ============ */
 const isMetaKey=k=>k.indexOf("fam.snap")===0||k.indexOf("fam.exports")===0||k.indexOf("fam.undo")===0;
@@ -1730,7 +1726,6 @@ const KX={
    convertMoneyConfirm:"Xác nhận đổi 1 Kẹo 🍬 lấy 0.20 € tiền tiêu vặt?",
    convertMoneyOk:"💶 Đổi được 0.20 € tiền tiêu vặt! 🍬",
    moneyInterest: accrued => `Lãi: +${fmtInterest(accrued)} (2%/năm)`,
-   moneyHistoryT: "Lịch sử số dư của con",
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    shopPreviewT:"🛒 Con có thể đổi (nhờ bố mẹ ở tab 🎁 Thưởng)",
    handQ:"✋ Hôm nay con giơ tay phát biểu chưa?",
@@ -1759,7 +1754,6 @@ const KX={
    convertMoneyConfirm:"Möchtest du wirklich 1 Süßigkeit 🍬 gegen 0.20 € Taschengeld tauschen?",
    convertMoneyOk:"💶 0.20 € Taschengeld erhalten! 🍬",
    moneyInterest: accrued => `Zins: +${fmtInterest(accrued)} (2%/J)`,
-   moneyHistoryT: "Mein Taschengeld-Verlauf",
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    shopPreviewT:"🛒 Das kannst du einlösen (Eltern im Tab 🎁 fragen)",
    handQ:"✋ Hast du dich heute im Unterricht gemeldet?",
@@ -1799,26 +1793,6 @@ function getMoneyHistory(s, count) {
   points.reverse();
   return points;
 }
-function renderMoneyChart(s) {
-  const history = getMoneyHistory(s);
-  const maxBal = Math.max(...history.map(p => p.bal), 1);
-  const minBal = Math.min(...history.map(p => p.bal), 0);
-  const range = maxBal - minBal || 1;
-  const barsHtml = history.map(p => {
-    const height = Math.max(5, Math.min(60, Math.round(((p.bal - minBal) / range) * 60))) + 10;
-    const displayDate = p.date.split("-").reverse().slice(0, 2).join("/");
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div style="font-size:10px;color:#9fe0b0;font-weight:700">€${p.bal.toFixed(2)}</div>
-      <div style="width:100%;height:${height}px;background:linear-gradient(to top,#102a1e,#5fd08a);border-radius:4px;border:1px solid #3a5a40"></div>
-      <div style="font-size:10px;color:var(--mut)">${displayDate}</div>
-    </div>`;
-  }).join("");
-  return `<div class="kidsec" style="margin-top:14px">${KL().moneyHistoryT}</div>
-    <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 10px;display:flex;align-items:flex-end;gap:12px;height:120px;margin-top:6px">
-      ${barsHtml}
-    </div>`;
-}
-
 function renderKid(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
   const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
@@ -1828,7 +1802,6 @@ function renderKid(){const s=kidState();
   const goals=s.goals.length?s.goals.map(g=>`<div class="chk${g.done?' done':''}" data-gk="${g.id}">
       <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji||'🎯'} ${esc(T_val(g.text))}</span></div>`).join("")
     :`<div class="empty">${KL().goalsEmpty}</div>`;
-  const diary=ld("fam.kid.diary").slice(-3).reverse().map(d=>`<div class="row">✨ ${dmy(d.date)} — ${esc(d.text)}</div>`).join("");
   $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
      <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟</div></div>
@@ -1842,7 +1815,6 @@ function renderKid(){const s=kidState();
      <button class="gumbtn indigo" id="kConvertMoney" ${(s.keo||0)<1?'disabled':''}>${KL().convertMoneyBtn}</button>
    </div>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:2px 0 10px">${KL().streak(s.streak||0)}</div>
-   ${renderMoneyChart(s)}
    <div class="kidsec" style="margin-top:0">${KL().shopPreviewT}</div>
    <div class="kidbadges">${shopChips}</div>
    <div class="kidsec">${KL().badgesT}</div>
@@ -1861,8 +1833,7 @@ function renderKid(){const s=kidState();
    <div class="kidsec">${KL().moodT}</div>
    <div class="kidmood" id="kMood">${L().moods.map((m,i)=>`<button data-mi="${i}">${m.split(" ")[0]}</button>`).join("")}</div>
    <div class="kidsec">${KL().goodT}</div>
-   <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>
-   ${diary?`<div class="kiddiary">${diary}</div>`:""}`;
+   <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>`;
   const P=$("kidPanel");P.style.setProperty("--kidc",s.color||"#5fd08a");
   P.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
   P.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{const st=kidState();st.color=b.dataset.color;kidSave(st);renderKid();});
@@ -1913,9 +1884,7 @@ function renderParentReward(){const s=kidState();
   $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
   $("keoUnit").textContent=L().keoUnit;
   $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
-  $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;$("keoLogT").textContent=L().keoLogT;
-  $("keoLog").innerHTML=(s.keoLog||[]).slice(0,12).map(e=>{const ic=e.cur==="sao"?"⭐":e.cur==="euro"?"💶":"🍬";
-    return `<div class="row" style="color:${e.delta>0?'var(--g)':'var(--r)'}">${dmy(e.date)} · ${e.delta>0?'+':''}${e.delta}${e.cur==='euro'?'€':' '}${ic} — ${esc(T_val(e.reason||''))}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().nohist}</div>`;
+  $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;
   document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=()=>saoManual(1);
@@ -2097,11 +2066,12 @@ document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.datase
 function renderAll(){
   $("footNote").textContent=L().foot+" · v"+BUILD;
   $("tab_truc").textContent=L().tab_truc;$("tab_lich").textContent=L().tab_lich;$("tab_con").textContent=L().tab_con;$("tab_health").textContent=L().tab_health;
+  $("tab_hist").textContent=L().tab_hist;
   $("tab_kid").textContent="🧒 "+CHILD();
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
   $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;
   $("h_manage").textContent=L().h_manage;$("mgOpenBtn").textContent=L().mgOpenBtn;
-  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();
+  renderDuty();renderDaily();renderChores();renderAppt();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();renderHist();
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 seedDailyChecklist();migrateKid();checkPocketMoneyAllowance();checkPocketMoneyInterest();autoSnapshot();renderAll();setTab(TAB);
