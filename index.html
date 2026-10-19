@@ -25,7 +25,8 @@ h2{font-size:13px;letter-spacing:.08em;color:var(--mut);margin:16px 4px 8px;text
 .lang button.on{background:var(--g);color:#06210f;border-color:var(--g);font-weight:700}
 .mockbanner{background:#2a2410;border:1px solid #6a5520;color:#ffd98a;border-radius:10px;padding:8px 12px;font-size:13px;margin:0 4px 10px}
 .tabs{display:flex;gap:6px;margin:0 4px 12px;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:10}
-.tabs button{flex:1;min-width:0;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:11px 4px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;line-height:1.2}
+.tabs button{flex:1;min-width:0;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:11px 4px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;line-height:1.2}
+@media(max-width:420px){.tabs{gap:3px}.tabs button{font-size:10.5px;padding:9px 1px;letter-spacing:-.01em}}
 .tabs button.on{background:#1d2740;border-color:var(--blue);color:var(--fg)}
 .page{display:grid;grid-template-columns:1fr;gap:8px}
 @media(min-width:820px){.page{grid-template-columns:1fr 1fr;gap:22px;align-items:start}}
@@ -494,9 +495,9 @@ const T={
    mgSecShop:"🛒 Cửa hàng đổi thưởng", mgAddShop:"＋ Thêm món",
    mgEmpty:"— trống —",
    cog:"⚙️", backupT:"Sao lưu & dữ liệu", autoOn:"Tự động sao lưu mỗi đêm: BẬT (trong máy)", lastSnap:"Bản tự động gần nhất",
-   exportFile:"Xuất ra file", importFile:"Nhập từ file (backup hoặc /lich)", snapHist:"Bản tự lưu (7 ngày gần nhất) — chạm ↩ để khôi phục",
+   exportFile:"Xuất ra file", importFile:"Nhập từ file (backup hoặc /lich)", snapHist:"Bản tự lưu (4 ngày gần nhất) - chạm ↩ để khôi phục",
    expHist:"📁 Bản đã xuất (giữ trong máy) — ↩ khôi phục (ghi đè) · ✕ xoá",
-   restoreAsk:"Khôi phục về bản này? Dữ liệu hiện tại sẽ bị ghi đè.", importOk:"Đã nhập ✅",
+   restoreAsk:"Khôi phục về bản này? Dữ liệu hiện tại sẽ bị ghi đè.", restoreFull:"⚠️ Bộ nhớ đầy, khôi phục chưa xong hết (sao/kẹo được ghi trước). Hãy xuất file backup ngay.", importOk:"Đã nhập ✅",
    importErr:"File không hợp lệ ❌", importNone:"File không có dữ liệu hợp lệ (cần backup app này hoặc export /lich).",
    pasteT:"📋 Hoặc chép/dán JSON trực tiếp (không cần file)", pasteExport:"Xuất ra ô", pasteImport:"Nhập từ ô (ghi đè)",
    pastePh:"Dán JSON sao lưu (app này hoặc /lich) vào đây rồi bấm \"Nhập từ ô\"…",
@@ -588,9 +589,9 @@ const T={
    mgSecShop:"🛒 Belohnungs-Shop", mgAddShop:"＋ Artikel hinzufügen",
    mgEmpty:"— leer —",
    cog:"⚙️", backupT:"Sicherung & Daten", autoOn:"Auto-Sicherung jede Nacht: AN (im Gerät)", lastSnap:"Letzte Auto-Sicherung",
-   exportFile:"Als Datei exportieren", importFile:"Aus Datei importieren (Backup oder /lich)", snapHist:"Auto-Sicherungen (letzte 7 Tage) — ↩ zum Wiederherstellen",
+   exportFile:"Als Datei exportieren", importFile:"Aus Datei importieren (Backup oder /lich)", snapHist:"Auto-Sicherungen (letzte 4 Tage) - ↩ zum Wiederherstellen",
    expHist:"📁 Exportierte Stände (im Gerät) — ↩ wiederherstellen (überschreiben) · ✕ löschen",
-   restoreAsk:"Auf diese Sicherung zurücksetzen? Aktuelle Daten werden überschrieben.", importOk:"Importiert ✅",
+   restoreAsk:"Auf diese Sicherung zurücksetzen? Aktuelle Daten werden überschrieben.", restoreFull:"⚠️ Speicher voll, Wiederherstellung unvollständig (Sterne/Süßigkeiten zuerst). Bitte sofort Backup exportieren.", importOk:"Importiert ✅",
    importErr:"Ungültige Datei ❌", importNone:"Keine gültigen Daten (Backup dieser App oder /lich-Export nötig).",
    pasteT:"📋 Oder JSON direkt kopieren/einfügen (ohne Datei)", pasteExport:"In Feld exportieren", pasteImport:"Aus Feld importieren (überschreiben)",
    pastePh:"Backup-JSON (diese App oder /lich) hier einfügen, dann \"Aus Feld importieren\"…",
@@ -1120,6 +1121,7 @@ function acariMissed(){const items=anItems(),a=items.find(it=>/acarizax/i.test(i
   const used={},taken={},today=iso(new Date());
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
     if(k&&k.indexOf("fam.anchk.")===0){const [date,id]=k.slice(10).split("|");used[date]=1;if(id===a.id)taken[date]=1;}}
+  const old=anchkOld();Object.keys(old).forEach(d=>{used[d]=1;if((old[d]||[]).indexOf(String(a.id))>=0)taken[d]=1;});
   return Object.keys(used).filter(d=>d<today&&!taken[d]).sort();}
 // Báo cáo luôn bằng tiếng Đức; chọn khoảng thời gian 30 / 90 ngày / tất cả (nhớ trong phiên).
 let hRepDays=90;
@@ -1290,6 +1292,7 @@ function kidState(){const s=kidRaw();
   if(!s.pocketMoneyDate){s.pocketMoneyDate=iso(new Date());}
   if(!s.interestLastDate){s.interestLastDate=iso(new Date());}
   s.goals=s.goals||[];s.shop=s.shop||defaultShop();
+  delete s.tiers;delete s.badgesGot;delete s.wishes;   // hệ thống huy hiệu / điều ước đã bỏ
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
   if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:5,rounds:0};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
@@ -1320,7 +1323,8 @@ function dragonState(s){const per=dragonPer(s),p=Math.max(0,(s.saoLife||0)-(s.dr
 // Báo khi tìm được viên ngọc mới (gọi sau mỗi lần ⭐ kiếm được tăng). seen = số viên đã báo
 function checkDragon(s){const n=dragonState(s).n,seen=s.dragon.seen||0;
   if(n<seen)s.dragon.seen=n;
-  else if(n>seen){s.dragon.seen=n;kidCheer=n<7?KL().ballFound(n):KL().ballAll;triggerConfetti();playSound('success');}}
+  else if(n>seen){s.dragon.seen=n;kidCheer=dragonCheer=n<7?KL().ballFound(n):KL().ballAll;triggerConfetti();playSound('success');}}
+let dragonCheer="";   // giữ lời báo ngọc tới khi con mở tab của con
 function summonDragon(){const s=kidState();if(dragonState(s).n<7)return;
   undoPush("🐉");
   s.dragon.base=(s.dragon.base||0)+7*dragonPer(s);   // ⭐ dư giữ sang vòng mới
@@ -1350,9 +1354,9 @@ function logRemove(s,pred){const i=s.keoLog.findIndex(e=>e&&pred(e));if(i<0)retu
 function kidSave(s){try{localStorage.setItem(KIDKEY,JSON.stringify(s));}catch(e){storageFull(e);}}
 /* --- ↩ Hoàn tác (snapshot fam.kid trước mỗi thao tác tay) --- */
 const UNDO_KEY="fam.undo";
-function undoPush(label){
+function undoPush(label,arch){
   const a=ld(UNDO_KEY);
-  a.push({ts:Date.now(),label:String(label||"").slice(0,60),data:localStorage.getItem(KIDKEY)||"{}"});
+  a.push({ts:Date.now(),label:String(label||"").slice(0,60),data:localStorage.getItem(KIDKEY)||"{}",arch:arch?1:0});
   while(a.length>5)a.shift();
   sv(UNDO_KEY,a);}
 function undoPop(){
@@ -1360,7 +1364,9 @@ function undoPop(){
   const last=a[a.length-1];
   if(!confirm(L().undoConfirm(last.label)))return;
   a.pop();sv(UNDO_KEY,a);
-  try{localStorage.setItem(KIDKEY,last.data);}catch(e){storageFull(e);}
+  try{localStorage.setItem(KIDKEY,last.data);
+    if(last.arch){const b=localStorage.getItem(ARCH_BAK);if(b!==null){localStorage.setItem(ARCH_KEY,b);localStorage.removeItem(ARCH_BAK);}}}catch(e){storageFull(e);}
+  archiveOldLog();   // bản undo cũ có thể còn dòng đã chuyển sang lưu trữ
   kidCheer=L().undoDone;playSound('click');renderRewardAll();}
 function checkPocketMoneyAllowance() {
   const s = kidState();
@@ -1452,10 +1458,12 @@ function applyEval(key){
   const cancel=!!(cur&&cur.key===key);
   if(!confirm(cancel?L().evalCancelConfirm(ratingName):(LANG==="vi"?`Xác nhận đánh giá con là: ${ratingName}?`:`Bewertung "${ratingName}" für heute abgeben?`)))return;
   undoPush(L().rsEval(ratingName));
-  if(cur){s.sao-=cur.delta;logRemove(s,e=>e.date===today&&e.k==="eval");}
+  if(cur){s.sao-=cur.delta;if(cur.life)s.saoLife-=cur.life;logRemove(s,e=>e.date===today&&e.k==="eval");}
   if(cancel){s.eval=null;delete s.evalHist[today];}
-  else{s.sao+=delta;s.eval={date:today,key,delta};s.evalHist[today]=key;
+  else{const life=Math.max(0,delta);   // ⭐ dương của đánh giá tính vào tổng đã kiếm (ngọc rồng); âm thì không trừ
+    s.sao+=delta;s.saoLife=(s.saoLife||0)+life;s.eval={date:today,key,delta,life};s.evalHist[today]=key;
     logAdd(s,{delta,reason:L().rsEval(ratingName),k:"eval",key,cur:"sao"});}
+  checkDragon(s);
   kidSave(s);
   playSound('click');
   renderRewardAll();
@@ -1863,10 +1871,10 @@ function openStats(){
   const lastMons=n=>{const a=[];for(let i=n-1;i>=0;i--){const d=new Date(m0);d.setDate(m0.getDate()-i*7);a.push(iso(d));}return a;};
   // 1. ⭐ sao theo tuần (8 tuần, từ keoLog cur="sao")
   const mons8=lastMons(8);
-  const saoWk={};(s.keoLog||[]).forEach(e=>{if(e.cur==="sao"){const k=weekMonKey(e.date);saoWk[k]=(saoWk[k]||0)+e.delta;}});
+  const saoWk={};fullLog(s).forEach(e=>{if(e.cur==="sao"){const k=weekMonKey(e.date);saoWk[k]=(saoWk[k]||0)+e.delta;}});
   const saoChart=Object.keys(saoWk).length?colChart(mons8.map(k=>({v:saoWk[k]||0,label:dmy(k),color:"#d9a520"})),null,v=>(v>0?"+":"")+v):`<div class="empty">${L().statsNoData}</div>`;
   // 1b. ✋ số lần giơ tay phát biểu mỗi tuần (gồm bản ghi cũ "Đã giơ tay! ✋")
-  const handWk={};(s.keoLog||[]).forEach(e=>{if((e.k==="hand"&&e.delta>0)||(e.cur==="sao"&&e.reason==="Đã giơ tay! ✋")){const k=weekMonKey(e.date);handWk[k]=(handWk[k]||0)+1;}});
+  const handWk={};fullLog(s).forEach(e=>{if((e.k==="hand"&&e.delta>0)||(e.cur==="sao"&&e.reason==="Đã giơ tay! ✋")){const k=weekMonKey(e.date);handWk[k]=(handWk[k]||0)+1;}});
   const handChart=Object.keys(handWk).length?colChart(mons8.map(k=>({v:handWk[k]||0,label:dmy(k),color:"#3f6fd0"}))):`<div class="empty">${L().statsNoData}</div>`;
   // 2. 🗓️ heatmap đánh giá (10 tuần × 7 ngày)
   const hist=Object.assign({},s.evalHist||{});if(s.eval&&s.eval.date&&s.eval.key)hist[s.eval.date]=s.eval.key;
@@ -1922,10 +1930,10 @@ function openStats(){
 const isMetaKey=k=>k.indexOf("fam.snap")===0||k.indexOf("fam.exports")===0||k.indexOf("fam.undo")===0;
 // full=true (file xuất / ô chép-dán): gồm cả lịch sử cũ đã lưu trữ. Bản tự lưu & bản trong máy: không (đỡ tốn bộ nhớ)
 function famDump(full){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
-  if(k&&k.indexOf("fam.")===0&&!isMetaKey(k)&&(full||k!==ARCH_KEY))o[k]=localStorage.getItem(k);}return o;}
+  if(k&&k.indexOf("fam.")===0&&!isMetaKey(k)&&(full||(k!==ARCH_KEY&&k!==ARCH_BAK)))o[k]=localStorage.getItem(k);}return o;}
 /* --- Lưu trữ nhật ký điểm cũ: dòng quá LOG_KEEP_DAYS ngày chuyển sang fam.log.arch (1 bản duy nhất).
    fam.kid nhỏ lại -> undo / bản tự lưu 7 ngày / bản xuất trong máy không nhân bản cả lịch sử -> không đầy bộ nhớ --- */
-const ARCH_KEY="fam.log.arch",LOG_KEEP_DAYS=70,EXPORTS_KEEP=3;
+const ARCH_KEY="fam.log.arch",ARCH_BAK="fam.log.arch_bak",LOG_KEEP_DAYS=21,EXPORTS_KEEP=1,SNAPS_KEEP=4;
 const logKey=e=>JSON.stringify(e);
 function archiveOldLog(){
   const s=kidState(),cut=iso(new Date(Date.now()-LOG_KEEP_DAYS*864e5));
@@ -1937,15 +1945,34 @@ function archiveOldLog(){
       s.keoLog=s.keoLog.filter(e=>!(e.date<cut));kidSave(s);}catch(e){storageFull(e);}}
   const ex=ld("fam.exports");if(ex.length>EXPORTS_KEEP)sv("fam.exports",ex.slice(-EXPORTS_KEEP));}
 const fullLog=s=>(s.keoLog||[]).concat(ld(ARCH_KEY));
+// Tick checklist cũ hơn 70 ngày (mỗi tick 1 key ~40 ký tự, bị chép vào mọi bản tự lưu) -> gom vào 1 key {ngày:[id...]}
+const ANCHK_OLD="fam.anchk_old";
+function anchkOld(){try{return JSON.parse(localStorage.getItem(ANCHK_OLD))||{};}catch(e){return {};}}
+function compactAnchk(){const cut=iso(new Date(Date.now()-70*864e5)),rm=[];let old=null;
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+    if(!k||k.indexOf("fam.anchk.")!==0)continue;
+    const rest=k.slice(10),j=rest.indexOf("|"),d=rest.slice(0,j),id=rest.slice(j+1);
+    if(j<0||!(d<cut))continue;
+    if(!old)old=anchkOld();
+    if(localStorage.getItem(k)==="1"){const a=old[d]=old[d]||[];if(a.indexOf(id)<0)a.push(id);}
+    rm.push(k);}
+  if(!rm.length)return;
+  try{localStorage.setItem(ANCHK_OLD,JSON.stringify(old));rm.forEach(k=>localStorage.removeItem(k));}catch(e){storageFull(e);}}
 // Lưu 1 bản copy mỗi lần Xuất (trình duyệt không đọc lại file đã tải -> giữ bản trong máy để khôi phục).
 function pushExport(dumpObj){const a=ld("fam.exports"),now=new Date();
   const p=n=>String(n).padStart(2,"0");
   a.push({ts:Date.now(),label:p(now.getDate())+"/"+p(now.getMonth()+1)+" "+p(now.getHours())+":"+p(now.getMinutes()),data:dumpObj});
   while(a.length>EXPORTS_KEEP)a.shift();sv("fam.exports",a);}
 // Nhập thông minh: key "fam.*" giữ nguyên; key "lich.*" đổi tiền tố sang "fam.*" (bỏ lich.pinok).
-function famRestore(o){let n=0;Object.keys(o).forEach(k=>{
-  if(k.indexOf("fam.")===0){localStorage.setItem(k,o[k]);n++;}
-  else if(k.indexOf("lich.")===0){if(k==="lich.pinok")return;localStorage.setItem("fam."+k.slice(5),o[k]);n++;}});
+// Trả về số key đã ghi, -1 nếu hết bộ nhớ giữa chừng (fam.kid được ghi trước tiên)
+function famRestore(o){let n=0;
+  const put=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){
+    localStorage.removeItem(UNDO_KEY);localStorage.removeItem("fam.exports");localStorage.setItem(k,v);}};   // dọn bản sao trong máy rồi thử lại 1 lần
+  const keys=Object.keys(o).sort((a,b)=>(b===KIDKEY)-(a===KIDKEY));
+  try{keys.forEach(k=>{
+    if(k.indexOf("fam.")===0){put(k,o[k]);n++;}
+    else if(k.indexOf("lich.")===0){if(k==="lich.pinok")return;put("fam."+k.slice(5),o[k]);n++;}});}
+  catch(e){alert(L().restoreFull);return -1;}
   return n;}
 // Gộp: mảng có id -> union theo id (trùng id giữ bản local); key khác -> chỉ ghi nếu local chưa có.
 const MERGE_LIST_KEYS=["fam.an.items","fam.chores","fam.dl.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
@@ -1954,7 +1981,7 @@ function famMerge(o){let n=0;
     if(k.indexOf("fam.")===0)norm[k]=o[k];
     else if(k.indexOf("lich.")===0&&k!=="lich.pinok")norm["fam."+k.slice(5)]=o[k];});
   Object.keys(norm).forEach(k=>{
-    if(isMetaKey(k))return;
+    if(isMetaKey(k)||k===ARCH_KEY||k===ARCH_BAK)return;
     if(MERGE_LIST_KEYS.includes(k)){
       let inc;try{inc=JSON.parse(norm[k]);}catch(e){return;}
       if(!Array.isArray(inc))return;
@@ -1978,6 +2005,7 @@ function askImportMode(o){
   $("imOver").onclick=()=>{close();
     if(!confirm(L().restoreAsk))return;
     const n=famRestore(o);
+    if(n<0){afterRestore();return;}
     if(!n){alert(L().importNone);return;}
     afterRestore(L().importOk+" ("+n+")");};
   $("imMerge").onclick=()=>{close();
@@ -1987,7 +2015,7 @@ function askImportMode(o){
 function snaps(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("fam.snap.")===0)a.push(k.slice(9));}return a.sort().reverse();}
 function autoSnapshot(){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
   try{localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);}catch(e){storageFull(e);}
-  snaps().slice(7).forEach(d=>localStorage.removeItem("fam.snap."+d));}
+  snaps().slice(SNAPS_KEEP).forEach(d=>localStorage.removeItem("fam.snap."+d));}
 function exportFile(){
   const ok=downloadFile("gia-dinh-backup-"+iso(new Date())+".json",JSON.stringify(famDump(true),null,2),"application/json");
   pushExport(famDump());
@@ -2001,7 +2029,7 @@ function importFile(ev){const f=ev.target.files[0];if(!f)return;const r=new File
   r.readAsText(f);ev.target.value="";}
 function renderBackupReminder(){const el=$("backupReminder"),le=localStorage.getItem("fam.lastexport");
   const u=getStorageUsage();
-  if(u.pct>=80){el.hidden=false;el.textContent=LANG==="vi"?`⚠️ Bộ nhớ app đã dùng ${u.pct}% - chạm để xuất file backup rồi xoá bớt bản đã xuất trong máy.`:`⚠️ App-Speicher zu ${u.pct}% voll - tippen, Backup exportieren und alte Stände im Gerät löschen.`;return;}
+  if(u.pct>=80){el.hidden=false;el.textContent=LANG==="vi"?`⚠️ Bộ nhớ app đã dùng ${u.pct}% - chạm để xuất file backup cất đi (Drive / ghi chú).`:`⚠️ App-Speicher zu ${u.pct}% voll - tippen und Backup exportieren (Drive / Notizen).`;return;}
   if(!le){el.hidden=false;el.textContent=L().backupNever;return;}
   const days=Math.round((new Date(iso(new Date())+"T00:00:00")-new Date(le+"T00:00:00"))/864e5);
   if(days>=3){el.hidden=false;el.textContent=L().backupRemind(days);}else el.hidden=true;}
@@ -2010,7 +2038,7 @@ function openCog(){
   const le=localStorage.getItem("fam.lastexport");
   const days=le?Math.round((new Date(iso(new Date())+"T00:00:00")-new Date(le+"T00:00:00"))/864e5):null;
   const warn=(days===null||days>=3);
-  const snapList=snaps().slice(0,7).map(d=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>📦 ${d.split("-").reverse().join("/")}</span><button class="chip" data-restore="${d}">↩</button></div>`).join("")||`<div class="row" style="color:var(--mut)">—</div>`;
+  const snapList=snaps().slice(0,SNAPS_KEEP).map(d=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>📦 ${d.split("-").reverse().join("/")}</span><button class="chip" data-restore="${d}">↩</button></div>`).join("")||`<div class="row" style="color:var(--mut)">—</div>`;
   const exps=ld("fam.exports").slice().reverse();
   const expList=exps.length?exps.map(e=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>⬇️ ${e.label}</span><span style="display:flex;gap:6px"><button class="chip" data-exprestore="${e.ts}">↩</button><button class="chip" data-expdel="${e.ts}" style="color:var(--r)">✕</button></span></div>`).join(""):`<div class="row" style="color:var(--mut)">—</div>`;
   openSheet(`<h3>💾 ${L().backupT}</h3>
@@ -2186,7 +2214,7 @@ function getMoneyHistory(s, count) {
   points.reverse();
   return points;
 }
-function renderKid(){const s=kidState();
+function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
   const hn=s.hand.n||0,hc=todayHandCount(s),played=todayGameMin(s),dg=dragonState(s);
   const shopBtns=s.shop.length?s.shop.map(it=>{
@@ -2248,7 +2276,7 @@ function renderKid(){const s=kidState();
   P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{if(!confirm(LANG==="vi"?"Lưu cảm xúc này?":"Diese Stimmung speichern?"))return;addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;playSound('click');renderKid();});
   if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){if(!confirm(LANG==="vi"?"Lưu điều hay hôm nay?":"Diesen Eintrag speichern?"))return;const a=ld("fam.kid.diary");a.push({id:newId(),date:iso(new Date()),ts:Date.now(),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;playSound('click');renderKid();}}
   P.querySelectorAll("[data-kidshop]").forEach(el=>el.onclick=()=>buyShopItem(el.dataset.kidshop));}
-function enterKidTab(){kidCheer="";renderKid();}
+function enterKidTab(){kidCheer=dragonCheer||"";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
   const undoA=ld(UNDO_KEY),lastU=undoA[undoA.length-1];
@@ -2383,8 +2411,8 @@ function delShopPrompt(id){if(!confirm(LANG==="vi"?"Xoá món này?":"Diesen Art
 /* --- ↺ Reset sao & kẹo --- */
 function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   const s=kidState();
-  undoPush("↺ Reset");
-  try{localStorage.removeItem(ARCH_KEY);}catch(e){}
+  undoPush("↺ Reset",true);
+  try{const a=localStorage.getItem(ARCH_KEY);if(a!==null)localStorage.setItem(ARCH_BAK,a);localStorage.removeItem(ARCH_KEY);}catch(e){}
   s.sao=0;s.saoLife=0;s.keo=0;s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;s.dragon={base:0,per:dragonPer(s),rounds:0};
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
@@ -2427,7 +2455,8 @@ function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1)
   else if(t==="shop")editShopPrompt(id);
   else if(t==="dragonper")openForm({title:L().mgSecDragon,fields:[{key:"per",label:L().mgDragonPerAsk,type:"number",min:1,value:dragonPer(kidState()),required:true}],
     onSave:v=>{const n=Math.round(v.per||0);if(n<1)return;const s=kidState(),st=dragonState(s);
-      s.dragon.base=(s.saoLife||0)-st.n*n;s.dragon.per=n;s.dragon.seen=st.n;kidSave(s);renderRewardAll();}});   // giữ nguyên số viên đã có
+      const left=Math.max(0,(s.saoLife||0)-(s.dragon.base||0)-st.n*st.per);   // ⭐ dở dang tới viên kế
+      s.dragon.base=(s.saoLife||0)-st.n*n-Math.min(left,n-1);s.dragon.per=n;s.dragon.seen=st.n;kidSave(s);renderRewardAll();}});   // giữ số viên + phần dở dang
 }
 function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   if(t==="saoadj")delSaoAdjPrompt(id);
@@ -2453,6 +2482,7 @@ function tickNight(){
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;localStorage.setItem("fam.lang",LANG);
   document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));renderAll();});
 function renderAll(){
+  document.documentElement.lang=LANG;
   $("footNote").textContent=L().foot+" · v"+BUILD;
   $("tab_truc").textContent=L().tab_truc;$("tab_con").textContent=L().tab_con;$("tab_health").textContent=L().tab_health;
   $("tab_hist").textContent=L().tab_hist;
@@ -2460,11 +2490,11 @@ function renderAll(){
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
   $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;
   $("h_manage").textContent=L().h_manage;$("mgOpenBtn").textContent=L().mgOpenBtn;
-  renderDuty();renderDaily();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();renderHist();
+  renderDuty();renderDaily();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();if(TAB==="hist")renderHist();
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,archiveOldLog,checkPocketMoneyAllowance,checkPocketMoneyInterest,renderAll,()=>setTab(TAB)]
+[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=openManage;
 $("cog").onclick=openCog;$("backupReminder").onclick=openCog;$("impFile").addEventListener("change",importFile);
@@ -2475,7 +2505,8 @@ $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night")
 tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},120000);
 /* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~06:00 ============ */
 let _lastDate=iso(new Date());
-function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;checkPocketMoneyAllowance();checkPocketMoneyInterest();renderAll();}}
+function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;
+  [autoSnapshot,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,renderAll].forEach(f=>{try{f();}catch(e){console.error(f.name,e);}});}}
 function autoRefreshTick(){
   checkDateChange();
   const now=new Date();
