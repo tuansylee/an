@@ -281,6 +281,12 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
     <div class="gamebox" style="background:linear-gradient(155deg,#1b2740,#12182a);border-color:var(--blue)">
       <div class="bignum" id="pHand" style="color:#9cc0ff">–</div><div class="gunit" id="pHandUnit"></div>
       <button class="gumbtn" id="pHandBtn" style="background:var(--blue);color:#fff"></button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="gumbtn ghost" id="hPlus" style="margin:0;flex:1"></button>
+        <button class="gumbtn ghost" id="hMinus" style="margin:0;flex:1"></button>
+      </div>
+      <div class="gstatus" id="pGameT" style="margin-top:12px"></div>
+      <button class="gumbtn ghost" id="pGameExtra" style="margin-top:6px"></button>
     </div>
    <h2 id="h_badges"></h2>
    <div class="hist" id="rwList"></div>
@@ -465,8 +471,8 @@ const T={
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    h_shop:"🛒 Cửa hàng đổi thưởng — chỗ tiêu",
    shopHint:"Chạm 1 món để đổi cho con (trừ điểm + ghi log) · phải đủ điểm · thêm/sửa/xóa món & giá ở ⚙️ menu quản lý cuối trang.",
-   shopBlocked:(cost,icon,name,bal)=>`Chưa đủ ${cost}${icon} để đổi "${name}" (đang có ${bal}${icon}).`,
-   shopConfirm:(name,cost,icon)=>`Đổi "${name}" cho con — trừ ${cost}${icon}?`,
+   shopBlocked:(cost,icon,name,bal)=>`Con chưa đủ ${cost}${icon} để đổi "${name}" (con đang có ${bal}${icon}).`,
+   shopConfirm:(name,cost,icon)=>`Con muốn đổi "${name}"?\nSẽ trừ ${cost}${icon}.`,
    shopOk:(name,cost,icon)=>`🎉 Đã đổi "${name}"! −${cost}${icon}`,
    h_manage:"⚙️ Menu quản lý", mgOpenBtn:"⚙️ Quản lý danh sách — thêm / sửa / xóa mọi mục", mgTitle:"⚙️ Quản lý danh sách",
    mgReset:"↺ Reset sao & kẹo về 0", mgResetConfirm:"Reset toàn bộ SAO và KẸO về 0?\n(xóa nhật ký + huy hiệu đã mở · mục tiêu tuần bỏ đánh dấu)",
@@ -510,6 +516,9 @@ const T={
    h_hand:"✋ Sao giơ tay phát biểu (để chơi game)", pHandUnit:(c,max)=>`✋ tuần này · hết hạn tối Chủ nhật · hôm nay ${c}/${max} lần`,
    pHandBtn:"✋ Con đã giơ tay phát biểu ở lớp (+1 ✋)", pHandMax:"✋ Hôm nay đã đủ 3 lần",
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
+   hPlus:"＋ Cộng ✋", hMinus:"－ Trừ ✋", hPlusDef:"Bố mẹ cộng ✋ (ngày nghỉ / bù)", hMinusDef:"Trừ ✋ (bấm nhầm)",
+   pGameT:(m,lim)=>`🎮 Hôm nay đã chơi ${m}/${lim} phút`, pGameExtra:"🎮 Bố mẹ cho chơi thêm 15 phút hôm nay",
+   pGameExtraConfirm:"Bố mẹ cho phép chơi thêm 15 phút hôm nay?\n(vẫn trừ 2🍬 + 1✋ khi mua)",
    evalCancelConfirm:n=>`Bỏ đánh giá "${n}" của hôm nay?`,
    ckEdit:"✏️ Sửa danh sách việc", ckEditT:"✏️ Việc hằng ngày - sửa / xoá / sắp xếp",
    emojiNone:"không emoji",
@@ -553,8 +562,8 @@ const T={
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    h_shop:"🛒 Belohnungs-Shop — Ausgabestelle",
    shopHint:"Artikel antippen, um für das Kind einzulösen (zieht Punkte ab + Protokoll) · Punkte müssen reichen · Artikel/Preise bearbeiten unter ⚙️ Verwaltung unten.",
-   shopBlocked:(cost,icon,name,bal)=>`Nicht genug ${cost}${icon} für "${name}" (aktuell ${bal}${icon}).`,
-   shopConfirm:(name,cost,icon)=>`"${name}" einlösen — ${cost}${icon} abziehen?`,
+   shopBlocked:(cost,icon,name,bal)=>`Du hast noch nicht genug ${icon} für "${name}" (nötig ${cost}${icon}, du hast ${bal}${icon}).`,
+   shopConfirm:(name,cost,icon)=>`Möchtest du "${name}" einlösen?\nDas kostet ${cost}${icon}.`,
    shopOk:(name,cost,icon)=>`🎉 "${name}" eingelöst! −${cost}${icon}`,
    h_manage:"⚙️ Verwaltungsmenü", mgOpenBtn:"⚙️ Listen verwalten — hinzufügen / bearbeiten / löschen", mgTitle:"⚙️ Listen verwalten",
    mgReset:"↺ Sterne & Süßigkeiten zurücksetzen", mgResetConfirm:"Alle STERNE und SÜSSIGKEITEN auf 0 zurücksetzen?\n(löscht Protokoll + freigeschaltete Abzeichen · Wochenziele werden zurückgesetzt)",
@@ -598,6 +607,9 @@ const T={
    h_hand:"✋ Melde-Sterne (für Videospiel)", pHandUnit:(c,max)=>`✋ diese Woche · verfallen So. abends · heute ${c}/${max}×`,
    pHandBtn:"✋ Hat sich im Unterricht gemeldet (+1 ✋)", pHandMax:"✋ Heute schon 3× (Maximum)",
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
+   hPlus:"＋ ✋ dazu", hMinus:"－ ✋ weg", hPlusDef:"✋ von Eltern (Ferien / Ausgleich)", hMinusDef:"✋ abgezogen (Fehler)",
+   pGameT:(m,lim)=>`🎮 Heute gespielt: ${m}/${lim} Min.`, pGameExtra:"🎮 Eltern erlauben heute 15 Min. extra",
+   pGameExtraConfirm:"Erlauben die Eltern heute 15 Min. extra?\n(Kauf kostet trotzdem 2🍬 + 1✋)",
    evalCancelConfirm:n=>`Bewertung "${n}" für heute entfernen?`,
    ckEdit:"✏️ Liste bearbeiten", ckEditT:"✏️ Tägliche Aufgaben - bearbeiten / löschen / sortieren",
    emojiNone:"kein Emoji",
@@ -843,7 +855,7 @@ function renderDaily(){$("h_daily").textContent=L().daily+" "+CHILD();
   renderDutyAsk();}
 function openChecklistEditor(){
   const a=anItems();
-  open(`<h3>${L().ckEditT}</h3>`+(a.map((it,i)=>`<div class="chk" style="cursor:default;gap:2px">
+  openSheet(`<h3>${L().ckEditT}</h3>`+(a.map((it,i)=>`<div class="chk" style="cursor:default;gap:2px">
       <span class="nm" style="padding-left:4px">${esc(T_val(it.t))||'<span style="color:var(--mut)">-</span>'}</span>
       <span class="ic" data-ckmv="${i}:-1" style="${i===0?'visibility:hidden':''}">▲</span><span class="ic" data-ckmv="${i}:1" style="${i===a.length-1?'visibility:hidden':''}">▼</span>
       <span class="ic" data-ckedit="${esc(it.id)}">✏️</span><span class="ic" data-ckdel="${esc(it.id)}">✕</span></div>`).join("")||`<div class="empty">${L().mgEmpty}</div>`)
@@ -937,7 +949,7 @@ $("hRecent").addEventListener("click",e=>{const b=e.target.closest("[data-hact]"
   if(b.dataset.hact==="ed")hOpen(r.dataset.hkind,r.dataset.href);else hDel(r.dataset.hkey,r.dataset.href);});
 $("hMore").onclick=()=>{hDays+=30;renderHealth();};
 const ov=$("ov"),sheet=$("sheet");
-function open(html){sheet.innerHTML=html;ov.hidden=false;}
+function openSheet(html){sheet.innerHTML=html;ov.hidden=false;}
 function close(){ov.hidden=true;}
 ov.addEventListener("click",e=>{if(e.target===ov)close();});
 let draft={};
@@ -963,7 +975,7 @@ function openForm(cfg){
     if(f.type==="textarea")return lbl+`<textarea id="ff_${f.key}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
     const extra=(f.type==="number"?` inputmode="decimal" step="${f.step||1}"${f.min!=null?` min="${f.min}"`:""}`:"");
     return lbl+`<input id="ff_${f.key}" type="${f.type||"text"}" value="${esc(v)}" placeholder="${esc(f.placeholder||"")}"${extra}>`;};
-  open(`<h3>${esc(cfg.title||"")}</h3><div class="addform" style="border:0;padding:0;margin:0;background:transparent">${F.map(fieldHtml).join("")}</div>
+  openSheet(`<h3>${esc(cfg.title||"")}</h3><div class="addform" style="border:0;padding:0;margin:0;background:transparent">${F.map(fieldHtml).join("")}</div>
     <div class="acts"><button class="cancel" id="fCancel">${L().cancel}</button><button class="save" id="fSave">${L().save}</button></div>`);
   const chipVals={};F.forEach(f=>{if(f.type==="chips")chipVals[f.key]=f.value==null?null:String(f.value);});
   sheet.querySelectorAll("[data-fchip]").forEach(c=>c.onclick=()=>{
@@ -998,7 +1010,7 @@ const hNoteF=x=>{const n=x&&x.note?x.note:"";
   return `<button type="button" class="notebtn" id="hfNB"${n?" hidden":""}>${L().addnote}</button><textarea id="hfN" placeholder="${esc(L().notePh)}"${n?"":" hidden"}>${esc(n)}</textarea>`;};
 // build(g) -> object (lưu) | string (báo lỗi, giữ form) | false (người dùng huỷ ở hộp xác nhận)
 function hSheet(kind,ref,title,body,opt,build){const S=SL();
-  open(`<div class="hform"><h3>${title}</h3>${body}<div class="herr" id="hfE" role="alert"></div>
+  openSheet(`<div class="hform"><h3>${title}</h3>${body}<div class="herr" id="hfE" role="alert"></div>
     <div class="acts"><button class="cancel" id="hfC">${L().cancel}</button><button class="save" id="hfS">${L().save}</button></div></div>`);
   const pick={};
   sheet.querySelectorAll("[data-hgrp]").forEach(gr=>{const s=gr.querySelector(".chip.sel");pick[gr.dataset.hgrp]=s?s.dataset.hc:null;
@@ -1126,13 +1138,13 @@ function hRepHtml(days,print){const R=hRepData(days),de=v=>esc(hNum(v,"de")),tr=
    <${H2}>Wachstum</${H2}>${tbl(["Datum","Größe","Gewicht"],R.grow.map(x=>`<tr><td>${dd(x.date)}</td><td>${x.h?de(x.h)+" cm":""}</td><td>${x.w?de(x.w)+" kg":""}</td></tr>`))}
    <${H2}>Acarizax · vergessene Tage</${H2}><p>${!hasAc?"nicht erfasst":R.missed.length?`<span class="fev">${R.missed.map(dd).join(", ")}</span>`:"keine"}</p>`;}
 function openReport(){const S=SL();
-  open(`<div class="rep hrep"><div class="chips">${[[30,S.p30],[90,S.p90],[0,S.pAll]].map(p=>`<button type="button" class="chip${hRepDays===p[0]?" sel":""}" data-hrp="${p[0]}">${p[1]}</button>`).join("")}</div>
+  openSheet(`<div class="rep hrep"><div class="chips">${[[30,S.p30],[90,S.p90],[0,S.pAll]].map(p=>`<button type="button" class="chip${hRepDays===p[0]?" sel":""}" data-hrp="${p[0]}">${p[1]}</button>`).join("")}</div>
     ${hRepHtml(hRepDays,false)}
     <div class="acts"><button class="cancel" id="hrC">${S.close}</button><button class="save" id="hrCsv" style="background:#4f46e5;color:#fff">⬇️ CSV</button><button class="save" id="hrPdf">🖨️ PDF A4</button></div></div>`);
   sheet.querySelectorAll("[data-hrp]").forEach(c=>c.onclick=()=>{hRepDays=+c.dataset.hrp;openReport();});
   $("hrC").onclick=close;$("hrCsv").onclick=()=>csvExport();$("hrPdf").onclick=()=>printReport();}
 function buildPrintHtml(){return hRepHtml(hRepDays,true);}
-// In qua #printArea (@media print ẩn phần còn lại). Không dùng window.open: hàm open() của app che mất window.open
+// In qua #printArea (@media print ẩn phần còn lại). In thẳng, không mở cửa sổ mới (WebView hay chặn popup)
 // (trước đây gọi nhầm -> xoá trắng sheet). Đổi tạm document.title để file PDF có tên gợi ý.
 const hTitle0=document.title;
 function printReport(){const t0=hTitle0;$("printArea").innerHTML=buildPrintHtml();
@@ -1184,10 +1196,10 @@ function defaultTiers(){
     {id:"t4",t:35,e:"🏆",name:"Cúp vàng",    bonus:4,reward:""},
     {id:"t5",t:50,e:"👑",name:"Nhà vô địch", bonus:5,reward:""}];
 }
-// Cửa hàng mặc định: chỉ 2 nút chơi game (block 15′ = 2🍬). hand = số ✋ cần mỗi lần mua · min = phút game (tính giới hạn ngày)
+// Cửa hàng mặc định: chỉ 2 nút chơi game, giá theo block 15′ = 2🍬 + 1✋. hand = số ✋ cần · min = phút game (tính giới hạn ngày)
 function defaultShop(){
   return [
-    {id:"game30",e:"🎮",name:LANG==="de"?"Videospiel 30 Min.":"Chơi game 30 phút",cost:4,cur:"keo",hand:1,min:30},
+    {id:"game30",e:"🎮",name:LANG==="de"?"Videospiel 30 Min.":"Chơi game 30 phút",cost:4,cur:"keo",hand:2,min:30},
     {id:"game15",e:"🎮",name:LANG==="de"?"Videospiel 15 Min.":"Chơi game 15 phút",cost:2,cur:"keo",hand:1,min:15}];
 }
 function defaultGoals(){const wk=isoWeek(iso(new Date()));
@@ -1268,7 +1280,7 @@ function kidState(){const s=kidRaw();
   return ensureGoalsThisWeek(s);}
 /* --- ✋ Sao giơ tay: ô riêng, chỉ dùng để chơi game / đổi kẹo, hết hạn khi sang tuần mới (thứ Hai 00:00) --- */
 const HAND_MAX_DAY=3;     // tối đa 3 lần giơ tay được thưởng mỗi ngày
-const GAME_DAY_MIN=30;    // thường 2 block 15′/ngày — vượt thì hỏi lại bố mẹ
+const GAME_DAY_MIN=30;    // mỗi ngày 2 block 15′ — muốn hơn thì bố mẹ cho thêm (nút ở tab Thưởng)
 const wkMon=d=>iso(mondayOf(d||new Date()));
 function ensureHandWeek(s){const wk=wkMon();
   if(!s.hand||typeof s.hand!=="object"){s.hand={wk,n:0};return s;}
@@ -1278,7 +1290,9 @@ function ensureHandWeek(s){const wk=wkMon();
       s.keoLog.unshift({date:d,delta:-n,reason:L().rsHandExp,k:"handexp",cur:"hand"});}
     s.hand={wk,n:0};kidSave(s);}
   return s;}
-const todayGameMin=s=>s.gameDay&&s.gameDay.date===iso(new Date())?(s.gameDay.min||0):0;
+const todayGameDay=s=>s.gameDay&&s.gameDay.date===iso(new Date())?s.gameDay:{date:iso(new Date()),min:0,extra:0};
+const todayGameMin=s=>todayGameDay(s).min||0;
+const todayGameLimit=s=>GAME_DAY_MIN+(todayGameDay(s).extra||0);
 // Ghi nhật ký điểm (mới nhất ở đầu). ts = lúc ghi, để tab Lịch sử hiện giờ.
 function logAdd(s,o){s.keoLog.unshift(Object.assign({date:iso(new Date()),ts:Date.now()},o));}
 // Chuỗi lý do cũ (đã lưu trong nhật ký trước bản này) — để nhận ra & gộp các cặp "làm / hủy"
@@ -1482,7 +1496,7 @@ function pfandDadAction() {
   addMoneyManual(0.15, L().mPfandDadReason);
 }
 function pfandAction() {
-  open(`<h3>${L().mPfand}</h3>
+  openSheet(`<h3>${L().mPfand}</h3>
     <button class="gumbtn" id="pfSelf">${L().mPfandSelf}</button>
     <button class="gumbtn ghost" id="pfDad" style="margin-top:8px">${L().mPfandDad}</button>
     <button class="gumbtn ghost" id="pfClose" style="margin-top:24px">${L().cancel||"✕"}</button>`);
@@ -1575,6 +1589,17 @@ function convertStars(){const s=kidState();
   triggerConfetti();
   playSound('success');
   renderRewardAll();}
+function grantGameExtra(){
+  if(!confirm(L().pGameExtraConfirm))return;
+  const s=kidState(),gd=todayGameDay(s);
+  undoPush("🎮 +15′");
+  s.gameDay={date:gd.date,min:gd.min||0,extra:(gd.extra||0)+15};
+  kidSave(s);kidCheer=KL().gameExtraCheer(todayGameLimit(s));playSound('click');renderRewardAll();}
+function handManual(sign){
+  amountForm((sign>0?L().hPlus:L().hMinus).replace(/^[＋－] /,"")+" ✋",sign>0?L().hPlusDef:L().hMinusDef,null,(n,reason)=>{
+    const s=kidState(),have=s.hand.n||0,d=sign>0?n:-Math.min(n,have);if(!d)return;
+    undoPush(`${d>0?"+":""}${d}✋ ${reason}`);
+    s.hand.n=have+d;logAdd(s,{delta:d,reason,cur:"hand"});kidSave(s);playSound('click');renderRewardAll();});}
 function convertHand(){const s=kidState();
   if((s.hand.n||0)<3){kidCheer=KL().convertHandBlocked;renderRewardAll();return;}
   if(!confirm(KL().convertHandConfirm))return;
@@ -1592,10 +1617,10 @@ function raiseHand(){const s=kidState(),today=iso(new Date()),c=todayHandCount(s
   if(!confirm(KL().handConfirm(c+1)))return;
   undoPush("+1✋");
   s.handRaise={date:today,count:c+1};
-  s.hand.n=(s.hand.n||0)+1;s.saoLife=(s.saoLife||0)+1;   // vẫn tính vào tổng sao đã kiếm (huy hiệu)
+  s.hand.n=(s.hand.n||0)+1;   // ô riêng: không cộng vào ⭐ / tổng sao mở huy hiệu
   logAdd(s,{delta:1,reason:L().rsHand,k:"hand",cur:"hand"});
   kidCheer=KL().handCheer(c+1);
-  checkBadges(s);kidSave(s);
+  kidSave(s);
   triggerConfetti();
   playSound('success');
   renderRewardAll();}
@@ -1628,15 +1653,15 @@ function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>String(x.id)===Str
   const nameTr=T_val(it.name),needH=Math.max(0,Math.round(it.hand||0)),haveH=s.hand.n||0,mins=Math.max(0,Math.round(it.min||0));
   if(bal<it.cost){alert(L().shopBlocked(it.cost,icon,nameTr,bal));return;}
   if(haveH<needH){alert(KL().shopNeedHand(needH,nameTr,haveH));return;}
-  const played=todayGameMin(s);
-  if(mins&&played+mins>GAME_DAY_MIN&&!confirm(KL().gameOver(played,GAME_DAY_MIN)))return;
+  const played=todayGameMin(s),limit=todayGameLimit(s);
+  if(mins&&played+mins>limit){alert(KL().gameLimit(played,limit,mins));return;}
   if(!confirm(L().shopConfirm(nameTr,costLabel(it),"")))return;
   const today=iso(new Date());
   undoPush(`-${costLabel(it)} ${nameTr}`);
   if(it.cur==="sao")s.sao-=it.cost;else s.keo-=it.cost;
   logAdd(s,{delta:-it.cost,reason:it.name,cur:it.cur});
   if(needH){s.hand.n-=needH;logAdd(s,{delta:-needH,reason:it.name,cur:"hand"});}
-  if(mins)s.gameDay={date:today,min:played+mins};
+  if(mins)s.gameDay={date:today,min:played+mins,extra:todayGameDay(s).extra||0};
   kidSave(s);
   kidCheer=L().shopOk(nameTr,costLabel(it),"");
   triggerConfetti();
@@ -1649,7 +1674,7 @@ const CRIT=[
  {col:"#64748b",vi:["Bình thường (0)","Một ngày yên ổn, làm xong việc của mình — mặc định."],de:["Normal (0)","Ein ruhiger Tag, Aufgaben erledigt — Standard."]},
  {col:"#ea580c",vi:["Hư (−1)","Sai nhỏ: cãi lại/nói trống không, không chịu làm bài sau nhiều lần nhắc, nói dối nhỏ."],de:["Unartig (−1)","Kleines Fehlverhalten: widersprochen, Hausaufgaben verweigert, kleine Lüge."]},
  {col:"#dc2626",vi:["Cực hư (−2)","Nghiêm trọng, hiếm: đánh/làm đau người khác, nói dối lớn, đập phá, nguy hiểm, chống đối lặp lại."],de:["Sehr unartig (−2)","Ernst und selten: jemanden verletzt, große Lüge, Wutanfall, gefährlich, wiederholter Trotz."]}];
-function openCrit(){open(`<h3>${L().critTitle}</h3>`+CRIT.map(c=>{const x=c[LANG];
+function openCrit(){openSheet(`<h3>${L().critTitle}</h3>`+CRIT.map(c=>{const x=c[LANG];
   return `<div style="border-left:4px solid ${c.col};padding:4px 0 4px 12px;margin:10px 0"><b>${x[0]}</b><div style="font-size:13px;color:#c7ccd6;margin-top:3px">${x[1]}</div></div>`;}).join("")
   +`<div class="acts"><button class="cancel" id="cCancel">${L().cancel}</button></div>`);$("cCancel").onclick=close;}
 
@@ -1710,7 +1735,6 @@ $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onc
 let histFilter="all",histShow=100,histQ="",histUntil="",histObs=null;
 const HIST_PAGE=100;
 const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬"};
-const hhmm=ts=>{const d=new Date(ts);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
 // Lý do hiển thị theo ngôn ngữ hiện tại cho bản ghi có loại (k), còn lại dịch nếu có trong từ điển
 function logReason(e){
   if(e.k==="eval"&&e.key){const r=L().evalRatings.find(x=>x[0]===e.key);if(r)return L().rsEval(r[1]);}
@@ -1722,7 +1746,7 @@ function fmtDelta(e){const v=Number(e.delta)||0,n=e.cur==="euro"?Number(v.toFixe
   return (v>0?"+":v<0?"":"±")+n+(e.cur==="euro"?"€":"")+(CUR_IC[e.cur]||"🍬");}
 function histEntries(){
   const out=[];
-  const tmOf=x=>typeof x.time==="string"&&/^\d\d:\d\d/.test(x.time)?x.time.slice(0,5):(x.ts&&iso(x.ts)===x.date?hhmm(x.ts):"");
+  const tmOf=x=>typeof x.time==="string"&&/^\d\d:\d\d/.test(x.time)?x.time.slice(0,5):(x.ts&&iso(x.ts)===x.date?hhmm(new Date(x.ts)):"");
   const ok=x=>x&&typeof x.date==="string";
   // rec: càng lớn = càng mới trong cùng ngày (keoLog lưu mới→cũ, các mảng khác cũ→mới)
   // 1 thao tác ghi nhiều loại điểm (vd mua game: −4🍬 và −1✋) -> gộp thành 1 dòng
@@ -1836,7 +1860,7 @@ function openStats(){
   const tal={bo:0,me:0};
   for(let w=-3;w<=0;w++){const mon=new Date(m0);mon.setDate(m0.getDate()+w*7);
     for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);SHIFTS.forEach(sh=>{tal[owner(d,sh.k)]++;});}}
-  open(`<h3>${L().statsT}</h3>
+  openSheet(`<h3>${L().statsT}</h3>
     <div class="lbl">${L().statsSao}</div>${saoChart}
     <div style="font-size:13px;color:#ffd98a;margin:0 0 12px">${L().statsStreak(s.streak||0,s.bestStreak||0)}</div>
     <div class="lbl">${L().statsHand}</div>${handChart}
@@ -1889,7 +1913,7 @@ function famMerge(o){let n=0;
     }});
   return n;}
 function askImportMode(o){
-  open(`<h3>📂 ${L().importFile}</h3>
+  openSheet(`<h3>📂 ${L().importFile}</h3>
     <div style="font-size:13px;color:#c7ccd6;margin-bottom:12px">${L().importModeHint}</div>
     <button class="gumbtn indigo" id="imOver">${L().importOver}</button>
     <button class="gumbtn gold2" id="imMerge" style="margin-top:8px">${L().importMerge}</button>
@@ -1930,7 +1954,7 @@ function openCog(){
   const snapList=snaps().slice(0,7).map(d=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>📦 ${d.split("-").reverse().join("/")}</span><button class="chip" data-restore="${d}">↩</button></div>`).join("")||`<div class="row" style="color:var(--mut)">—</div>`;
   const exps=ld("fam.exports").slice().reverse();
   const expList=exps.length?exps.map(e=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>⬇️ ${e.label}</span><span style="display:flex;gap:6px"><button class="chip" data-exprestore="${e.ts}">↩</button><button class="chip" data-expdel="${e.ts}" style="color:var(--r)">✕</button></span></div>`).join(""):`<div class="row" style="color:var(--mut)">—</div>`;
-  open(`<h3>💾 ${L().backupT}</h3>
+  openSheet(`<h3>💾 ${L().backupT}</h3>
     <div style="font-size:13px;color:#c7ccd6;margin-bottom:8px">${L().autoOn}<br>${L().lastSnap}: <b>${last?last.split("-").reverse().join("/"):"–"}</b></div>
     ${warn?`<div class="mockbanner" style="margin:0 0 10px">${L().backupWarn}</div>`:""}
     <div class="acts" style="margin-top:0"><button class="cancel" id="bImp">📂 ${L().importFile}</button><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
@@ -2010,10 +2034,11 @@ const KX={
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    convertHandBtn:"🔄 Đổi 3 ✋ → 1 🍬",convertHandBlocked:"Chưa đủ 3 ✋ để đổi.",convertHandReason:"Đổi 3✋ → 1🍬",
    convertHandConfirm:"Đổi 3 sao giơ tay ✋ lấy 1 kẹo 🍬?\n(✋ để chơi game sẽ ít đi 3)",
-   gameT:(m,max)=>`🎮 Chơi game · hôm nay đã chơi ${m}/${max} phút`,
-   gameRule:"Mỗi lần chơi cần 1 ✋ (giơ tay phát biểu ở lớp) + kẹo. Không có ✋ thì chưa chơi được.",
+   gameT:(m,lim)=>`🎮 Chơi game · hôm nay đã chơi ${m}/${lim} phút`,
+   gameRule:"Mỗi 15 phút game = 2 🍬 + 1 ✋ (✋ có khi giơ tay phát biểu ở lớp). Không có ✋ thì chưa chơi được.",
    shopNeedHand:(need,name,have)=>`Chưa đủ ✋ để "${name}": cần ${need} ✋, con đang có ${have} ✋.\nGiơ tay phát biểu ở lớp để có ✋ nhé!`,
-   gameOver:(played,max)=>`Hôm nay con đã chơi ${played} phút (thường tối đa ${max} phút/ngày).\nBố mẹ đồng ý cho chơi thêm?`,
+   gameLimit:(played,lim,mins)=>`Hôm nay con đã chơi ${played}/${lim} phút, không mua thêm ${mins} phút được nữa.\nMuốn chơi thêm thì hỏi bố mẹ. Bố mẹ đồng ý thì bấm "🎮 Bố mẹ cho chơi thêm 15 phút" ở tab 🎁 Thưởng.`,
+   gameExtraCheer:lim=>`🎮 Hôm nay được chơi tới ${lim} phút.`,
    handQ:"✋ Giơ tay phát biểu ở lớp",
    handSub:(c,max)=>`Hôm nay: ${c}/${max} lần · mỗi lần +1 ✋ (dùng để chơi game)`,
    handBtn:"✋ Con vừa giơ tay phát biểu! (+1 ✋)",
@@ -2045,10 +2070,11 @@ const KX={
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    convertHandBtn:"🔄 3 ✋ → 1 🍬 tauschen",convertHandBlocked:"Noch nicht genug ✋ (3 nötig).",convertHandReason:"3✋ → 1🍬 getauscht",
    convertHandConfirm:"3 Melde-Sterne ✋ gegen 1 Süßigkeit 🍬 tauschen?\n(dann 3 ✋ weniger für Videospiel)",
-   gameT:(m,max)=>`🎮 Videospiel · heute ${m}/${max} Min. gespielt`,
-   gameRule:"Jedes Spielen braucht 1 ✋ (im Unterricht gemeldet) + Süßigkeiten. Ohne ✋ noch kein Videospiel.",
+   gameT:(m,lim)=>`🎮 Videospiel · heute ${m}/${lim} Min. gespielt`,
+   gameRule:"Je 15 Min. Videospiel = 2 🍬 + 1 ✋ (✋ gibt es fürs Melden im Unterricht). Ohne ✋ noch kein Videospiel.",
    shopNeedHand:(need,name,have)=>`Nicht genug ✋ für "${name}": ${need} ✋ nötig, du hast ${have} ✋.\nMelde dich im Unterricht, dann bekommst du ✋!`,
-   gameOver:(played,max)=>`Heute schon ${played} Min. gespielt (normal max. ${max} Min./Tag).\nErlauben die Eltern mehr?`,
+   gameLimit:(played,lim,mins)=>`Heute schon ${played}/${lim} Min. gespielt, ${mins} Min. mehr gehen nicht.\nFrag Mama oder Papa. Wenn sie ja sagen: im Tab 🎁 "🎮 Eltern erlauben heute 15 Min. extra" antippen.`,
+   gameExtraCheer:lim=>`🎮 Heute sind bis zu ${lim} Min. erlaubt.`,
    handQ:"✋ Im Unterricht gemeldet",
    handSub:(c,max)=>`Heute: ${c}/${max}× · jedes Mal +1 ✋ (für Videospiel)`,
    handBtn:"✋ Ich habe mich gemeldet! (+1 ✋)",
@@ -2106,7 +2132,7 @@ function renderKid(){const s=kidState();
    </div>
    ${kidCheer?`<div class="kidcheer">${esc(kidCheer)}</div>`:""}
    ${lastDay?`<div class="kidwarn">${esc(KL().handExpWarn(hn))}</div>`:""}
-   <div class="kidsec">${KL().gameT(played,GAME_DAY_MIN)}</div>
+   <div class="kidsec">${KL().gameT(played,todayGameLimit(s))}</div>
    <div class="kidrule">${KL().gameRule}</div>
    <div class="shopgrid">${shopBtns}</div>
    <div class="kidsec">${KL().handQ}</div>
@@ -2159,6 +2185,10 @@ function renderParentReward(){const s=kidState();
   $("pHandUnit").textContent=L().pHandUnit(hc,HAND_MAX_DAY);
   $("pHandBtn").textContent=hc>=HAND_MAX_DAY?L().pHandMax:L().pHandBtn;$("pHandBtn").disabled=hc>=HAND_MAX_DAY;
   $("pHandBtn").onclick=raiseHand;
+  $("hPlus").textContent=L().hPlus;$("hMinus").textContent=L().hMinus;
+  $("hPlus").onclick=()=>handManual(1);$("hMinus").onclick=()=>handManual(-1);
+  $("pGameT").textContent=L().pGameT(todayGameMin(s),todayGameLimit(s));
+  $("pGameExtra").textContent=L().pGameExtra;$("pGameExtra").onclick=grantGameExtra;
   const container = $("saoAdjustsContainer");
   const adjusts = saoAdjusts();
   container.innerHTML = adjusts.map(adj => {
@@ -2297,7 +2327,7 @@ function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
 /* --- ⚙️ Menu quản lý cuối trang — CRUD tập trung mọi danh sách --- */
-function openManage(){open(`<h3>${L().mgTitle}</h3><div id="mgBody"></div>
+function openManage(){openSheet(`<h3>${L().mgTitle}</h3><div id="mgBody"></div>
     <button class="gumbtn ghost" id="mgReset" style="margin-top:16px;color:#ffb0b0">${L().mgReset}</button>
     <button class="gumbtn" id="mgClose" style="margin-top:8px;background:var(--g);color:#06210f">${L().mgClose}</button>`);
   renderManageBody();
