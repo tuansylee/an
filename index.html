@@ -168,6 +168,20 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
 .kidavpick span.sel{background:#2a3550;outline:2px solid var(--blue)}
+/* 🐉 7 viên ngọc rồng (vẽ bằng CSS, không dùng hình có bản quyền) */
+.dragon{background:linear-gradient(155deg,#2a1a08,#16110c);border:1px solid #8a5a1a;border-radius:18px;padding:14px 10px;text-align:center}
+.dballs{display:flex;justify-content:center;gap:6px}
+.dball{width:40px;height:40px;flex:0 0 40px;border-radius:50%;padding:6px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#fff6d0 0,#ffc04d 22%,#f08a00 62%,#a84a00 100%);color:#d0202a;font-size:9px;line-height:9px;letter-spacing:-1px;
+  filter:grayscale(1) brightness(.45);opacity:.5}
+.dball.got{filter:none;opacity:1;box-shadow:0 0 10px #ffb34088}
+.dball i{font-style:normal;display:block}
+@media(max-width:420px){.dballs{gap:4px}.dball{width:32px;height:32px;flex-basis:32px;padding:4px;font-size:8px;line-height:8px}}
+.dprog{font-size:14px;color:#ffd98a;margin-top:10px;font-weight:700}
+.drule{font-size:12px;color:var(--mut);margin-top:4px}
+.dbar{height:8px;background:#3a2a10;border-radius:6px;margin-top:6px;overflow:hidden}.dbar span{display:block;height:100%;background:linear-gradient(90deg,#ffb340,#ff7a00)}
+.dsummon{margin-top:10px;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:800;color:#1a0d00;background:linear-gradient(90deg,#ffd84d,#ff9a1a);cursor:pointer;animation:dglow .9s ease-in-out infinite alternate}
+@keyframes dglow{from{box-shadow:0 0 0 #ffb34000}to{box-shadow:0 0 18px #ffb340cc}}
 /* ===== Tối giản ban đêm ===== */
 #night{position:fixed;inset:0;z-index:80;background:#000;color:#3a3f4a;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;cursor:pointer;user-select:none}
@@ -289,6 +303,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
       <button class="gumbtn ghost" id="pGameExtra" style="margin-top:6px"></button>
     </div>
    <h2 id="h_badges"></h2>
+   <div class="hist" id="pDragon" style="margin-bottom:6px"></div>
    <div class="hist" id="rwList"></div>
    <div class="empty" id="rwHint" style="text-align:left;font-size:12.5px"></div>
   </div>
@@ -428,7 +443,11 @@ function T_val(val) {
     "3✋ → 1🍬 getauscht": { vi: "Đổi 3✋ → 1🍬", de: "3✋ → 1🍬 getauscht" },
     "3⭐ → 1🍬 getauscht": { vi: "Đổi 3⭐ → 1🍬", de: "3⭐ → 1🍬 getauscht" },
     "Đổi 1🍬 → 0.20€": { vi: "Đổi 1🍬 → 0.20€", de: "1🍬 → 0.20€ getauscht" },
-    "1🍬 → 0.20€ getauscht": { vi: "Đổi 1🍬 → 0.20€", de: "1🍬 → 0.20€ getauscht" }
+    "1🍬 → 0.20€ getauscht": { vi: "Đổi 1🍬 → 0.20€", de: "1🍬 → 0.20€ getauscht" },
+    "5 kẹo": { vi: "5 kẹo", de: "5 Süßigkeiten" }, "5 Süßigkeiten": { vi: "5 kẹo", de: "5 Süßigkeiten" },
+    "Đi ăn kem": { vi: "Đi ăn kem", de: "Eis essen gehen" }, "Eis essen gehen": { vi: "Đi ăn kem", de: "Eis essen gehen" },
+    "Con chọn món ăn tối": { vi: "Con chọn món ăn tối", de: "Ich wähle das Abendessen" }, "Ich wähle das Abendessen": { vi: "Con chọn món ăn tối", de: "Ich wähle das Abendessen" },
+    "Tối xem phim cả nhà": { vi: "Tối xem phim cả nhà", de: "Familien-Filmabend" }, "Familien-Filmabend": { vi: "Tối xem phim cả nhà", de: "Familien-Filmabend" }
   };
   const entry = translations[val];
   if (entry) return entry[LANG] || val;
@@ -516,6 +535,9 @@ const T={
    h_hand:"✋ Sao giơ tay phát biểu (để chơi game)", pHandUnit:(c,max)=>`✋ tuần này · hết hạn tối Chủ nhật · hôm nay ${c}/${max} lần`,
    pHandBtn:"✋ Con đã giơ tay phát biểu ở lớp (+1 ✋)", pHandMax:"✋ Hôm nay đã đủ 3 lần",
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
+   rsWish:t=>`🐉 Điều ước: ${t}`, mgSecWish:"🐉 Ngọc rồng & điều ước", mgAddWish:"＋ Thêm điều ước",
+   mgDragonPer:n=>`Mỗi viên ngọc = ${n}⭐ con kiếm được`, mgDragonPerAsk:"Số ⭐ cho mỗi viên ngọc (7 viên = 1 điều ước)",
+   pDragon:(n,per,r)=>`🐉 Ngọc rồng: <b>${n}/7</b> viên · ${per}⭐/viên · đã ước ${r} lần`, pDragonLast:(t,d)=>`🐉 Điều ước gần nhất: <b>${t}</b> (${d})`,
    hPlus:"＋ Cộng ✋", hMinus:"－ Trừ ✋", hPlusDef:"Bố mẹ cộng ✋ (ngày nghỉ / bù)", hMinusDef:"Trừ ✋ (bấm nhầm)",
    pGameT:(m,lim)=>`🎮 Hôm nay đã chơi ${m}/${lim} phút`, pGameExtra:"🎮 Bố mẹ cho chơi thêm 15 phút hôm nay",
    pGameExtraConfirm:"Bố mẹ cho phép chơi thêm 15 phút hôm nay?\n(vẫn trừ 2🍬 + 1✋ khi mua)",
@@ -607,6 +629,9 @@ const T={
    h_hand:"✋ Melde-Sterne (für Videospiel)", pHandUnit:(c,max)=>`✋ diese Woche · verfallen So. abends · heute ${c}/${max}×`,
    pHandBtn:"✋ Hat sich im Unterricht gemeldet (+1 ✋)", pHandMax:"✋ Heute schon 3× (Maximum)",
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
+   rsWish:t=>`🐉 Wunsch: ${t}`, mgSecWish:"🐉 Drachenkugeln & Wünsche", mgAddWish:"＋ Wunsch hinzufügen",
+   mgDragonPer:n=>`Jede Kugel = ${n} verdiente ⭐`, mgDragonPerAsk:"⭐ pro Kugel (7 Kugeln = 1 Wunsch)",
+   pDragon:(n,per,r)=>`🐉 Drachenkugeln: <b>${n}/7</b> · ${per}⭐/Kugel · ${r} Wünsche erfüllt`, pDragonLast:(t,d)=>`🐉 Letzter Wunsch: <b>${t}</b> (${d})`,
    hPlus:"＋ ✋ dazu", hMinus:"－ ✋ weg", hPlusDef:"✋ von Eltern (Ferien / Ausgleich)", hMinusDef:"✋ abgezogen (Fehler)",
    pGameT:(m,lim)=>`🎮 Heute gespielt: ${m}/${lim} Min.`, pGameExtra:"🎮 Eltern erlauben heute 15 Min. extra",
    pGameExtraConfirm:"Erlauben die Eltern heute 15 Min. extra?\n(Kauf kostet trotzdem 2🍬 + 1✋)",
@@ -1202,6 +1227,15 @@ function defaultShop(){
     {id:"game30",e:"🎮",name:LANG==="de"?"Videospiel 30 Min.":"Chơi game 30 phút",cost:4,cur:"keo",hand:2,min:30},
     {id:"game15",e:"🎮",name:LANG==="de"?"Videospiel 15 Min.":"Chơi game 15 phút",cost:2,cur:"keo",hand:1,min:15}];
 }
+// 🐉 Điều ước khi gom đủ 7 viên ngọc. keo>0 = cộng kẹo ngay; keo=0 = điều ước ngoài đời (bố mẹ thực hiện)
+function defaultWishes(){
+  if(LANG==="de")return [
+    {id:"w1",e:"🍬",text:"5 Süßigkeiten",keo:5},{id:"w2",e:"🍦",text:"Eis essen gehen",keo:0},
+    {id:"w3",e:"🍽️",text:"Ich wähle das Abendessen",keo:0},{id:"w4",e:"🎬",text:"Familien-Filmabend",keo:0}];
+  return [
+    {id:"w1",e:"🍬",text:"5 kẹo",keo:5},{id:"w2",e:"🍦",text:"Đi ăn kem",keo:0},
+    {id:"w3",e:"🍽️",text:"Con chọn món ăn tối",keo:0},{id:"w4",e:"🎬",text:"Tối xem phim cả nhà",keo:0}];
+}
 function defaultGoals(){const wk=isoWeek(iso(new Date()));
   if(LANG==="de"){
     return [
@@ -1239,7 +1273,7 @@ function migrateKid(){
 function migrateV3(){const s=kidState();if(s.mig3)return;
   s.shop=defaultShop();              // chỉ còn 2 nút mua nhanh: game 30′ (4🍬) và 15′ (2🍬), mỗi lần cần 1✋
   s.keoLog=cleanLegacyLog(s);
-  s.mig3=1;kidSave(s);
+  s.mig3=1;kidSave(s);               // (kidState đã gắn s.dragon base = saoLife hiện tại -> lưu luôn)
   sv(UNDO_KEY,[]);}                  // ↩ cũ trỏ về dữ liệu trước nâng cấp -> bỏ
 // Gỡ các cặp "làm rồi hủy" khỏi nhật ký cũ (bỏ tick checklist, hủy mục tiêu, đổi/bỏ đánh giá). Tổng sao không đổi.
 function cleanLegacyLog(s){
@@ -1273,7 +1307,9 @@ function kidState(){const s=kidRaw();
   s.pocketMoneyAccruedInterest=s.pocketMoneyAccruedInterest||0;
   if(!s.pocketMoneyDate){s.pocketMoneyDate=iso(new Date());}
   if(!s.interestLastDate){s.interestLastDate=iso(new Date());}
-  s.goals=s.goals||[];s.tiers=s.tiers||defaultTiers();s.shop=s.shop||defaultShop();
+  s.goals=s.goals||[];s.tiers=s.tiers||defaultTiers();s.shop=s.shop||defaultShop();s.wishes=s.wishes||defaultWishes();
+  // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:5,rounds:0};
   s.keoLog=s.keoLog||[];s.badgesGot=s.badgesGot||[];
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   ensureHandWeek(s);
@@ -1294,6 +1330,24 @@ const todayGameDay=s=>s.gameDay&&s.gameDay.date===iso(new Date())?s.gameDay:{dat
 const todayGameMin=s=>todayGameDay(s).min||0;
 const todayGameLimit=s=>GAME_DAY_MIN+(todayGameDay(s).extra||0);
 // Ghi nhật ký điểm (mới nhất ở đầu). ts = lúc ghi, để tab Lịch sử hiện giờ.
+const dragonPer=s=>Math.max(1,Math.round(s.dragon.per||5));
+function dragonState(s){const per=dragonPer(s),p=Math.max(0,(s.saoLife||0)-(s.dragon.base||0)),n=Math.min(7,Math.floor(p/per));
+  return {n,per,rem:n<7?per-(p-n*per):0,pct:n<7?Math.round((p-n*per)/per*100):100};}
+function openWish(){const s=kidState();
+  if(dragonState(s).n<7)return;
+  openSheet(`<h3>${KL().wishT}</h3><div class="shopgrid">`+(s.wishes.map(w=>`<button class="shopbig" data-wish="${esc(w.id)}">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(T_val(w.text))}</span>${w.keo>0?`<span class="cost">+${w.keo}🍬</span>`:""}</button>`).join("")||`<div class="empty">${KL().wishEmpty}</div>`)
+    +`</div><div class="acts"><button class="cancel" id="wClose">${L().cancel}</button></div>`);
+  sheet.querySelectorAll("[data-wish]").forEach(b=>b.onclick=()=>makeWish(b.dataset.wish));
+  $("wClose").onclick=close;}
+function makeWish(id){const s=kidState(),w=s.wishes.find(x=>String(x.id)===String(id));if(!w||dragonState(s).n<7)return;
+  const t=T_val(w.text);
+  if(!confirm(KL().wishConfirm(t)))return;
+  undoPush("🐉 "+t);
+  s.dragon.base=(s.dragon.base||0)+7*dragonPer(s);   // ⭐ dư giữ sang vòng mới
+  s.dragon.rounds=(s.dragon.rounds||0)+1;s.dragon.last={date:iso(new Date()),text:w.text};
+  logAdd(s,{delta:1,reason:w.text,k:"wish",cur:"wish"});
+  if(w.keo>0){s.keo=(s.keo||0)+w.keo;logAdd(s,{delta:w.keo,reason:w.text,k:"wish",cur:"keo"});}
+  kidSave(s);close();kidCheer=KL().wishDone(t);triggerConfetti();playSound('success');renderRewardAll();}
 function logAdd(s,o){s.keoLog.unshift(Object.assign({date:iso(new Date()),ts:Date.now()},o));}
 // Chuỗi lý do cũ (đã lưu trong nhật ký trước bản này) — để nhận ra & gộp các cặp "làm / hủy"
 const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nhắc","Checkliste fertig — allein","Checkliste fertig — mit Erinnerung"],
@@ -1736,13 +1790,14 @@ $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onc
 /* ============ 🕘 Tab Lịch sử — timeline gộp mọi nguồn, chỉ xem, nhóm theo ngày, cuộn tới đâu tải tới đó ============ */
 let histFilter="all",histShow=100,histQ="",histUntil="",histObs=null;
 const HIST_PAGE=100;
-const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬"};
+const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬",wish:"🐉"};
 // Lý do hiển thị theo ngôn ngữ hiện tại cho bản ghi có loại (k), còn lại dịch nếu có trong từ điển
 function logReason(e){
   if(e.k==="eval"&&e.key){const r=L().evalRatings.find(x=>x[0]===e.key);if(r)return L().rsEval(r[1]);}
   if(e.k==="check")return e.self?L().rsCheckSelf:L().rsCheckHelp;
   if(e.k==="hand")return L().rsHand;
   if(e.k==="handexp")return L().rsHandExp;
+  if(e.k==="wish")return L().rsWish(T_val(e.reason||""));
   if(e.k==="allow"&&e.n)return LANG==="vi"?`Tự động cộng tiền tiêu vặt (+2€/tuần × ${e.n})`:`Taschengeld automatisch (+2€/Woche × ${e.n})`;
   if(e.k==="interest"&&e.m)return LANG==="vi"?`Nhập gốc lãi tiết kiệm tháng ${e.m}/${e.y} (2%/năm)`:`Zinsgutschrift für ${e.m}/${e.y} (2%/Jahr)`;
   return T_val(e.reason||"");}
@@ -1794,7 +1849,7 @@ function renderHistList(){
     &&(!q||(e.tm+" "+e.html.replace(/<[^>]*>/g,"")).toLowerCase().indexOf(q)>=0));
   const sums={};logs.forEach(e=>{if(!e.deltas)return;const m=sums[e.date]=sums[e.date]||{};e.deltas.forEach(x=>{m[x.cur]=(m[x.cur]||0)+x.delta;});});
   const sumHtml=d=>{const m=sums[d];if(!m)return "";
-    return ["sao","hand","keo","euro"].filter(c=>m[c]).map(c=>{const v=c==="euro"?Number(m[c].toFixed(2)):m[c];
+    return ["sao","hand","keo","euro","wish"].filter(c=>m[c]).map(c=>{const v=c==="euro"?Number(m[c].toFixed(2)):m[c];
       return `<span style="color:${v>0?'var(--g)':'var(--r)'}">${v>0?"+":""}${v}${c==="euro"?"€":CUR_IC[c]}</span>`;}).join(" · ");};
   let body="",day=null;
   logs.slice(0,histShow).forEach(e=>{
@@ -2050,6 +2105,12 @@ const KX={
    handMax:"✋ Hôm nay đã đủ 3 lần giơ tay.",
    handConfirm:n=>`Xác nhận con đã giơ tay phát biểu ở lớp? (lần ${n}/3 hôm nay)`,
    handCheer:n=>`✋ Hoan hô con dũng cảm giơ tay! +1 ✋ (${n}/3 hôm nay)`,
+   dragonT:"🐉 7 viên ngọc rồng · gom đủ 7 viên để gọi Rồng thần",
+   dragonNext:(i,rem)=>`Viên ${i} sao: còn ${rem}⭐ nữa`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần để ước 1 điều ✨",
+   dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per}⭐ là có thêm 1 viên ngọc`,
+   wishT:"🐉 Rồng thần hỏi: con ước gì?", wishConfirm:t=>`Con chọn điều ước: "${t}"?`,
+   wishDone:t=>`🐉 Rồng thần đã nghe! Điều ước: ${t}. 7 viên ngọc bay đi rồi, gom lại từ đầu nhé!`,
+   wishEmpty:"Chưa có điều ước - nhờ bố mẹ thêm ở ⚙️.",
    handExpWarn:n=>`⏰ Hôm nay là ngày cuối tuần: còn ${n} ✋, hết hôm nay sẽ mất.`+(n>=3?" Có thể đổi 3 ✋ → 1 🍬.":""),
    goalsT:"🎯 Mục tiêu tuần này — mỗi mục = +3 ⭐",goalsEmpty:"Chưa có mục tiêu — nhờ bố mẹ thêm ở ⚙️.",
    goalDoneCheer:t=>`🌟 Đạt mục tiêu tuần "${t}" — +3 ⭐!`,
@@ -2086,6 +2147,12 @@ const KX={
    handMax:"✋ Heute schon 3× gemeldet.",
    handConfirm:n=>`Hast du dich wirklich im Unterricht gemeldet? (heute ${n}/3)`,
    handCheer:n=>`✋ Bravo, du hast dich gemeldet! +1 ✋ (heute ${n}/3)`,
+   dragonT:"🐉 7 Drachenkugeln · sammle alle 7 und rufe den Drachen",
+   dragonNext:(i,rem)=>`${i}-Sterne-Kugel: noch ${rem}⭐`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen und wünsch dir etwas ✨",
+   dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Je ${per} verdiente ⭐ gibt es 1 Kugel`,
+   wishT:"🐉 Der Drache fragt: Was wünschst du dir?", wishConfirm:t=>`Dein Wunsch: "${t}"?`,
+   wishDone:t=>`🐉 Der Drache hat dich gehört! Wunsch: ${t}. Die Kugeln sind davongeflogen, sammle sie neu!`,
+   wishEmpty:"Noch keine Wünsche - Eltern fragen (⚙️).",
    handExpWarn:n=>`⏰ Letzter Tag der Woche: noch ${n} ✋, ab morgen verfallen sie.`+(n>=3?" Du kannst 3 ✋ → 1 🍬 tauschen.":""),
    goalsT:"🎯 Wochenziele — jedes Ziel = +3 ⭐",goalsEmpty:"Noch keine Ziele — Eltern fragen unter ⚙️.",
    goalDoneCheer:t=>`🌟 Wochenziel "${t}" erreicht — +3 ⭐!`,
@@ -2115,7 +2182,7 @@ function getMoneyHistory(s, count) {
 }
 function renderKid(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
-  const hn=s.hand.n||0,hc=todayHandCount(s),played=todayGameMin(s);
+  const hn=s.hand.n||0,hc=todayHandCount(s),played=todayGameMin(s),dg=dragonState(s);
   const badges=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
     return `<div class="kidbadge${got?' got':''}">${got?esc(b.e||""):"🔒"}<span>${got?esc(T_val(b.name)):KL().badgeLock(b.t)}</span></div>`;}).join("");
   const shopBtns=s.shop.length?s.shop.map(it=>{
@@ -2148,6 +2215,10 @@ function renderKid(){const s=kidState();
      <button class="gumbtn indigo" id="kConvertMoney" ${(s.keo||0)<1?'disabled':''}>${KL().convertMoneyBtn}</button>
    </div>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:8px 0 4px">${KL().streak(s.streak||0)}</div>
+   <div class="kidsec">${KL().dragonT}</div>
+   <div class="dragon"><div class="dballs">${[1,2,3,4,5,6,7].map(i=>`<div class="dball${i<=dg.n?' got':''}">${"<i>★</i>".repeat(i)}</div>`).join("")}</div>
+     <div class="dprog">${dg.n<7?KL().dragonNext(dg.n+1,dg.rem):KL().dragonReady}</div>
+     ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().dragonRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().dragonBtn}</button>`}</div>
    <div class="kidsec">${KL().badgesT}</div>
    <div class="kidbadges">${badges}</div>
    <div class="kidavpick" id="kAvPick" hidden>
@@ -2167,6 +2238,7 @@ function renderKid(){const s=kidState();
   $("kAv").onclick=()=>{$("kAvPick").hidden=!$("kAvPick").hidden;};
   $("kConvert").onclick=convertStars;
   $("kConvertHand").onclick=convertHand;
+  if($("kSummon"))$("kSummon").onclick=openWish;
   $("kConvertMoney").onclick=convertCandyToMoney;
   $("kHand").onclick=raiseHand;
   P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=()=>toggleGoal(g.dataset.gk));
@@ -2218,6 +2290,9 @@ function renderParentReward(){const s=kidState();
   $("rwList").innerHTML=s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>{const got=s.saoLife>=b.t;
     return `<div class="row" style="${got?'':'opacity:.55'}">${got?esc(b.e||""):'🔒'} <b>${esc(T_val(b.name))}</b> · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+esc(b.reward):''}</div>`;}).join("")||`<div class="row" style="color:var(--mut)">${L().mgEmpty}</div>`;
   $("rwHint").textContent=L().rwHint;
+  const dgp=dragonState(s);
+  $("pDragon").innerHTML=`<div class="row">${L().pDragon(dgp.n,dgp.per,s.dragon.rounds||0)}</div>`
+    +(s.dragon.last?`<div class="row">${L().pDragonLast(esc(T_val(s.dragon.last.text)),dmy(s.dragon.last.date))}</div>`:"");
   $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
   $("keoUnit").textContent=L().keoUnit;
   $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
@@ -2282,6 +2357,12 @@ function addGoalPrompt(){goalForm(LANG==="vi"?"Mục tiêu tuần mới":"Neues 
 function editGoalPrompt(id){const s0=kidState(),g0=s0.goals.find(x=>String(x.id)===String(id));if(!g0)return;
   goalForm(LANG==="vi"?"Sửa mục tiêu tuần":"Wochenziel bearbeiten",g0,
   (text,emoji)=>{const s=kidState(),g=s.goals.find(x=>String(x.id)===String(id));if(!g)return;if(text!==T_val(g.text))g.text=text;g.emoji=emoji;kidSave(s);renderRewardAll();});}
+function wishForm(title,init,save){
+  openForm({title,fields:[
+    {key:"text",label:LANG==="vi"?"Điều ước":"Wunsch",type:"text",value:init.text!=null?T_val(init.text):"",required:true},
+    {key:"keo",label:LANG==="vi"?"🍬 Cộng kẹo ngay (0 = điều ước ngoài đời, bố mẹ thực hiện)":"🍬 Süßigkeiten sofort (0 = echter Wunsch, Eltern erfüllen ihn)",type:"number",min:0,value:init.keo!=null?init.keo:0},
+    {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"✨"}],
+   onSave:v=>save(v.text,v.e||"",Math.max(0,Math.round(v.keo||0)))});}
 function delGoalPrompt(id){if(!confirm(LANG==="vi"?"Xoá mục tiêu này?":"Ziel löschen?"))return;
   const s=kidState();s.goals=s.goals.filter(x=>String(x.id)!==String(id));kidSave(s);renderRewardAll();}
 /* --- CRUD prompt-based cho 🏅 mốc huy hiệu --- */
@@ -2327,7 +2408,7 @@ function delShopPrompt(id){if(!confirm(LANG==="vi"?"Xoá món này?":"Diesen Art
 function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   const s=kidState();
   undoPush("↺ Reset");
-  s.sao=0;s.saoLife=0;s.keo=0;s.badgesGot=[];s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;
+  s.sao=0;s.saoLife=0;s.keo=0;s.badgesGot=[];s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;s.dragon={base:0,per:dragonPer(s),rounds:0};
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
 /* --- ⚙️ Menu quản lý cuối trang — CRUD tập trung mọi danh sách --- */
@@ -2350,7 +2431,11 @@ function renderManageBody(){
     +sec(L().mgSecSaoAdjust, saoAdjusts().map(adj => row(`${em(adj.emoji)}${esc(adj.text)} / ${esc(adj.textDe || adj.text)} · <b style="color:${adj.delta < 0 ? 'var(--r)' : 'var(--g)'}">${adj.delta > 0 ? '+' : ''}${adj.delta}⭐</b>`, "saoadj:" + adj.id)).join(""), "saoadj", L().mgAddSaoAdjust)
     +sec(L().mgSecGoal, s.goals.map(g=>row(`${em(g.emoji)}${esc(T_val(g.text))}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
     +sec(L().mgSecShop, s.shop.map(it=>row(`${em(it.e)}${esc(T_val(it.name))} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${costLabel(it)}</b>${it.min?` · ${it.min}′`:""}`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
-    +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${em(b.e)}${esc(T_val(b.name))} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+esc(b.reward):''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier);
+    +sec(L().mgSecTier, s.tiers.slice().sort((a,b)=>a.t-b.t).map(b=>row(`${em(b.e)}${esc(T_val(b.name))} · ${b.t}⭐ · +${b.bonus}🍬${b.reward?' · 🎁 '+esc(b.reward):''}`,"tier:"+b.id)).join(""), "tier", L().mgAddTier)
+    +`<div class="lbl" style="margin-top:14px">${L().mgSecWish}</div>`
+    +`<div class="chk" style="cursor:default"><span class="nm">${L().mgDragonPer(dragonPer(s))}</span><span class="ic" data-mgedit="dragonper:x">✏️</span></div>`
+    +(s.wishes.map(w=>row(`${em(w.e)}${esc(T_val(w.text))}${w.keo>0?` · <b style="color:#c99bff">+${w.keo}🍬</b>`:""}`,"wish:"+w.id)).join("")||`<div class="empty">${L().mgEmpty}</div>`)
+    +`<button class="add" data-mgadd="wish">${L().mgAddWish}</button>`;
   // [data-mgadd/mgedit/mgdel] handled by global delegate at document level
 }
 function mgAdd(kind){
@@ -2360,6 +2445,7 @@ function mgAdd(kind){
   else if(kind==="goal")addGoalPrompt();
   else if(kind==="shop")addShopPrompt();
   else if(kind==="tier")addTierPrompt();
+  else if(kind==="wish")wishForm(L().mgAddWish.replace(/^＋ /,""),{},(text,e,keo)=>{const s=kidState();s.wishes.push({id:newId(),e,text,keo});kidSave(s);renderRewardAll();});
 }
 function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   formBack=openManage;
@@ -2368,6 +2454,11 @@ function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1)
   else if(t==="goal")editGoalPrompt(id);
   else if(t==="shop")editShopPrompt(id);
   else if(t==="tier")editTierPrompt(id);
+  else if(t==="wish"){const w0=kidState().wishes.find(x=>String(x.id)===String(id));if(w0)wishForm(L().mgSecWish,w0,(text,e,keo)=>{const s=kidState(),w=s.wishes.find(x=>String(x.id)===String(id));if(!w)return;
+    if(text!==T_val(w.text))w.text=text;w.e=e;w.keo=keo;kidSave(s);renderRewardAll();});}
+  else if(t==="dragonper")openForm({title:L().mgSecWish,fields:[{key:"per",label:L().mgDragonPerAsk,type:"number",min:1,value:dragonPer(kidState()),required:true}],
+    onSave:v=>{const n=Math.round(v.per||0);if(n<1)return;const s=kidState(),st=dragonState(s);
+      s.dragon.base=(s.saoLife||0)-st.n*n;s.dragon.per=n;kidSave(s);renderRewardAll();}});   // giữ nguyên số viên đã có
 }
 function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   if(t==="saoadj")delSaoAdjPrompt(id);
@@ -2375,6 +2466,7 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   else if(t==="goal")delGoalPrompt(id);
   else if(t==="shop")delShopPrompt(id);
   else if(t==="tier")delTierPrompt(id);
+  else if(t==="wish"){if(confirm(LANG==="vi"?"Xoá điều ước này?":"Diesen Wunsch löschen?")){const s=kidState();s.wishes=s.wishes.filter(x=>String(x.id)!==String(id));kidSave(s);renderRewardAll();}}
   if($("mgBody"))renderManageBody();}
 /* --- Tối ban đêm (tự chuyển theo giờ) --- */
 let manualNight=false,wakeUntil=0;
