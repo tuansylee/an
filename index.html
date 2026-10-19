@@ -386,7 +386,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-19·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-19·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -2535,23 +2535,21 @@ function showUpdateBanner() {
     el.hidden = false;
   }
 }
+// Offline là bình thường (wifi thường tắt): không báo gì. Chỉ khi có mạng mới hỏi GitHub có BUILD mới không -> hiện banner "chạm để tải lại".
+function checkNewBuild(){
+  if(navigator.onLine===false)return;
+  fetch("index.html?__build="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{
+    const m=t.match(/const BUILD="([^"]+)"/);if(m&&m[1]!==BUILD)showUpdateBanner();}).catch(()=>{});}
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
     navigator.serviceWorker.register("sw.js").then(reg=>{
-      reg.addEventListener("updatefound", () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener("statechange", () => {
-          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-            showUpdateBanner();
-          }
-        });
-      });
-      if (reg.waiting) {
-        showUpdateBanner();
-      }
+      reg.update().catch(()=>{});   // có mạng -> cài ngay sw.js mới (để offline luôn mở đúng bản mới nhất)
+      window.addEventListener("online",()=>reg.update().catch(()=>{}));
     }).catch(()=>{});
   });
 }
+window.addEventListener("load",()=>setTimeout(checkNewBuild,3000));
+window.addEventListener("online",()=>setTimeout(checkNewBuild,2000));
 </script>
 </body>
 </html>
