@@ -25,7 +25,7 @@ h2{font-size:13px;letter-spacing:.08em;color:var(--mut);margin:16px 4px 8px;text
 .lang button.on{background:var(--g);color:#06210f;border-color:var(--g);font-weight:700}
 .mockbanner{background:#2a2410;border:1px solid #6a5520;color:#ffd98a;border-radius:10px;padding:8px 12px;font-size:13px;margin:0 4px 10px}
 .tabs{display:flex;gap:6px;margin:0 4px 12px;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:10}
-.tabs button{flex:1;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:11px 4px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;line-height:1.2}
+.tabs button{flex:1;min-width:0;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:11px 4px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;line-height:1.2}
 .tabs button.on{background:#1d2740;border-color:var(--blue);color:var(--fg)}
 .page{display:grid;grid-template-columns:1fr;gap:8px}
 @media(min-width:820px){.page{grid-template-columns:1fr 1fr;gap:22px;align-items:start}}
@@ -163,7 +163,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .kidmood button{flex:1;font-size:30px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 0;cursor:pointer}
 .kidmood button.sel{outline:3px solid var(--g);outline-offset:1px}
 .kidrow{display:flex;gap:8px;margin-top:6px}
-.kidrow input{flex:1;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px;font-size:15px}
+.kidrow input{flex:1;min-width:0;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:12px;padding:12px;font-size:15px}
 .kidrow button{background:var(--g);color:#06210f;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
 .kidavpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .kidavpick span{font-size:30px;cursor:pointer;padding:4px;border-radius:10px}
@@ -452,7 +452,7 @@ const T={
    nohist:"Chưa có bản ghi hôm nay.", reportTitle:"Gesundheitsbericht",
    h_sao:"⭐ Sao của con (bố mẹ đánh giá)", pSaoUnit:n=>`sao hiện có · tổng đã kiếm: <b>${n}</b> (mở khoá huy hiệu)`,
    evalRatings:[["cn","Cực ngoan","+2"],["n","Ngoan","+1"],["bt","Bình thường","0"],["h","Hư","−1"],["ch","Cực hư","−2"]],
-   evalStatus:r=>r?`Hôm nay đã chấm: ${r} — bấm lại để đổi`:"Chưa chấm điểm hôm nay.",
+   evalStatus:r=>r?`Hôm nay đã chấm: ${r} · chạm mức khác để đổi, chạm lại để bỏ`:"Chưa chấm điểm hôm nay.",
    critBtn:"❓ Tiêu chí chấm điểm", critTitle:"Tiêu chí chấm điểm",
    h_badges:"🏅 Huy hiệu & phần thưởng", rwHint:"Sửa mốc (số ⭐, bonus kẹo, phần thưởng), thêm/xóa mốc và Reset sao & kẹo ở ⚙️ menu quản lý cuối trang.",
    h_keo:"🍬 Kẹo (điểm xịn — tiêu ở cửa hàng)", keoUnit:"kẹo đang có",
@@ -543,7 +543,7 @@ const T={
    nohist:"Noch keine Einträge heute.", reportTitle:"Gesundheitsbericht",
    h_sao:"⭐ Sterne des Kindes (Elternbewertung)", pSaoUnit:n=>`Sterne aktuell · insgesamt verdient: <b>${n}</b> (schaltet Abzeichen frei)`,
    evalRatings:[["cn","Sehr brav","+2"],["n","Brav","+1"],["bt","Normal","0"],["h","Unartig","−1"],["ch","Sehr unartig","−2"]],
-   evalStatus:r=>r?`Heute bewertet: ${r} — zum Ändern erneut tippen`:"Heute noch nicht bewertet.",
+   evalStatus:r=>r?`Heute bewertet: ${r} · andere Stufe = ändern, gleiche = entfernen`:"Heute noch nicht bewertet.",
    critBtn:"❓ Bewertungskriterien", critTitle:"Bewertungskriterien",
    h_badges:"🏅 Abzeichen & Belohnungen", rwHint:"Stufen bearbeiten (⭐-Schwelle, Bonus, Belohnung), Stufen hinzufügen/löschen und Sterne & Süßigkeiten zurücksetzen unter ⚙️ Verwaltung unten.",
    h_keo:"🍬 Süßigkeiten (echte Punkte — im Shop ausgeben)", keoUnit:"Süßigkeiten aktuell",
@@ -1345,6 +1345,7 @@ function checkPocketMoneyAllowance() {
         date: iso(today),
         delta: mondaysPassed * 2,
         reason: LANG === "vi" ? `Tự động cộng tiền tiêu vặt (+2€/tuần × ${mondaysPassed})` : `Taschengeld automatisch (+2€/Woche × ${mondaysPassed})`,
+        k: "allow", n: mondaysPassed,
         cur: "euro"
       });
       kidSave(s);
@@ -1537,6 +1538,7 @@ function checkPocketMoneyInterest() {
           date: iso(temp),
           delta: Number(accrued.toFixed(4)),
           reason: LANG === "vi" ? `Nhập gốc lãi tiết kiệm tháng ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (2%/năm)` : `Zinsgutschrift für ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (2%/Jahr)`,
+          k: "interest", m: lastCalc.getMonth() + 1, y: lastCalc.getFullYear(),
           cur: "euro"
         });
         accrued = 0;
@@ -1647,7 +1649,7 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>String(x.id)===Stri
   }
   kidSave(s);renderRewardAll();}
 /* --- 🛒 Cửa hàng đổi thưởng (nút mua nhanh ở tab của con) --- */
-const costLabel=it=>`${it.cost}${it.cur==="sao"?"⭐":"🍬"}`+((it.hand||0)>0?` + ${it.hand}✋`:"");
+const costLabel=it=>{const h=(it.hand||0)>0?`${it.hand}✋`:"";return it.cost>0||!h?`${it.cost}${it.cur==="sao"?"⭐":"🍬"}`+(h?" + "+h:""):h;};
 function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>String(x.id)===String(id));if(!it)return;
   const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0);
   const nameTr=T_val(it.name),needH=Math.max(0,Math.round(it.hand||0)),haveH=s.hand.n||0,mins=Math.max(0,Math.round(it.min||0));
@@ -1741,6 +1743,8 @@ function logReason(e){
   if(e.k==="check")return e.self?L().rsCheckSelf:L().rsCheckHelp;
   if(e.k==="hand")return L().rsHand;
   if(e.k==="handexp")return L().rsHandExp;
+  if(e.k==="allow"&&e.n)return LANG==="vi"?`Tự động cộng tiền tiêu vặt (+2€/tuần × ${e.n})`:`Taschengeld automatisch (+2€/Woche × ${e.n})`;
+  if(e.k==="interest"&&e.m)return LANG==="vi"?`Nhập gốc lãi tiết kiệm tháng ${e.m}/${e.y} (2%/năm)`:`Zinsgutschrift für ${e.m}/${e.y} (2%/Jahr)`;
   return T_val(e.reason||"");}
 function fmtDelta(e){const v=Number(e.delta)||0,n=e.cur==="euro"?Number(v.toFixed(4)):v;
   return (v>0?"+":v<0?"":"±")+n+(e.cur==="euro"?"€":"")+(CUR_IC[e.cur]||"🍬");}
@@ -2289,7 +2293,7 @@ function tierForm(title,init,save){
     {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"🎖️"},
     {key:"reward",label:LANG==="vi"?"Phần thưởng đời thực (tùy chọn)":"Reale Belohnung (optional)",type:"text",value:init.reward||""}],
    onSave:v=>{
-     const t=Math.round(v.t||0);if(t<1)return;
+     const t=Math.round(v.t||0);if(t<1){alert(LANG==="vi"?"Mốc phải từ 1 ⭐ trở lên":"Schwelle muss mindestens 1 ⭐ sein");return;}
      save(v.name,t,Math.max(0,Math.round(v.bonus||0)),v.e||"",v.reward||"");}});}
 function addTierPrompt(){tierForm(LANG==="vi"?"Mốc huy hiệu mới":"Neue Abzeichen-Stufe",{},
   (name,t,bonus,e,reward)=>{const s=kidState();s.tiers.push({id:newId(),t,e,name,bonus,reward});checkBadges(s);kidSave(s);renderRewardAll();});}
@@ -2303,13 +2307,13 @@ function delTierPrompt(id){if(!confirm(LANG==="vi"?"Xoá mốc huy hiệu này?"
 function shopForm(title,init,save){
   openForm({title,fields:[
     {key:"name",label:LANG==="vi"?"Tên món":"Name",type:"text",value:init.name!=null?T_val(init.name):"",required:true},
-    {key:"cost",label:LANG==="vi"?"Giá (số điểm)":"Preis (Punkte)",type:"number",min:1,value:init.cost!=null?init.cost:2,required:true},
+    {key:"cost",label:LANG==="vi"?"Giá (số điểm)":"Preis (Punkte)",type:"number",min:0,value:init.cost!=null?init.cost:2,required:true},
     {key:"cur",label:LANG==="vi"?"Tiêu bằng loại điểm":"Punkteart",type:"chips",options:[["sao","⭐ "+(LANG==="vi"?"Sao":"Sterne")],["keo","🍬 "+(LANG==="vi"?"Kẹo":"Süßigkeiten")]],value:init.cur||"keo"},
     {key:"hand",label:LANG==="vi"?"✋ Cần thêm sao giơ tay (0 = không cần)":"✋ Zusätzlich Melde-Sterne (0 = keine)",type:"number",min:0,value:init.hand!=null?init.hand:0},
     {key:"min",label:LANG==="vi"?`🎮 Số phút game (tính vào giới hạn ${GAME_DAY_MIN} phút/ngày · 0 = không phải game)`:`🎮 Spielminuten (zählt zum Limit ${GAME_DAY_MIN} Min./Tag · 0 = kein Spiel)`,type:"number",min:0,value:init.min!=null?init.min:0},
     {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"🎁"}],
    onSave:v=>{
-     const cost=Math.round(v.cost||0);if(cost<1)return;
+     const cost=Math.max(0,Math.round(v.cost||0));
      save(v.name,cost,v.cur==="sao"?"sao":"keo",v.e||"",Math.max(0,Math.round(v.hand||0)),Math.max(0,Math.round(v.min||0)));}});}
 function addShopPrompt(){shopForm(LANG==="vi"?"Món đổi thưởng mới":"Neuer Shop-Artikel",{},
   (name,cost,cur,e,hand,min)=>{const s=kidState();s.shop.push({id:newId(),e,name,cost,cur,hand,min});kidSave(s);renderRewardAll();});}
