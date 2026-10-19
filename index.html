@@ -287,6 +287,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 <div class="panel" data-panel="con" hidden>
  <div class="page">
   <div class="col">
+   <button class="critbtn" data-gohist="diem" id="histGoPts" style="margin:0 0 6px;color:#cfe0ff;border-color:#3f6fd0"></button>
    <div id="undoBar"></div>
    <h2 id="h_sao"></h2>
     <div class="gamebox">
@@ -368,6 +369,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
      <button class="gumbtn ghost" id="acariBuy" style="margin-top:6px"></button>
    </div>
    <h2 id="h_report"></h2><button class="report" id="repBtn"></button>
+   <button class="critbtn" data-gohist="sk" id="histGoSk" style="color:#cfe0ff;border-color:#3f6fd0"></button>
   </div>
   <div class="col">
    <h2 id="h_recent"></h2><div class="hist" id="hRecent"></div><button class="notebtn" id="hMore" hidden></button>
@@ -384,7 +386,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-19·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-19·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -521,6 +523,7 @@ const T={
    statsMore:"Xem thêm 50", histMore:"Xem thêm ▾",
    statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
    tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử - mọi bản ghi (chỉ xem)",
+   histGoPts:"🕘 Xem toàn bộ lịch sử ⭐✋🍬€", histGoSk:"🕘 Xem toàn bộ lịch sử sức khỏe",
    histAll:"Tất cả", histDiem:"⭐✋🍬€ Điểm", histSk:"🩺 Sức khỏe", histDo:"😴🌡️📈 Đo đạc", histNk:"✨ Nhật ký",
    statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
    statsHand:"✋ Giơ tay phát biểu / tuần (8 tuần)",
@@ -615,6 +618,7 @@ const T={
    statsMore:"50 weitere", histMore:"Mehr anzeigen ▾",
    statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
    tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf - alle Einträge (nur Ansicht)",
+   histGoPts:"🕘 Ganzer Verlauf ⭐✋🍬€", histGoSk:"🕘 Ganzer Gesundheitsverlauf",
    histAll:"Alle", histDiem:"⭐✋🍬€ Punkte", histSk:"🩺 Gesundheit", histDo:"😴🌡️📈 Messungen", histNk:"✨ Tagebuch",
    statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
    statsHand:"✋ Meldungen im Unterricht / Woche (8 Wochen)",
@@ -790,14 +794,16 @@ let _idc=0;const newId=()=>"r"+Date.now().toString(36)+(_idc++).toString(36);
 
 /* ============ Tabs ============ */
 let TAB=localStorage.getItem("fam.tab")||"truc";
-function setTab(t){if(!document.querySelector(`.panel[data-panel="${t}"]`))t="truc";   // tab cũ đã bỏ (vd "lich") -> về tab Trực
+function setTab(t,hf){if(!document.querySelector(`.panel[data-panel="${t}"]`))t="truc";   // tab cũ đã bỏ (vd "lich") -> về tab Trực
   TAB=t;localStorage.setItem("fam.tab",t);
   document.querySelectorAll(".panel").forEach(p=>p.hidden=p.dataset.panel!==t);
   document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   if(t==="kid")enterKidTab();
-  if(t==="hist"){histFilter="all";histShow=HIST_PAGE;histQ="";histUntil="";renderHist();}
+  if(t==="hist"){histFilter=hf||"all";histShow=HIST_PAGE;histQ="";histUntil="";renderHist();window.scrollTo(0,0);}
   tickNight();}
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+// Nút "🕘 Xem lịch sử" ở các tab (chỗ trước đây có ô nhật ký) -> mở tab Lịch sử đúng bộ lọc
+document.addEventListener("click",e=>{const h=e.target.closest("[data-gohist]");if(h)setTab("hist",h.dataset.gohist);});
 
 /* ============ Lịch trực (thuật toán 2 tuần, plan mục 4) ============ */
 const PEOPLE={bo:{c:"bo",e:"🧔"},me:{c:"me",e:"👩‍🦰"}};
@@ -1755,8 +1761,8 @@ const SX={
    growthOdd:"Ungewöhnliche Werte (Größe 30-220 cm, Gewicht 2-150 kg). Trotzdem speichern?",durLbl:h=>`≈ ${h} Std`,
    p30:"30 Tage",p90:"90 Tage",pAll:"Alles",close:"Schließen",dlFail:"CSV-Download ist auf diesem Gerät nicht möglich.",acariEnd:d=>`reicht bis ca. ${d}`}};
 const SL=()=>SX[LANG];
-function durH(bed,wake){if(!bed||!wake)return null;const[bh,bm]=bed.split(":").map(Number),[wh,wm]=wake.split(":").map(Number);
-  let m=(wh*60+wm)-(bh*60+bm);if(m<0)m+=1440;return(m/60).toFixed(1);}
+function durH(bed,wake){if(!bed||!wake)return null;const[bh,bm]=String(bed).split(":").map(Number),[wh,wm]=String(wake).split(":").map(Number);
+  let m=(wh*60+(wm||0))-(bh*60+(bm||0));if(isNaN(m))return null;if(m<0)m+=1440;return(m/60).toFixed(1);}
 // Ngủ / nhiệt độ / tăng trưởng giờ là nút trong lưới nhập nhanh, form chung hOpen(); danh sách ở "Gần đây"
 function renderSleep(){$("b_sleep").textContent=SL().bSleep;}
 function renderTemp(){$("b_temp").textContent=SL().bTemp;}
@@ -1792,14 +1798,14 @@ function logReason(e){
 function fmtDelta(e){const v=Number(e.delta)||0,n=e.cur==="euro"?Number(v.toFixed(4)):v;
   return (v>0?"+":v<0?"":"±")+n+(e.cur==="euro"?"€":"")+(CUR_IC[e.cur]||"🍬");}
 function histEntries(){
-  const out=[];
+  const out=[],each=(arr,f)=>{if(!Array.isArray(arr))return;arr.forEach((x,i)=>{try{f(x,i);}catch(e){console.error("hist",e);}});};
   const tmOf=x=>typeof x.time==="string"&&/^\d\d:\d\d/.test(x.time)?x.time.slice(0,5):(x.ts&&iso(x.ts)===x.date?hhmm(new Date(x.ts)):"");
   const ok=x=>x&&typeof x.date==="string";
   // rec: càng lớn = càng mới trong cùng ngày (keoLog lưu mới→cũ, các mảng khác cũ→mới)
   // 1 thao tác ghi nhiều loại điểm (vd mua game: −4🍬 và −1✋) -> gộp thành 1 dòng
   const dHtml=e=>{const v=Number(e.delta)||0;return `<span style="color:${v>0?'var(--g)':v<0?'var(--r)':'var(--mut)'}">${fmtDelta(e)}</span>`;};
   let prev=null;
-  fullLog(kidState()).forEach((e,i)=>{if(!ok(e))return;const cur=CUR_IC[e.cur]?e.cur:"keo",v=Number(e.delta)||0;
+  each(fullLog(kidState()),(e,i)=>{if(!ok(e))return;const cur=CUR_IC[e.cur]?e.cur:"keo",v=Number(e.delta)||0;
     if(prev&&e.ts&&prev.ts&&Math.abs(prev.ts-e.ts)<2000&&prev.reason===e.reason&&prev.date===e.date&&!prev.deltas.some(x=>x.cur===cur)){
       prev.deltas.push({cur,delta:v});prev.parts.unshift(dHtml(e));
       prev.html=prev.parts.join(" ")+" "+esc(logReason(e));return;}
@@ -1807,13 +1813,13 @@ function histEntries(){
     prev={date:e.date,tm:tmOf(e),cat:"diem",rec:-i,ts:e.ts,reason:e.reason,deltas:[{cur,delta:v}],parts:[dHtml(e)],
       html:dHtml(e)+" "+esc(logReason(e))};
     out.push(prev);});
-  ld("fam.health.logs").forEach((x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"sk",rec:i,html:summ(x)});});
-  ld("fam.sleep").forEach((x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,
+  each(ld("fam.health.logs"),(x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"sk",rec:i,html:summ(x)});});
+  each(ld("fam.sleep"),(x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,
     html:`😴 ${esc(x.bed||"–")}→${esc(x.wake||"–")}${durH(x.bed,x.wake)?` · ${durH(x.bed,x.wake)}${SL().dur}`:""}${x.quality?` · ${esc(x.quality)}`:""}${x.note?` · "${esc(x.note)}"`:""}`});});
-  ld("fam.temp").forEach((x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,
+  each(ld("fam.temp"),(x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,
     html:`<span style="color:${x.v>=38?'var(--r)':'inherit'}">🌡️ ${esc(x.v)}°C${x.v>=38?` (${SL().fever})`:""}</span>${x.note?` · "${esc(x.note)}"`:""}`});});
-  ld("fam.growth").forEach((x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,html:`📈 ${esc(x.h||"–")}cm · ${esc(x.w||"–")}kg`});});
-  ld("fam.kid.diary").forEach((x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"nk",rec:i,html:`✨ ${esc(x.text)}`});});
+  each(ld("fam.growth"),(x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"do",rec:i,html:`📈 ${esc(x.h||"–")}cm · ${esc(x.w||"–")}kg`});});
+  each(ld("fam.kid.diary"),(x,i)=>{if(ok(x))out.push({date:x.date,tm:tmOf(x),cat:"nk",rec:i,html:`✨ ${esc(x.text)}`});});
   return out.sort((a,b)=>b.date.localeCompare(a.date)||b.tm.localeCompare(a.tm)||b.rec-a.rec);}
 function histDayLabel(d){const dt=new Date(d+"T00:00:00");if(isNaN(dt))return d;
   const base=L().dayShort[dt.getDay()]+" "+dt.getDate()+"/"+(dt.getMonth()+1)+(dt.getFullYear()!==new Date().getFullYear()?"/"+dt.getFullYear():"");
@@ -1944,7 +1950,7 @@ function archiveOldLog(){
     try{localStorage.setItem(ARCH_KEY,JSON.stringify(add.concat(arch)));
       s.keoLog=s.keoLog.filter(e=>!(e.date<cut));kidSave(s);}catch(e){storageFull(e);}}
   const ex=ld("fam.exports");if(ex.length>EXPORTS_KEEP)sv("fam.exports",ex.slice(-EXPORTS_KEEP));}
-const fullLog=s=>(s.keoLog||[]).concat(ld(ARCH_KEY));
+const fullLog=s=>{const a=ld(ARCH_KEY);return (s.keoLog||[]).concat(Array.isArray(a)?a.filter(e=>e&&typeof e==="object"):[]);};
 // Tick checklist cũ hơn 70 ngày (mỗi tick 1 key ~40 ký tự, bị chép vào mọi bản tự lưu) -> gom vào 1 key {ngày:[id...]}
 const ANCHK_OLD="fam.anchk_old";
 function anchkOld(){try{return JSON.parse(localStorage.getItem(ANCHK_OLD))||{};}catch(e){return {};}}
@@ -2261,7 +2267,8 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="kidsec">${KL().moodT}</div>
    <div class="kidmood" id="kMood">${L().moods.map((m,i)=>`<button data-mi="${i}">${m.split(" ")[0]}</button>`).join("")}</div>
    <div class="kidsec">${KL().goodT}</div>
-   <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>`;
+   <div class="kidrow"><input id="kGood" placeholder="${KL().goodPh}"><button id="kGoodSave">${KL().goodSave}</button></div>
+   <button class="critbtn" data-gohist="diem" style="margin-top:14px;color:#cfe0ff;border-color:#3f6fd0">${L().histGoPts}</button>`;
   const P=$("kidPanel");P.style.setProperty("--kidc",s.color||"#5fd08a");
   if(dg.n)$("kAv").style.boxShadow=`0 0 ${6+dg.n*4}px ${2+dg.n}px ${dg.n>=7?"#ffd84d":"#ffb34099"}`;   // hào quang theo số ngọc
   P.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{const st=kidState();st.avatar=b.dataset.av;kidSave(st);renderKid();});
@@ -2282,6 +2289,7 @@ function renderParentReward(){const s=kidState();
   const undoA=ld(UNDO_KEY),lastU=undoA[undoA.length-1];
   $("undoBar").innerHTML=lastU?`<button class="critbtn" id="undoBtn" style="margin:6px 0 0;color:#ffd98a;border-color:#6a5520">${esc(L().undoBtn(lastU.label))}</button>`:"";
   if($("undoBtn"))$("undoBtn").onclick=undoPop;
+  $("histGoPts").textContent=L().histGoPts;
   $("h_sao").textContent=L().h_sao;$("h_dragon").textContent=L().h_dragon;$("h_keo").textContent=L().h_keo;
   $("pSao").textContent=s.sao||0;$("pSao").className="bignum gold"+negS;
   $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
@@ -2488,7 +2496,7 @@ function renderAll(){
   $("tab_hist").textContent=L().tab_hist;
   $("tab_kid").textContent="🧒 "+CHILD();
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
-  $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;
+  $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;$("histGoSk").textContent=L().histGoSk;
   $("h_manage").textContent=L().h_manage;$("mgOpenBtn").textContent=L().mgOpenBtn;
   renderDuty();renderDaily();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();if(TAB==="hist")renderHist();
   if($("mgBody"))renderManageBody();}
