@@ -400,7 +400,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-22·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1314,14 +1314,19 @@ function defaultWishes(){
   return [
     {id:"x1",e:"🌟",text:"Thưởng 5 sao",de:"5 Sterne extra",sao:5,keo:0,w:4,c:"#d9a520"},
     {id:"x2",e:"🦉",text:"10 phút Duolingo",de:"10 Minuten Duolingo",sao:0,keo:0,w:2,c:"#4caf2a"},
-    {id:"x3",e:"🍨",text:"Con được tự chọn món tráng miệng",de:"Ich darf mir den Nachtisch aussuchen",sao:0,keo:0,w:2,c:"#e05a9a"},
-    {id:"x4",e:"🗺️",text:"Con chọn chỗ đi chơi cuối tuần",de:"Ich wähle unseren Wochenend-Ausflug",sao:0,keo:0,w:2,c:"#3f8fd0"},
+    {id:"x3",e:"🍨",text:"Đi siêu thị chọn mua món tráng miệng",de:"Im Supermarkt einen Nachtisch aussuchen",sao:0,keo:0,w:2,c:"#e05a9a"},
+    {id:"x4",e:"🗺️",text:"Chọn địa điểm đi chơi cuối tuần",de:"Den Ausflugsort am Wochenende aussuchen",sao:0,keo:0,w:2,c:"#3f8fd0"},
     {id:"x5",e:"🎰",text:"Jackpot: 3 kẹo",de:"Jackpot: 3 Süßigkeiten",sao:0,keo:3,w:1,c:"#9b5de5"}];
 }
 const wTag=w=>(w.sao>0?`<span class="tag">+${w.sao}⭐</span>`:"")+(w.keo>0?`<span class="tag">+${w.keo}🍬</span>`:"");
 const wName=(w,de)=>de?(w.de||T_val(w.text)):(w.text||w.de||"");          // tên theo ngôn ngữ
 const wMain=w=>wName(w,LANG==="de"),wSub=w=>wName(w,LANG!=="de");
 // Một lần: thay danh sách điều ước cũ (có cờ vua, 2 kẹo) bằng danh sách mới
+// Lần 2: đổi chữ 2 lá tráng miệng / đi chơi (nếu chưa sửa tay)
+function migrateWishes3(){const s=kidState();if(s.dragon.w3)return;
+  const d=defaultWishes();["x3","x4"].forEach(id=>{const w=s.wishes.find(x=>x.id===id),n=d.find(x=>x.id===id);
+    if(w&&(w.text==="Con được tự chọn món tráng miệng"||w.text==="Con chọn chỗ đi chơi cuối tuần")){w.text=n.text;w.de=n.de;}});
+  s.dragon.w3=1;kidSave(s);}
 function migrateWishes2(){const s=kidState();if(s.dragon.w2)return;s.wishes=defaultWishes();s.dragon.offer=null;s.dragon.w2=1;kidSave(s);}
 function drawWishes(s){const pool=s.wishes.slice(),out=[];
   while(out.length<3&&pool.length){const tot=pool.reduce((t,w)=>t+Math.max(1,Math.round(w.w||1)),0);let r=Math.random()*tot,i=0;
@@ -1404,7 +1409,7 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.wishes))s.wishes=defaultWishes();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
-  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1};
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   ensureHandWeek(s);
@@ -1474,7 +1479,7 @@ function showDragon(round,offer){
   const ov=document.createElement("div");ov.id="dragonOv";
   ov.innerHTML=`<div class="dbig">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div><div class="dsay">${esc(msg)}</div>
     <div class="dhint">${esc(KL().dragonPick)}</div>
-    <div class="dcards">${offer.map((w,i)=>`<button class="dcard" data-pick="${esc(w.id)}" style="--wc:${esc(w.c||"#ffb340")};animation-delay:${2.5+i*.25}s">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(wMain(w))}</span>${wSub(w)&&wSub(w)!==wMain(w)?`<span class="sub">${esc(wSub(w))}</span>`:""}${wTag(w)}</button>`).join("")}</div>`;
+    <div class="dcards">${offer.map((w,i)=>`<button class="dcard" data-pick="${esc(w.id)}" style="--wc:${esc(w.c||"#ffb340")};animation-delay:${2.5+i*.25}s">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(wName(w,true))}</span>${wTag(w)}</button>`).join("")}</div>`;
   document.body.appendChild(ov);playSound('dragon');setTimeout(triggerConfetti,1300);
   let gone=false;
   ov.querySelectorAll("[data-pick]").forEach(c=>c.onclick=ev=>{ev.stopPropagation();if(gone)return;
@@ -1484,7 +1489,7 @@ function showDragon(round,offer){
     for(let i=0;i<7;i++){const a=i/7*Math.PI*2+Math.random()*.4,b=document.createElement("div");b.className="fly";
       b.style.setProperty("--dx",Math.round(Math.cos(a)*innerWidth*.7)+"px");b.style.setProperty("--dy",Math.round(Math.sin(a)*innerHeight*.7)+"px");ov.appendChild(b);}
     playSound('success');
-    setTimeout(()=>{ov.remove();kidCheer=KL().wishCheer(wMain(w),(w.keo||0)+(w.sao||0));renderRewardAll();},950);});}
+    setTimeout(()=>{ov.remove();kidCheer=KL().wishCheer(wName(w,true),(w.keo||0)+(w.sao||0));renderRewardAll();},950);});}
 function logAdd(s,o){s.keoLog.unshift(Object.assign({date:iso(new Date()),ts:Date.now()},o));}
 // Chuỗi lý do cũ (đã lưu trong nhật ký trước bản này) — để nhận ra & gộp các cặp "làm / hủy"
 const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nhắc","Checkliste fertig — allein","Checkliste fertig — mit Erinnerung"],
@@ -2470,7 +2475,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="dragon"><div class="dballs">${[1,2,3,4,5,6,7].map(i=>`<div class="dball${i<=dg.n?' got':''}">${"<i>★</i>".repeat(i)}</div>`).join("")}</div>
      <div class="dprog">${dg.n<7?KL().dragonNext(dg.n+1,dg.rem):KL().dragonReady}</div>
      ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().dragonRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().dragonBtn}</button>`}
-     ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wMain(p))}`).join("<br>")}</div>`:""}</div>
+     ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wName(p,true))}`).join("<br>")}</div>`:""}</div>
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
      <div style="width:100%;height:1px;background:var(--bd);margin:6px 0"></div>
@@ -2753,7 +2758,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
