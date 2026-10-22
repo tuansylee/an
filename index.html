@@ -179,6 +179,23 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .dsummon{margin-top:10px;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:800;color:#1a0d00;background:linear-gradient(90deg,#ffd84d,#ff9a1a);cursor:pointer;animation:dglow .9s ease-in-out infinite alternate}
 @keyframes dglow{from{box-shadow:0 0 0 #ffb34000}to{box-shadow:0 0 18px #ffb340cc}}
 .kidpow{font-size:14px;font-weight:800;color:#ffd84d;margin-top:2px;letter-spacing:.02em}
+/* 💪 Phong độ: hào quang quanh avatar theo cấp (0 hết sức … 5 Siêu Saiyan 3) */
+.kform{margin-top:6px;font-size:13px;font-weight:700;color:#cfd6e4}
+.kform .kfn{font-size:15px;font-weight:800}
+.kform.lv0 .kfn{color:#9aa3b2}.kform.lv2 .kfn{color:#7cc0ff}.kform.lv3 .kfn,.kform.lv4 .kfn,.kform.lv5 .kfn{color:#ffd84d}
+.kfbar{height:7px;background:#2a2f3c;border-radius:6px;margin:4px 0 3px;overflow:hidden;max-width:260px}
+.kfbar span{display:block;height:100%;background:linear-gradient(90deg,#4da3ff,#ffd84d)}
+.kfsub{font-size:11.5px;color:var(--mut);font-weight:600;line-height:1.3}
+.kidav{position:relative}
+.kidav.aura0{filter:grayscale(.8) brightness(.8)}
+.kidav.aura2{box-shadow:0 0 0 3px #4da3ff,0 0 14px 2px #4da3ff99}
+.kidav.aura3,.kidav.aura4,.kidav.aura5{background:radial-gradient(circle at 50% 40%,#fff6b0,#ffc400 70%);animation:ssfl 1s ease-in-out infinite alternate}
+.kidav.aura4{animation-duration:.55s}.kidav.aura5{animation-duration:.4s}
+.kidav.aura4::after,.kidav.aura5::after{content:"⚡";position:absolute;right:-8px;top:-8px;font-size:20px;animation:ssz .5s steps(2) infinite}
+.kidav.aura5::before{content:"⚡";position:absolute;left:-8px;bottom:-6px;font-size:18px;animation:ssz .5s steps(2) infinite reverse}
+@keyframes ssfl{from{box-shadow:0 0 0 3px #ffd84d,0 0 10px 2px #ffb34088}to{box-shadow:0 0 0 4px #fff3a0,0 0 26px 8px #ffb340}}
+@keyframes ssz{from{opacity:1}to{opacity:.15}}
+@media(prefers-reduced-motion:reduce){.kidav.aura3,.kidav.aura4,.kidav.aura5,.kidav::after,.kidav::before{animation:none}}
 #dragonOv{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;cursor:pointer;
   background:radial-gradient(ellipse at 50% 40%,#123a1c 0,#06140a 55%,#000 100%);animation:dsky 1.2s ease-out}
 @keyframes dsky{0%{background-color:#000;opacity:0}15%{opacity:1;filter:brightness(2.2)}25%{filter:brightness(.6)}35%{filter:brightness(1.8)}100%{filter:none}}
@@ -400,7 +417,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-22·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -557,9 +574,10 @@ const T={
      chkSelf:"📝 Checklist tự làm hết (+⭐)",chkHelp:"📝 Checklist có nhắc (+⭐)",goalStars:"🎯 Mỗi mục tiêu tuần (+⭐)",
      testKeo:"📝 Đúng hết bài kiểm tra (+🍬)",konigKeo:"👑 König / nhất lớp (+🍬)",saoPerKeo:"🔄 Số ⭐ đổi được 1🍬",handPerKeo:"🔄 Số ✋ đổi được 1🍬",
      keoEuro:"💶 1🍬 đổi được bao nhiêu €",allowance:"💶 Tiền tiêu vặt mỗi thứ Hai (€)",interest:"💶 Lãi tiết kiệm (%/năm)",
-     pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)"},
+     pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",
+     formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
    rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′"],
+     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Thứ Hai tự đổi ✋ dư → ⭐ → 🍬 (3:1): <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
    pinForgotHint:"Nhập MÃ KHÔI PHỤC 8 ký tự (được cho lúc đặt mã) thay cho mã.", pinRecovered:"Đã mở bằng mã khôi phục - hãy đặt mã mới.",
@@ -674,9 +692,10 @@ const T={
      chkSelf:"📝 Checkliste ganz allein (+⭐)",chkHelp:"📝 Checkliste mit Erinnerung (+⭐)",goalStars:"🎯 Pro Wochenziel (+⭐)",
      testKeo:"📝 Test fehlerfrei (+🍬)",konigKeo:"👑 König (+🍬)",saoPerKeo:"🔄 ⭐ für 1🍬",handPerKeo:"🔄 ✋ für 1🍬",
      keoEuro:"💶 1🍬 ist wie viel €",allowance:"💶 Taschengeld jeden Montag (€)",interest:"💶 Sparzins (%/Jahr)",
-     pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)"},
+     pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",
+     formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
    rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′"],
+     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Montags ✋-Rest → ⭐ → 🍬 (3:1): <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
    pinForgotHint:"Statt des Codes den 8-stelligen WIEDERHERSTELLUNGSCODE eingeben.", pinRecovered:"Mit Wiederherstellungscode entsperrt - bitte neuen Code setzen.",
@@ -707,14 +726,15 @@ const T={
 /* ============ 🔧 Luật & con số: chỉnh ở ⚙️ → "🔧 Luật & con số" (lưu fam.cfg, có trong backup) ============ */
 const CFG_KEY="fam.cfg";
 const CFG_DEF={handMax:3,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
-  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5};
+  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,
+  formWarrior:70,formSS:87,formSS2:95,formSS3:10};
 const CFG_EURO=["keoEuro","allowance","pfandSelf","pfandDad"];   // hiện 2 số lẻ
 let _cfg=null;
 function cfgAll(){if(!_cfg){let o={};try{o=JSON.parse(localStorage.getItem(CFG_KEY))||{};}catch(e){}_cfg=Object.assign({},CFG_DEF,o);}return _cfg;}
 function NUM(k){const v=Number(cfgAll()[k]);return isFinite(v)?v:CFG_DEF[k];}
 const fmtN=k=>{const v=NUM(k);return CFG_EURO.includes(k)?v.toFixed(2):String(v);};
 // Chữ trong T/KX có thể chứa {khoá} -> tự thay bằng con số đang cài (vd "+{chkSelf}⭐")
-const fx=str=>str.indexOf("{")<0?str:str.replace(/\{([a-zA-Z_]+)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m);
+const fx=str=>str.indexOf("{")<0?str:str.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m);
 function wrapFx(o){return new Proxy(o,{get(t,k){const v=t[k];
   if(typeof v==="string")return fx(v);
   if(typeof v==="function")return function(){const r=v.apply(this,arguments);return typeof r==="string"?fx(r):r;};
@@ -1412,6 +1432,7 @@ function kidState(){const s=kidRaw();
   if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
+  if(s.formSeen==null)try{s.formSeen=formState(s).lv;}catch(e){}   // lần đầu: không ăn mừng cấp sẵn có
   ensureHandWeek(s);
   return ensureGoalsThisWeek(s);}
 /* --- ✋ Sao giơ tay: ô riêng, chỉ dùng để chơi game / đổi kẹo, hết hạn khi sang tuần mới (thứ Hai 00:00) --- */
@@ -1452,6 +1473,21 @@ function checkDragon(s){const n=dragonState(s).n,seen=s.dragon.seen||0;
   if(n<seen)s.dragon.seen=n;
   else if(n>seen){s.dragon.seen=n;kidCheer=dragonCheer=n<7?KL().ballFound(n):KL().ballAll;triggerConfetti();playSound('success');}}
 let dragonCheer="";   // giữ lời báo ngọc tới khi con mở tab của con
+// 💪 Phong độ = trung bình đánh giá của bố mẹ trong 7 ngày gần nhất (ngày chưa đánh giá thì bỏ qua).
+// Chỉ đổi khi bố mẹ đánh giá (nút có khoá bố mẹ) -> con không tự bơm được. Không cho kẹo/sao, chỉ để khoe hào quang.
+const FORM_PT={cn:100,n:75,bt:50,h:25,ch:0};
+function formState(s){const hist=Object.assign({},s.evalHist||{});if(s.eval&&s.eval.date&&s.eval.key)hist[s.eval.date]=s.eval.key;
+  const d=new Date(),pts=[];
+  for(let i=0;i<7;i++){const k=hist[iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()-i))];if(k in FORM_PT)pts.push(FORM_PT[k]);}
+  const pct=pts.length?Math.round(pts.reduce((a,b)=>a+b,0)/pts.length):50;
+  let run=0;Object.keys(hist).sort().reverse().some(k=>hist[k]==="cn"?(run++,false):true);   // số lần Cực ngoan liền gần nhất
+  let lv=pct<50?0:pct<NUM("formWarrior")?1:pct<NUM("formSS")?2:3;
+  if(lv===3&&pts.length<3)lv=2;                               // ít nhất 3 ngày có đánh giá mới biến hình
+  if(lv===3&&pts.length>=5&&pct>=NUM("formSS2"))lv=4;
+  if(run>=Math.max(1,NUM("formSS3")))lv=5;
+  return {pct,lv,n:pts.length,run};}
+function checkForm(s){const lv=formState(s).lv,seen=s.formSeen;s.formSeen=lv;
+  if(seen!=null&&lv>seen&&lv>=2){const m=KL().formUp(KL().formLv[lv]);kidCheer=dragonCheer=dragonCheer?dragonCheer+" · "+m:m;triggerConfetti();playSound('success');}}
 function summonDragon(){const s=kidState();if(dragonState(s).n<7)return;
   const ids=s.wishes.map(w=>String(w.id));
   if(!Array.isArray(s.dragon.offer)||!s.dragon.offer.length||s.dragon.offer.some(id=>ids.indexOf(id)<0)){   // giữ nguyên 3 lá đã rút (tải lại trang không rút lại được)
@@ -1659,7 +1695,7 @@ function applyEval(key){
   else{const life=Math.max(0,delta);   // ⭐ dương của đánh giá tính vào tổng đã kiếm (ngọc rồng); âm thì không trừ
     s.sao+=delta;s.saoLife=(s.saoLife||0)+life;s.eval={date:today,key,delta,life};s.evalHist[today]=key;
     logAdd(s,{delta,reason:L().rsEval(ratingName),k:"eval",key,cur:"sao"});}
-  checkDragon(s);
+  checkDragon(s);checkForm(s);
   kidSave(s);
   playSound('click');
   renderRewardAll();
@@ -2356,6 +2392,11 @@ const KX={
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
    dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per}⭐ là có thêm 1 viên ngọc`,
    power:p=>`⚡ Sức mạnh: ${p}`,
+   formLv:["😵 Hết sức","🙂 Bình thường","💪 Chiến binh","⚡ Siêu Saiyan","⚡⚡ Siêu Saiyan 2","🌟 Siêu Saiyan 3"],
+   formSub:f=>`Phong độ 7 ngày: ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run} lần cực ngoan liền`:""),
+   formNext:["Ngoan lại vài ngày là hồi sức ngay!","Ngoan đều để thành Chiến binh 💪","Cực ngoan nhiều ngày để biến Siêu Saiyan ⚡",
+     "Gần như ngày nào cũng cực ngoan để lên cấp 2 ⚡⚡",`Cực ngoan {formSS3} lần liền để lên cấp 3 🌟`,"Cấp cao nhất! Giữ vững nhé 🌟"],
+   formUp:n=>`💥 BIẾN HÌNH! Con đã thành ${n}!`,
    ballFound:n=>`📡 Máy dò reo! Con vừa tìm thấy viên ngọc ${n} sao! (${n}/7)`, ballAll:"🐉 Đủ 7 viên ngọc rồng rồi! Gọi Rồng thần đi con!",
    dragonCome:n=>`Rồng thần xuất hiện! (lần ${n})`, dragonPick:"Ta cho con chọn 1 điều ước:",
    wishCheer:(t,k)=>`🐉 Điều ước "${t}" đã thành sự thật!`+(k?"":" Nhớ nhắc bố mẹ nhé.")+" 7 viên ngọc bay đi rồi, gom lại từ đầu nào!",
@@ -2403,6 +2444,11 @@ const KX={
    dragonNext:(i,rem)=>`📡 Kugel-Radar: ${i}-Sterne-Kugel noch ${rem}⭐ entfernt`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
    dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Je ${per} verdiente ⭐ gibt es 1 Kugel`,
    power:p=>`⚡ Kraft: ${p}`,
+   formLv:["😵 Erschöpft","🙂 Normal","💪 Krieger","⚡ Super-Saiyajin","⚡⚡ Super-Saiyajin 2","🌟 Super-Saiyajin 3"],
+   formSub:f=>`Form (7 Tage): ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run}× in Folge sehr brav`:""),
+   formNext:["Ein paar brave Tage und du bist wieder fit!","Bleib brav und werde ein Krieger 💪","Viele sehr brave Tage machen dich zum Super-Saiyajin ⚡",
+     "Fast jeden Tag sehr brav für Stufe 2 ⚡⚡",`{formSS3}× in Folge sehr brav für Stufe 3 🌟`,"Höchste Stufe! Bleib so 🌟"],
+   formUp:n=>`💥 VERWANDLUNG! Du bist jetzt ${n}!`,
    ballFound:n=>`📡 Das Radar piept! Du hast die ${n}-Sterne-Kugel gefunden! (${n}/7)`, ballAll:"🐉 Alle 7 Drachenkugeln! Ruf den Drachen!",
    dragonCome:n=>`Der Drache erscheint! (${n}.)`, dragonPick:"Wähle einen Wunsch:",
    wishCheer:(t,k)=>`🐉 Wunsch "${t}" erfüllt!`+(k?"":" Sag Mama oder Papa Bescheid.")+" Die 7 Kugeln sind davongeflogen, sammle sie neu!",
@@ -2448,9 +2494,12 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
       <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji?esc(g.emoji)+' ':''}${esc(T_val(g.text))}</span></div>`).join("")
     :`<div class="empty">${KL().goalsEmpty}</div>`;
   const lastDay=new Date().getDay()===0&&hn>0;   // Chủ nhật: nhắc ✋ sắp hết hạn
+  const fm=formState(s);
   $("kidPanel").innerHTML=`
-   <div class="kidtop"><span class="kidav" id="kAv">${s.avatar}</span>
-     <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟<div class="kidpow">${KL().power(((s.saoLife||0)*10).toLocaleString(LANG==="de"?"de-DE":"vi-VN"))}</div></div></div>
+   <div class="kidtop"><span class="kidav aura${fm.lv}" id="kAv">${s.avatar}</span>
+     <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟<div class="kidpow">${KL().power(((s.saoLife||0)*10).toLocaleString(LANG==="de"?"de-DE":"vi-VN"))}</div>
+       <div class="kform lv${fm.lv}"><div class="kfn">${KL().formLv[fm.lv]}</div><div class="kfbar"><span style="width:${fm.pct}%"></span></div>
+       <div class="kfsub">${esc(KL().formSub(fm))}<br>${esc(fx(KL().formNext[fm.lv]))}</div></div></div></div>
    <div class="wallets wallets4">
      <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
      <div class="wallet whand"><div class="n">✋ ${hn}</div><div class="sub">${KL().walletHandSub}</div></div>
@@ -2708,13 +2757,14 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   if($("mgBody"))renderManageBody();}
 // Các con số luật chơi (fam.cfg) — 1 form, không cần sửa code
 const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
-  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1]];
+  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],
+  ["formWarrior",1],["formSS",1],["formSS2",1],["formSS3",1]];
 function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
-function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_]+)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
+function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
 function openRules(){
   openForm({title:L().mgSecRules,fields:RULE_FIELDS.map(([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)})),
     onSave:v=>{const o={};RULE_FIELDS.forEach(([k])=>{const n=v[k];if(n==null||!isFinite(n))return;
-        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin"].includes(k))x=Math.max(1,x);
+        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
         if(!CFG_EURO.includes(k)&&k!=="interest")x=Math.round(x);if(x!==CFG_DEF[k])o[k]=x;});
       try{localStorage.setItem(CFG_KEY,JSON.stringify(o));}catch(e){storageFull(e);}
       _cfg=null;renderAll();}});}
