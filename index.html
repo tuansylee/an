@@ -188,9 +188,18 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 #dragonOv .dsay{font-size:18px;font-weight:700;color:#e9ffe9;max-width:520px;line-height:1.4;opacity:0;animation:dfade .6s 1.9s forwards}
 #dragonOv .dhint{font-size:13px;color:#7fae8a;opacity:0;animation:dfade .6s 2.6s forwards}
 @keyframes dfade{to{opacity:1}}
-#dragonOv .dcards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:560px;opacity:0;animation:dfade .6s 2.4s forwards}
-#dragonOv .dcard{flex:1 1 0;min-width:92px;max-width:170px;background:linear-gradient(155deg,#2a1a08,#16110c);border:2px solid #ffb340;border-radius:16px;padding:14px 8px;color:#fff;font:inherit;cursor:pointer;box-shadow:0 0 16px #ffb34066;line-height:1.25}
-#dragonOv .dcard .e{font-size:34px;display:block}#dragonOv .dcard .nm{font-size:14.5px;font-weight:800;display:block;margin-top:6px}
+#dragonOv .dcards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:580px;perspective:800px}
+#dragonOv .dcard{--wc:#ffb340;position:relative;overflow:hidden;flex:1 1 0;min-width:96px;max-width:180px;border:2px solid var(--wc);border-radius:18px;padding:16px 8px 12px;color:#fff;font:inherit;cursor:pointer;line-height:1.25;
+  background:linear-gradient(165deg,#2a2440,#0e0c14);box-shadow:0 0 18px #ffb34066;   /* dự phòng WebView cũ (không có color-mix) */
+  background:radial-gradient(circle at 50% 22%,color-mix(in srgb,var(--wc) 55%,transparent) 0,transparent 55%),linear-gradient(165deg,#1d1a2a,#0e0c14);
+  box-shadow:0 0 18px color-mix(in srgb,var(--wc) 60%,transparent),inset 0 0 0 1px #ffffff14;opacity:0;transform:rotateY(90deg) scale(.8);animation:dflip .55s ease-out forwards}
+#dragonOv .dcard::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,#ffffff2e 50%,transparent 60%);animation:dshine 2.6s 3.4s infinite}
+@keyframes dflip{to{opacity:1;transform:none}}
+@keyframes dshine{0%{transform:translateX(-60%)}60%,100%{transform:translateX(60%)}}
+#dragonOv .dcard .e{font-size:46px;display:block;filter:drop-shadow(0 0 10px var(--wc))}
+#dragonOv .dcard .nm{font-size:14.5px;font-weight:800;display:block;margin-top:8px}
+#dragonOv .dcard .sub{font-size:12px;color:#d9d4ff;font-style:italic;display:block;margin-top:5px;opacity:.9}
+#dragonOv .dcard .tag{display:inline-block;margin:8px 2px 0;padding:2px 8px;border-radius:10px;background:var(--wc);color:#140d00;font-size:12.5px;font-weight:800}
 .dpend{margin-top:10px;font-size:13.5px;color:#ffd98a;text-align:left}
 #dragonOv .fly{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;
   background:radial-gradient(circle at 35% 30%,#fff6d0 0,#ffc04d 22%,#f08a00 62%,#a84a00 100%);box-shadow:0 0 14px #ffb340;animation:dfly .9s ease-in forwards}
@@ -391,7 +400,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-22·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -562,7 +571,8 @@ const T={
    mgSecWish:"🐉 Điều ước của Rồng thần (rút 3, con chọn 1 · ×tỉ lệ)", mgAddWish:"＋ Thêm điều ước",
    mgKeoCap:c=>c?`🍬 Trần kẹo: ${c} (dư tự đổi sang tiền, 1🍬 = {keoEuro}€)`:"🍬 Trần kẹo: không giới hạn", mgKeoCapAsk:"Trần kẹo (0 = không giới hạn)",
    pWishPending:"🐉 Điều ước đang chờ bố mẹ thực hiện (✓ khi xong):", pWishDoneConfirm:t=>`Đã thực hiện điều ước "${t}"?`,
-   wishText:"Điều ước", wishKeo:"🍬 Cộng kẹo ngay (0 = điều ước ngoài đời, bố mẹ thực hiện)", wishW:"Tỉ lệ ra (1 = hiếm · 5 = hay ra)",
+   wishTextVi:"Điều ước (tiếng Việt)", wishTextDe:"Điều ước (tiếng Đức)", wishSao:"⭐ Cộng sao ngay", wishColor:"Màu lá bài",
+   wishKeo:"🍬 Cộng kẹo ngay (sao + kẹo = 0 → điều ước ngoài đời, bố mẹ thực hiện)", wishW:"Tỉ lệ ra (1 = hiếm · 5 = hay ra)",
    dragonHint:"Cứ kiếm đủ số ⭐ là được 1 viên ngọc, đủ 7 viên thì gọi Rồng thần: rồng rút 3 điều ước, con chọn 1. Điều ước ngoài đời hiện ở đây để bố mẹ ✓ khi đã làm.",
    mgDragonPer:n=>`Mỗi viên ngọc = ${n}⭐ con kiếm được`, mgDragonPerAsk:"Số ⭐ cho mỗi viên ngọc (7 viên = gọi Rồng thần)",
    pDragon:(n,per,r)=>`🐉 Ngọc rồng: <b>${n}/7</b> viên · ${per}⭐/viên · đã gọi Rồng thần ${r} lần`, pDragonLast:d=>`🐉 Lần gọi gần nhất: ${d}`,
@@ -678,7 +688,8 @@ const T={
    mgSecWish:"🐉 Wünsche des Drachen (3 gezogen, Kind wählt 1 · ×Häufigkeit)", mgAddWish:"＋ Wunsch hinzufügen",
    mgKeoCap:c=>c?`🍬 Süßigkeiten-Obergrenze: ${c} (Rest wird zu Geld, 1🍬 = {keoEuro}€)`:"🍬 Süßigkeiten-Obergrenze: keine", mgKeoCapAsk:"Obergrenze (0 = keine)",
    pWishPending:"🐉 Offene Wünsche (✓ wenn erfüllt):", pWishDoneConfirm:t=>`Wunsch "${t}" erfüllt?`,
-   wishText:"Wunsch", wishKeo:"🍬 Süßigkeiten sofort (0 = echter Wunsch, Eltern erfüllen ihn)", wishW:"Häufigkeit (1 = selten · 5 = oft)",
+   wishTextVi:"Wunsch (Vietnamesisch)", wishTextDe:"Wunsch (Deutsch)", wishSao:"⭐ Sterne sofort", wishColor:"Kartenfarbe",
+   wishKeo:"🍬 Süßigkeiten sofort (Sterne + Süßigkeiten = 0 → echter Wunsch, Eltern erfüllen ihn)", wishW:"Häufigkeit (1 = selten · 5 = oft)",
    dragonHint:"Für genug verdiente ⭐ gibt es 1 Kugel, mit 7 Kugeln wird der Drache gerufen: er zieht 3 Wünsche, das Kind wählt 1. Echte Wünsche stehen hier, bis die Eltern ✓ tippen.",
    mgDragonPer:n=>`Jede Kugel = ${n} verdiente ⭐`, mgDragonPerAsk:"⭐ pro Kugel (7 Kugeln = Drache rufen)",
    pDragon:(n,per,r)=>`🐉 Drachenkugeln: <b>${n}/7</b> · ${per}⭐/Kugel · Drache ${r}× gerufen`, pDragonLast:d=>`🐉 Zuletzt gerufen: ${d}`,
@@ -1298,16 +1309,20 @@ function defaultShop(){
     {id:"game15",e:"🎮",name:LANG==="de"?"Videospiel 15 Min.":"Chơi game 15 phút",cost:2,cur:"keo",hand:1,min:15}];
 }
 // 🐉 Điều ước: gọi Rồng thần -> rút ngẫu nhiên 3 (theo tỉ lệ w), con chọn 1. keo>0 = cộng kẹo ngay; keo=0 = điều ước ngoài đời (bố mẹ thực hiện)
+// Mỗi điều ước: text = tiếng Việt, de = tiếng Đức, c = màu lá bài; sao/keo > 0 = thưởng ngay, cả hai = 0 = điều ước ngoài đời
 function defaultWishes(){
-  const de=LANG==="de";
   return [
-    {id:"w1",e:"🍬",text:de?"2 Süßigkeiten":"2 kẹo",keo:2,w:4},
-    {id:"w2",e:"♟️",text:de?"1 Partie Schach mit Papa oder Mama":"1 ván cờ vua với bố hoặc mẹ",keo:0,w:2},
-    {id:"w3",e:"🦉",text:de?"10 Min. Duolingo":"10 phút Duolingo",keo:0,w:2},
-    {id:"w4",e:"🍨",text:de?"Ich wähle den Nachtisch":"Con chọn món tráng miệng",keo:0,w:2},
-    {id:"w5",e:"⚽",text:de?"Fußball / Spielplatz mit Papa":"Đi đá bóng / ra công viên với bố",keo:0,w:2},
-    {id:"w6",e:"🎉",text:de?"Jackpot: 3 Süßigkeiten":"Jackpot: 3 kẹo",keo:3,w:1}];
+    {id:"x1",e:"🌟",text:"Thưởng 5 sao",de:"5 Sterne extra",sao:5,keo:0,w:4,c:"#d9a520"},
+    {id:"x2",e:"🦉",text:"10 phút Duolingo",de:"10 Minuten Duolingo",sao:0,keo:0,w:2,c:"#4caf2a"},
+    {id:"x3",e:"🍨",text:"Con được tự chọn món tráng miệng",de:"Ich darf mir den Nachtisch aussuchen",sao:0,keo:0,w:2,c:"#e05a9a"},
+    {id:"x4",e:"🗺️",text:"Con chọn chỗ đi chơi cuối tuần",de:"Ich wähle unseren Wochenend-Ausflug",sao:0,keo:0,w:2,c:"#3f8fd0"},
+    {id:"x5",e:"🎰",text:"Jackpot: 3 kẹo",de:"Jackpot: 3 Süßigkeiten",sao:0,keo:3,w:1,c:"#9b5de5"}];
 }
+const wTag=w=>(w.sao>0?`<span class="tag">+${w.sao}⭐</span>`:"")+(w.keo>0?`<span class="tag">+${w.keo}🍬</span>`:"");
+const wName=(w,de)=>de?(w.de||T_val(w.text)):(w.text||w.de||"");          // tên theo ngôn ngữ
+const wMain=w=>wName(w,LANG==="de"),wSub=w=>wName(w,LANG!=="de");
+// Một lần: thay danh sách điều ước cũ (có cờ vua, 2 kẹo) bằng danh sách mới
+function migrateWishes2(){const s=kidState();if(s.dragon.w2)return;s.wishes=defaultWishes();s.dragon.offer=null;s.dragon.w2=1;kidSave(s);}
 function drawWishes(s){const pool=s.wishes.slice(),out=[];
   while(out.length<3&&pool.length){const tot=pool.reduce((t,w)=>t+Math.max(1,Math.round(w.w||1)),0);let r=Math.random()*tot,i=0;
     for(;i<pool.length;i++){r-=Math.max(1,Math.round(pool[i].w||1));if(r<0)break;}
@@ -1389,7 +1404,7 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.wishes))s.wishes=defaultWishes();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
-  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1};
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   ensureHandWeek(s);
@@ -1439,16 +1454,18 @@ function summonDragon(){const s=kidState();if(dragonState(s).n<7)return;
   showDragon((s.dragon.rounds||0)+1,s.dragon.offer.map(id=>s.wishes.find(w=>String(w.id)===id)).filter(Boolean));}
 function pickWish(wid){const s=kidState(),w=s.wishes.find(x=>String(x.id)===String(wid));if(!w||dragonState(s).n<7)return null;
   const today=iso(new Date());
-  undoPush("🐉 "+T_val(w.text));
+  undoPush("🐉 "+wMain(w));
   s.dragon.base=(s.dragon.base||0)+7*dragonPer(s);   // ⭐ dư giữ sang vòng mới
   s.dragon.rounds=(s.dragon.rounds||0)+1;s.dragon.last=today;s.dragon.seen=dragonState(s).n;s.dragon.offer=null;
   logAdd(s,{delta:1,reason:w.text,k:"summon",n:s.dragon.rounds,cur:"dragon"});
-  if(w.keo>0){s.keo=(s.keo||0)+w.keo;logAdd(s,{delta:w.keo,reason:w.text,k:"wish",cur:"keo"});}
-  else (s.dragon.pending=s.dragon.pending||[]).push({id:newId(),text:w.text,e:w.e||"",date:today});
+  const ws=Math.max(0,Math.round(w.sao||0)),wk=Math.max(0,Math.round(w.keo||0));
+  if(ws){s.sao=(s.sao||0)+ws;logAdd(s,{delta:ws,reason:w.text,k:"wish",cur:"sao"});}   // ⭐ từ rồng không cộng vào tổng đã kiếm (khỏi tự nuôi ngọc)
+  if(wk){s.keo=(s.keo||0)+wk;logAdd(s,{delta:wk,reason:w.text,k:"wish",cur:"keo"});}
+  if(!ws&&!wk)(s.dragon.pending=s.dragon.pending||[]).push({id:newId(),text:w.text,de:w.de||"",e:w.e||"",date:today});
   kidSave(s);return w;}
 function wishDone(id){const s=kidState(),p=(s.dragon.pending||[]).find(x=>String(x.id)===String(id));if(!p)return;
-  if(!confirm(L().pWishDoneConfirm(T_val(p.text))))return;
-  undoPush("✓ "+T_val(p.text));
+  if(!confirm(L().pWishDoneConfirm(wMain(p))))return;
+  undoPush("✓ "+wMain(p));
   s.dragon.pending=s.dragon.pending.filter(x=>x!==p);
   logAdd(s,{delta:0,reason:p.text,k:"wishdone",cur:"dragon"});
   kidSave(s);playSound('success');renderRewardAll();}
@@ -1457,7 +1474,7 @@ function showDragon(round,offer){
   const ov=document.createElement("div");ov.id="dragonOv";
   ov.innerHTML=`<div class="dbig">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div><div class="dsay">${esc(msg)}</div>
     <div class="dhint">${esc(KL().dragonPick)}</div>
-    <div class="dcards">${offer.map(w=>`<button class="dcard" data-pick="${esc(w.id)}">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(T_val(w.text))}</span></button>`).join("")}</div>`;
+    <div class="dcards">${offer.map((w,i)=>`<button class="dcard" data-pick="${esc(w.id)}" style="--wc:${esc(w.c||"#ffb340")};animation-delay:${2.5+i*.25}s">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(wMain(w))}</span>${wSub(w)&&wSub(w)!==wMain(w)?`<span class="sub">${esc(wSub(w))}</span>`:""}${wTag(w)}</button>`).join("")}</div>`;
   document.body.appendChild(ov);playSound('dragon');setTimeout(triggerConfetti,1300);
   let gone=false;
   ov.querySelectorAll("[data-pick]").forEach(c=>c.onclick=ev=>{ev.stopPropagation();if(gone)return;
@@ -1467,7 +1484,7 @@ function showDragon(round,offer){
     for(let i=0;i<7;i++){const a=i/7*Math.PI*2+Math.random()*.4,b=document.createElement("div");b.className="fly";
       b.style.setProperty("--dx",Math.round(Math.cos(a)*innerWidth*.7)+"px");b.style.setProperty("--dy",Math.round(Math.sin(a)*innerHeight*.7)+"px");ov.appendChild(b);}
     playSound('success');
-    setTimeout(()=>{ov.remove();kidCheer=KL().wishCheer(T_val(w.text),w.keo);renderRewardAll();},950);});}
+    setTimeout(()=>{ov.remove();kidCheer=KL().wishCheer(wMain(w),(w.keo||0)+(w.sao||0));renderRewardAll();},950);});}
 function logAdd(s,o){s.keoLog.unshift(Object.assign({date:iso(new Date()),ts:Date.now()},o));}
 // Chuỗi lý do cũ (đã lưu trong nhật ký trước bản này) — để nhận ra & gộp các cặp "làm / hủy"
 const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nhắc","Checkliste fertig — allein","Checkliste fertig — mit Erinnerung"],
@@ -1967,6 +1984,8 @@ let histFilter="all",histShow=100,histQ="",histUntil="",histObs=null;
 const HIST_PAGE=100;
 const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬",dragon:"🐉"};
 // Lý do hiển thị theo ngôn ngữ hiện tại cho bản ghi có loại (k), còn lại dịch nếu có trong từ điển
+// Lý do lưu bằng tên tiếng Việt của điều ước -> hiện theo ngôn ngữ đang xem nếu còn trong danh sách
+function wReason(r){r=r||"";if(LANG==="de"){const w=(kidState().wishes||[]).find(x=>x.text===r);if(w&&w.de)return w.de;}return T_val(r);}
 function logReason(e){
   if(e.k==="eval"&&e.key){const r=L().evalRatings.find(x=>x[0]===e.key);if(r)return L().rsEval(r[1]);}
   if(e.k==="check")return e.self?L().rsCheckSelf:L().rsCheckHelp;
@@ -1974,9 +1993,9 @@ function logReason(e){
   if(e.k==="handexp")return L().rsHandExp;
   if(e.k==="hand2sao")return L().rsHand2Sao;
   if(e.k==="weekconv")return L().rsWeekConv;
-  if(e.k==="summon")return L().rsSummon(e.n||1)+(e.reason?": "+T_val(e.reason):"");
-  if(e.k==="wish")return L().rsWish(T_val(e.reason||""));
-  if(e.k==="wishdone")return L().rsWishDone(T_val(e.reason||""));
+  if(e.k==="summon")return L().rsSummon(e.n||1)+(e.reason?": "+wReason(e.reason):"");
+  if(e.k==="wish")return L().rsWish(wReason(e.reason));
+  if(e.k==="wishdone")return L().rsWishDone(wReason(e.reason));
   if(e.k==="cap")return L().rsCap(e.n||KEO_CAP_DEF);
   if(e.k==="allow"&&e.n){const per=Number((e.delta/e.n).toFixed(2));return LANG==="vi"?`Tự động cộng tiền tiêu vặt (+${per}€/tuần × ${e.n})`:`Taschengeld automatisch (+${per}€/Woche × ${e.n})`;}
   if(e.k==="interest"&&e.m)return LANG==="vi"?`Nhập gốc lãi tiết kiệm tháng ${e.m}/${e.y}`:`Zinsgutschrift für ${e.m}/${e.y}`;
@@ -2451,7 +2470,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="dragon"><div class="dballs">${[1,2,3,4,5,6,7].map(i=>`<div class="dball${i<=dg.n?' got':''}">${"<i>★</i>".repeat(i)}</div>`).join("")}</div>
      <div class="dprog">${dg.n<7?KL().dragonNext(dg.n+1,dg.rem):KL().dragonReady}</div>
      ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().dragonRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().dragonBtn}</button>`}
-     ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(T_val(p.text))}`).join("<br>")}</div>`:""}</div>
+     ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wMain(p))}`).join("<br>")}</div>`:""}</div>
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
      <div style="width:100%;height:1px;background:var(--bd);margin:6px 0"></div>
@@ -2525,7 +2544,7 @@ function renderParentReward(){const s=kidState();
   const dgp=dragonState(s);
   $("pDragon").innerHTML=`<div class="row">${L().pDragon(dgp.n,dgp.per,s.dragon.rounds||0)}</div>`
     +(typeof s.dragon.last==="string"?`<div class="row">${L().pDragonLast(dmy(s.dragon.last))}</div>`:"")
-    +((s.dragon.pending||[]).length?`<div class="row" style="color:#ffd98a"><b>${L().pWishPending}</b></div>`+s.dragon.pending.map(p=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${p.e?esc(p.e)+" ":""}${esc(T_val(p.text))} <span style="color:var(--mut)">· ${dmy(p.date)}</span></span><button class="chip" data-wdone="${esc(p.id)}">✓</button></div>`).join(""):"")
+    +((s.dragon.pending||[]).length?`<div class="row" style="color:#ffd98a"><b>${L().pWishPending}</b></div>`+s.dragon.pending.map(p=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${p.e?esc(p.e)+" ":""}${esc(wMain(p))} <span style="color:var(--mut)">· ${dmy(p.date)}</span></span><button class="chip" data-wdone="${esc(p.id)}">✓</button></div>`).join(""):"")
     +`<div class="row" style="color:var(--mut);font-size:12.5px">${L().dragonHint}</div>`;
   $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
   $("keoUnit").textContent=L().keoUnit;
@@ -2645,7 +2664,7 @@ function renderManageBody(){
     +sec(L().mgSecShop, s.shop.map(it=>row(`${em(it.e)}${esc(T_val(it.name))} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${costLabel(it)}</b>${it.min?` · ${it.min}′`:""}`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
     +`<div class="lbl" style="margin-top:14px">${L().mgSecDragon}</div>`
     +`<div class="chk" style="cursor:default"><span class="nm">${L().mgDragonPer(dragonPer(s))}</span><span class="ic" data-mgedit="dragonper:x">✏️</span></div>`
-    +sec(L().mgSecWish, s.wishes.map(w=>row(`${em(w.e)}${esc(T_val(w.text))}${w.keo>0?` · <b style="color:#c99bff">+${w.keo}🍬</b>`:""} · <span style="color:var(--mut)">×${Math.max(1,Math.round(w.w||1))}</span>`,"wish:"+w.id)).join(""), "wish", L().mgAddWish)
+    +sec(L().mgSecWish, s.wishes.map(w=>row(`<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${esc(w.c||"#ffb340")};margin-right:6px"></span>${em(w.e)}${esc(wMain(w))}${w.sao>0?` · <b style="color:var(--y)">+${w.sao}⭐</b>`:""}${w.keo>0?` · <b style="color:#c99bff">+${w.keo}🍬</b>`:""} · <span style="color:var(--mut)">×${Math.max(1,Math.round(w.w||1))}</span><br><span style="color:var(--mut);font-size:12px">${esc(wSub(w))}</span>`,"wish:"+w.id)).join(""), "wish", L().mgAddWish)
     +`<div class="chk" style="cursor:default;margin-top:14px"><span class="nm">${L().mgKeoCap(keoCap(s))}</span><span class="ic" data-mgedit="keocap:x">✏️</span></div>`
     +`<div class="chk" style="cursor:default"><span class="nm">${L().mgAutoConv(s.autoConv!==false)}</span><span class="ic" data-mgedit="autoconv:x">🔁</span></div>`;
   // [data-mgadd/mgedit/mgdel] handled by global delegate at document level
@@ -2665,7 +2684,7 @@ function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1)
   else if(t==="goal")editGoalPrompt(id);
   else if(t==="shop")editShopPrompt(id);
   else if(t==="wish"){const w0=kidState().wishes.find(x=>String(x.id)===String(id));if(w0)wishForm(L().mgSecWish,w0,v=>{const s=kidState(),w=s.wishes.find(x=>String(x.id)===String(id));if(!w)return;
-    if(v.text===T_val(w.text))v.text=w.text;Object.assign(w,v);kidSave(s);renderRewardAll();});}
+    Object.assign(w,v);s.dragon.offer=null;kidSave(s);renderRewardAll();});}
   else if(t==="rules")openRules();
   else if(t==="autoconv"){const s=kidState();s.autoConv=s.autoConv===false;kidSave(s);openManage();}
   else if(t==="keocap")openForm({title:L().mgKeoCap(keoCap(kidState())),fields:[{key:"cap",label:L().mgKeoCapAsk,type:"number",min:0,value:keoCap(kidState()),required:true}],
@@ -2696,11 +2715,14 @@ function openRules(){
       _cfg=null;renderAll();}});}
 function wishForm(title,init,save){
   openForm({title,fields:[
-    {key:"text",label:L().wishText,type:"text",value:init.text!=null?T_val(init.text):"",required:true},
+    {key:"text",label:L().wishTextVi,type:"text",value:init.text!=null?init.text:"",required:true},
+    {key:"de",label:L().wishTextDe,type:"text",value:init.de!=null?init.de:""},
+    {key:"sao",label:L().wishSao,type:"number",min:0,value:init.sao!=null?init.sao:0},
     {key:"keo",label:L().wishKeo,type:"number",min:0,value:init.keo!=null?init.keo:0},
+    {key:"c",label:L().wishColor,type:"chips",options:[["#d9a520","🟡"],["#4caf2a","🟢"],["#e05a9a","🩷"],["#3f8fd0","🔵"],["#9b5de5","🟣"],["#e8603c","🟠"]],value:init.c||"#d9a520"},
     {key:"w",label:L().wishW,type:"chips",options:[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]],value:String(Math.min(5,Math.max(1,Math.round(init.w||2))))},
     {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"✨"}],
-   onSave:v=>save({text:v.text,e:v.e||"",keo:Math.max(0,Math.round(v.keo||0)),w:Math.max(1,parseInt(v.w||"2",10))})});}
+   onSave:v=>save({text:v.text,de:(v.de||"").trim(),e:v.e||"",sao:Math.max(0,Math.round(v.sao||0)),keo:Math.max(0,Math.round(v.keo||0)),c:v.c||"#d9a520",w:Math.max(1,parseInt(v.w||"2",10))})});}
 /* --- Tối ban đêm (tự chuyển theo giờ) --- */
 let manualNight=false,wakeUntil=0;
 function nightCfg(){try{const c=JSON.parse(localStorage.getItem("fam.night"));if(c){const res=Object.assign({on:true,from:"23:00",to:"06:00"},c);if(res.from==="21:30")res.from="23:00";if(res.to==="06:30")res.to="06:00";return res;}}catch(e){}return {on:true,from:"23:00",to:"06:00"};}
@@ -2731,7 +2753,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
