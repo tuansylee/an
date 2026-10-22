@@ -391,7 +391,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-22·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -481,17 +481,17 @@ const T={
    critBtn:"❓ Tiêu chí chấm điểm", critTitle:"Tiêu chí chấm điểm",
    h_dragon:"🐉 Ngọc rồng",
    h_keo:"🍬 Kẹo (điểm xịn — tiêu ở cửa hàng)", keoUnit:"kẹo đang có",
-   gTest:"📝 Đúng hết bài kiểm tra (+2)", gKonig:"👑 König / nhất lớp (+10)", gPay:"🍬 Đã đưa kẹo thật (trừ)",
+   gTest:"📝 Đúng hết bài kiểm tra (+{testKeo})", gKonig:"👑 König / nhất lớp (+{konigKeo})", gPay:"🍬 Đã đưa kẹo thật (trừ)",
    gPlus:"＋ Cộng kẹo", gMinus:"－ Trừ kẹo", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
    gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay",
    gPayAsk:"Đưa con mấy cái kẹo?", gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
    sPlus:"＋ Cộng sao", sMinus:"－ Trừ sao", sPlusDef:"Cộng sao tay", sMinusDef:"Trừ sao tay",
    sDelay:"⏳ Trì hoãn / Câu giờ (−1⭐)", sDelayReason:"Câu giờ (trì hoãn)", sDelayConfirm:"Trừ 1 sao vì con câu giờ / trì hoãn?",
-   h_money:"💶 Tiền tiêu vặt của con (bố mẹ nợ)", moneyUnit:"euro bố mẹ nợ con (+2€ mỗi thứ Hai)",
+   h_money:"💶 Tiền tiêu vặt của con (bố mẹ nợ)", moneyUnit:"euro bố mẹ nợ con (+{allowance}€ mỗi thứ Hai)",
    mPlus:"＋ Cộng tiền", mMinus:"－ Trừ tiền", mPlusDef:"Bố mẹ cộng tiền tiêu vặt", mMinusDef:"Con tiêu tiền tiêu vặt",
-   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfand:"🍾 Nhặt chai (Pfand)", mPfandSelf:"🍾 Tự trả chai (+0.25€)", mPfandSelfConfirm:"Cộng +0.25€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
-   mPfandDad:"👨 nhờ Bố trả (+0.15€)", mPfandDadConfirm:"Cộng +0.15€ tiền nhờ bố trả chai Pfand cho con?", mPfandDadReason:"Nhờ bố trả chai Pfand",
-   moneyInterest: accrued => `Lãi tích luỹ: +${fmtInterest(accrued)} (2%/năm)`,
+   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfand:"🍾 Nhặt chai (Pfand)", mPfandSelf:"🍾 Tự trả chai (+{pfandSelf}€)", mPfandSelfConfirm:"Cộng +{pfandSelf}€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
+   mPfandDad:"👨 nhờ Bố trả (+{pfandDad}€)", mPfandDadConfirm:"Cộng +{pfandDad}€ tiền nhờ bố trả chai Pfand cho con?", mPfandDadReason:"Nhờ bố trả chai Pfand",
+   moneyInterest: accrued => `Lãi tích luỹ: +${fmtInterest(accrued)} ({interest}%/năm)`,
    storageUsage: "Bộ nhớ đã dùng",
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
    h_shop:"🛒 Cửa hàng đổi thưởng — chỗ tiêu",
@@ -539,28 +539,36 @@ const T={
    statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
    statsHand:"✋ Giơ tay phát biểu / tuần (8 tuần)",
    h_hand:"✋ Sao giơ tay phát biểu (để chơi game)", pHandUnit:(c,max)=>`✋ tuần này · dư cuối tuần thành ⭐ · hôm nay ${c}/${max} lần`,
-   pHandBtn:"✋ Con đã giơ tay phát biểu ở lớp (+1 ✋)", pHandMax:"✋ Hôm nay đã đủ 3 lần",
+   pHandBtn:"✋ Con đã giơ tay phát biểu ở lớp (+1 ✋)", pHandMax:"✋ Hôm nay đã đủ {handMax} lần",
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
    rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, mgSecDragon:"🐉 Ngọc rồng",
    rsHand2Sao:"✋ dư cuối tuần → ⭐", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
+   mgSecRules:"🔧 Luật & con số (chạm ✏️ để chỉnh)", ruleEval:n=>`⭐ Đánh giá "${n}"`,
+   rules:{handMax:"✋ Số lần giơ tay được thưởng mỗi ngày",gameMin:"🎮 Phút game tối đa mỗi ngày",gameExtra:"🎮 Nút \"bố mẹ cho thêm\" (phút mỗi lần)",
+     chkSelf:"📝 Checklist tự làm hết (+⭐)",chkHelp:"📝 Checklist có nhắc (+⭐)",goalStars:"🎯 Mỗi mục tiêu tuần (+⭐)",
+     testKeo:"📝 Đúng hết bài kiểm tra (+🍬)",konigKeo:"👑 König / nhất lớp (+🍬)",saoPerKeo:"🔄 Số ⭐ đổi được 1🍬",handPerKeo:"🔄 Số ✋ đổi được 1🍬",
+     keoEuro:"💶 1🍬 đổi được bao nhiêu €",allowance:"💶 Tiền tiêu vặt mỗi thứ Hai (€)",interest:"💶 Lãi tiết kiệm (%/năm)",
+     pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)"},
+   rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
+     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′"],
    mgAutoConv:on=>`🔄 Thứ Hai tự đổi ✋ dư → ⭐ → 🍬 (3:1): <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
    pinForgotHint:"Nhập MÃ KHÔI PHỤC 8 ký tự (được cho lúc đặt mã) thay cho mã.", pinRecovered:"Đã mở bằng mã khôi phục - hãy đặt mã mới.",
    pinSetT:"🔒 Đặt mã bố mẹ", pinNew:"Mã mới (ít nhất 4 ký tự)", pinNew2:"Nhập lại mã", pinBad:"Mã quá ngắn hoặc 2 lần nhập không giống nhau.",
    pinSaved:rc=>`Đã đặt mã ✅\n\nMÃ KHÔI PHỤC (dùng khi quên mã): ${rc}\nHãy ghi lại và cất ở chỗ con không thấy.`,
    pinSet:"🔒 Đặt mã bố mẹ (khoá nút cộng/trừ điểm)", pinChange:"🔒 Đổi mã bố mẹ", pinOff:"🔓 Bỏ mã bố mẹ", pinOffConfirm:"Bỏ mã? Mọi nút sẽ không còn khoá.",
-   pinUnlocked:"🔓 Đang mở khoá cho bố mẹ (5 phút) - chạm để khoá ngay", pinLocked:"🔒 Nút của bố mẹ đang khoá - chạm để mở",
+   pinUnlocked:"🔓 Đang mở khoá cho bố mẹ ({unlockMin} phút) - chạm để khoá ngay", pinLocked:"🔒 Nút của bố mẹ đang khoá - chạm để mở",
    rsWish:t=>`🐉 Điều ước: ${t}`, rsWishDone:t=>`✓ Đã thực hiện điều ước: ${t}`, rsCap:c=>`🐷 Kẹo vượt trần ${c} → chuyển sang tiền tiết kiệm`,
    mgSecWish:"🐉 Điều ước của Rồng thần (rút 3, con chọn 1 · ×tỉ lệ)", mgAddWish:"＋ Thêm điều ước",
-   mgKeoCap:c=>c?`🍬 Trần kẹo: ${c} (dư tự đổi sang tiền, 1🍬 = 0.20€)`:"🍬 Trần kẹo: không giới hạn", mgKeoCapAsk:"Trần kẹo (0 = không giới hạn)",
+   mgKeoCap:c=>c?`🍬 Trần kẹo: ${c} (dư tự đổi sang tiền, 1🍬 = {keoEuro}€)`:"🍬 Trần kẹo: không giới hạn", mgKeoCapAsk:"Trần kẹo (0 = không giới hạn)",
    pWishPending:"🐉 Điều ước đang chờ bố mẹ thực hiện (✓ khi xong):", pWishDoneConfirm:t=>`Đã thực hiện điều ước "${t}"?`,
    wishText:"Điều ước", wishKeo:"🍬 Cộng kẹo ngay (0 = điều ước ngoài đời, bố mẹ thực hiện)", wishW:"Tỉ lệ ra (1 = hiếm · 5 = hay ra)",
    dragonHint:"Cứ kiếm đủ số ⭐ là được 1 viên ngọc, đủ 7 viên thì gọi Rồng thần: rồng rút 3 điều ước, con chọn 1. Điều ước ngoài đời hiện ở đây để bố mẹ ✓ khi đã làm.",
    mgDragonPer:n=>`Mỗi viên ngọc = ${n}⭐ con kiếm được`, mgDragonPerAsk:"Số ⭐ cho mỗi viên ngọc (7 viên = gọi Rồng thần)",
    pDragon:(n,per,r)=>`🐉 Ngọc rồng: <b>${n}/7</b> viên · ${per}⭐/viên · đã gọi Rồng thần ${r} lần`, pDragonLast:d=>`🐉 Lần gọi gần nhất: ${d}`,
    hPlus:"＋ Cộng ✋", hMinus:"－ Trừ ✋", hPlusDef:"Bố mẹ cộng ✋ (ngày nghỉ / bù)", hMinusDef:"Trừ ✋ (bấm nhầm)",
-   pGameT:(m,lim)=>`🎮 Hôm nay đã chơi ${m}/${lim} phút`, pGameExtra:"🎮 Bố mẹ cho chơi thêm 15 phút hôm nay",
-   pGameExtraConfirm:"Bố mẹ cho phép chơi thêm 15 phút hôm nay?\n(mua vẫn trừ kẹo như thường)",
+   pGameT:(m,lim)=>`🎮 Hôm nay đã chơi ${m}/${lim} phút`, pGameExtra:"🎮 Bố mẹ cho chơi thêm {gameExtra} phút hôm nay",
+   pGameExtraConfirm:"Bố mẹ cho phép chơi thêm {gameExtra} phút hôm nay?\n(mua vẫn trừ kẹo như thường)",
    evalCancelConfirm:n=>`Bỏ đánh giá "${n}" của hôm nay?`,
    ckEdit:"✏️ Sửa danh sách việc", ckEditT:"✏️ Việc hằng ngày - sửa / xoá / sắp xếp",
    emojiNone:"không emoji",
@@ -589,17 +597,17 @@ const T={
    critBtn:"❓ Bewertungskriterien", critTitle:"Bewertungskriterien",
    h_dragon:"🐉 Drachenkugeln",
    h_keo:"🍬 Süßigkeiten (echte Punkte — im Shop ausgeben)", keoUnit:"Süßigkeiten aktuell",
-   gTest:"📝 Test fehlerfrei (+2)", gKonig:"👑 König (+10)", gPay:"🍬 Süßigkeit gegeben (−)",
+   gTest:"📝 Test fehlerfrei (+{testKeo})", gKonig:"👑 König (+{konigKeo})", gPay:"🍬 Süßigkeit gegeben (−)",
    gPlus:"＋ Plus", gMinus:"－ Minus", gReasonTest:"Test fehlerfrei", gReasonKonig:"König",
    gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −",
    gPayAsk:"Wie viele Süßigkeiten gegeben?", gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
    sPlus:"＋ Sterne", sMinus:"－ Sterne", sPlusDef:"Manuell Sterne +", sMinusDef:"Manuell Sterne −",
    sDelay:"⏳ Zeit schinden (−1⭐)", sDelayReason:"Zeit schinden", sDelayConfirm:"1 Stern abziehen wegen Zeit schinden?",
-   h_money:"💶 Taschengeld (Eltern schulden)", moneyUnit:"Euro von Eltern geschuldet (+2€ jeden Montag)",
+   h_money:"💶 Taschengeld (Eltern schulden)", moneyUnit:"Euro von Eltern geschuldet (+{allowance}€ jeden Montag)",
    mPlus:"＋ Geld dazu", mMinus:"－ Geld weg", mPlusDef:"Taschengeld von Eltern erhalten", mMinusDef:"Taschengeld ausgegeben",
-   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfand:"🍾 Pfandflasche", mPfandSelf:"🍾 Selbst abgeben (+0.25€)", mPfandSelfConfirm:"Bestätigen: +0.25€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
-   mPfandDad:"👨 Hilfe von Papa (+0.15€)", mPfandDadConfirm:"Bestätigen: +0.15€ (Flasche durch Papa abgegeben)?", mPfandDadReason:"Pfandflasche durch Papa abgegeben",
-   moneyInterest: accrued => `Zinsguthaben: +${fmtInterest(accrued)} (2%/Jahr)`,
+   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfand:"🍾 Pfandflasche", mPfandSelf:"🍾 Selbst abgeben (+{pfandSelf}€)", mPfandSelfConfirm:"Bestätigen: +{pfandSelf}€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
+   mPfandDad:"👨 Hilfe von Papa (+{pfandDad}€)", mPfandDadConfirm:"Bestätigen: +{pfandDad}€ (Flasche durch Papa abgegeben)?", mPfandDadReason:"Pfandflasche durch Papa abgegeben",
+   moneyInterest: accrued => `Zinsguthaben: +${fmtInterest(accrued)} ({interest}%/Jahr)`,
    storageUsage: "Speicherbelegung",
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
    h_shop:"🛒 Belohnungs-Shop — Ausgabestelle",
@@ -647,28 +655,36 @@ const T={
    statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
    statsHand:"✋ Meldungen im Unterricht / Woche (8 Wochen)",
    h_hand:"✋ Melde-Sterne (für Videospiel)", pHandUnit:(c,max)=>`✋ diese Woche · Rest wird am Wochenende ⭐ · heute ${c}/${max}×`,
-   pHandBtn:"✋ Hat sich im Unterricht gemeldet (+1 ✋)", pHandMax:"✋ Heute schon 3× (Maximum)",
+   pHandBtn:"✋ Hat sich im Unterricht gemeldet (+1 ✋)", pHandMax:"✋ Heute schon {handMax}× (Maximum)",
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
    rsSummon:n=>`🐉 Drache gerufen (${n}.)`, mgSecDragon:"🐉 Drachenkugeln",
    rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
+   mgSecRules:"🔧 Regeln & Zahlen (✏️ zum Ändern)", ruleEval:n=>`⭐ Bewertung "${n}"`,
+   rules:{handMax:"✋ Belohnte Meldungen pro Tag",gameMin:"🎮 Max. Spielminuten pro Tag",gameExtra:"🎮 Button \"Eltern erlauben extra\" (Min. pro Tippen)",
+     chkSelf:"📝 Checkliste ganz allein (+⭐)",chkHelp:"📝 Checkliste mit Erinnerung (+⭐)",goalStars:"🎯 Pro Wochenziel (+⭐)",
+     testKeo:"📝 Test fehlerfrei (+🍬)",konigKeo:"👑 König (+🍬)",saoPerKeo:"🔄 ⭐ für 1🍬",handPerKeo:"🔄 ✋ für 1🍬",
+     keoEuro:"💶 1🍬 ist wie viel €",allowance:"💶 Taschengeld jeden Montag (€)",interest:"💶 Sparzins (%/Jahr)",
+     pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)"},
+   rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
+     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′"],
    mgAutoConv:on=>`🔄 Montags ✋-Rest → ⭐ → 🍬 (3:1): <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
    pinForgotHint:"Statt des Codes den 8-stelligen WIEDERHERSTELLUNGSCODE eingeben.", pinRecovered:"Mit Wiederherstellungscode entsperrt - bitte neuen Code setzen.",
    pinSetT:"🔒 Eltern-Code setzen", pinNew:"Neuer Code (mind. 4 Zeichen)", pinNew2:"Code wiederholen", pinBad:"Code zu kurz oder nicht gleich.",
    pinSaved:rc=>`Code gesetzt ✅\n\nWIEDERHERSTELLUNGSCODE (falls vergessen): ${rc}\nBitte aufschreiben und vor dem Kind verstecken.`,
    pinSet:"🔒 Eltern-Code setzen (sperrt Punkte-Buttons)", pinChange:"🔒 Eltern-Code ändern", pinOff:"🔓 Eltern-Code entfernen", pinOffConfirm:"Code entfernen? Dann ist nichts mehr gesperrt.",
-   pinUnlocked:"🔓 Für Eltern entsperrt (5 Min.) - tippen zum Sperren", pinLocked:"🔒 Eltern-Buttons gesperrt - tippen zum Entsperren",
+   pinUnlocked:"🔓 Für Eltern entsperrt ({unlockMin} Min.) - tippen zum Sperren", pinLocked:"🔒 Eltern-Buttons gesperrt - tippen zum Entsperren",
    rsWish:t=>`🐉 Wunsch: ${t}`, rsWishDone:t=>`✓ Wunsch erfüllt: ${t}`, rsCap:c=>`🐷 Über ${c} Süßigkeiten → aufs Sparkonto`,
    mgSecWish:"🐉 Wünsche des Drachen (3 gezogen, Kind wählt 1 · ×Häufigkeit)", mgAddWish:"＋ Wunsch hinzufügen",
-   mgKeoCap:c=>c?`🍬 Süßigkeiten-Obergrenze: ${c} (Rest wird zu Geld, 1🍬 = 0.20€)`:"🍬 Süßigkeiten-Obergrenze: keine", mgKeoCapAsk:"Obergrenze (0 = keine)",
+   mgKeoCap:c=>c?`🍬 Süßigkeiten-Obergrenze: ${c} (Rest wird zu Geld, 1🍬 = {keoEuro}€)`:"🍬 Süßigkeiten-Obergrenze: keine", mgKeoCapAsk:"Obergrenze (0 = keine)",
    pWishPending:"🐉 Offene Wünsche (✓ wenn erfüllt):", pWishDoneConfirm:t=>`Wunsch "${t}" erfüllt?`,
    wishText:"Wunsch", wishKeo:"🍬 Süßigkeiten sofort (0 = echter Wunsch, Eltern erfüllen ihn)", wishW:"Häufigkeit (1 = selten · 5 = oft)",
    dragonHint:"Für genug verdiente ⭐ gibt es 1 Kugel, mit 7 Kugeln wird der Drache gerufen: er zieht 3 Wünsche, das Kind wählt 1. Echte Wünsche stehen hier, bis die Eltern ✓ tippen.",
    mgDragonPer:n=>`Jede Kugel = ${n} verdiente ⭐`, mgDragonPerAsk:"⭐ pro Kugel (7 Kugeln = Drache rufen)",
    pDragon:(n,per,r)=>`🐉 Drachenkugeln: <b>${n}/7</b> · ${per}⭐/Kugel · Drache ${r}× gerufen`, pDragonLast:d=>`🐉 Zuletzt gerufen: ${d}`,
    hPlus:"＋ ✋ dazu", hMinus:"－ ✋ weg", hPlusDef:"✋ von Eltern (Ferien / Ausgleich)", hMinusDef:"✋ abgezogen (Fehler)",
-   pGameT:(m,lim)=>`🎮 Heute gespielt: ${m}/${lim} Min.`, pGameExtra:"🎮 Eltern erlauben heute 15 Min. extra",
-   pGameExtraConfirm:"Erlauben die Eltern heute 15 Min. extra?\n(Kauf kostet trotzdem Süßigkeiten)",
+   pGameT:(m,lim)=>`🎮 Heute gespielt: ${m}/${lim} Min.`, pGameExtra:"🎮 Eltern erlauben heute {gameExtra} Min. extra",
+   pGameExtraConfirm:"Erlauben die Eltern heute {gameExtra} Min. extra?\n(Kauf kostet trotzdem Süßigkeiten)",
    evalCancelConfirm:n=>`Bewertung "${n}" für heute entfernen?`,
    ckEdit:"✏️ Liste bearbeiten", ckEditT:"✏️ Tägliche Aufgaben - bearbeiten / löschen / sortieren",
    emojiNone:"kein Emoji",
@@ -677,7 +693,23 @@ const T={
    histCount:n=>`${n} Einträge`, histEnd:"— Ende des Verlaufs —",
    }
 };
-const L=()=>T[LANG];
+/* ============ 🔧 Luật & con số: chỉnh ở ⚙️ → "🔧 Luật & con số" (lưu fam.cfg, có trong backup) ============ */
+const CFG_KEY="fam.cfg";
+const CFG_DEF={handMax:3,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
+  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5};
+const CFG_EURO=["keoEuro","allowance","pfandSelf","pfandDad"];   // hiện 2 số lẻ
+let _cfg=null;
+function cfgAll(){if(!_cfg){let o={};try{o=JSON.parse(localStorage.getItem(CFG_KEY))||{};}catch(e){}_cfg=Object.assign({},CFG_DEF,o);}return _cfg;}
+function NUM(k){const v=Number(cfgAll()[k]);return isFinite(v)?v:CFG_DEF[k];}
+const fmtN=k=>{const v=NUM(k);return CFG_EURO.includes(k)?v.toFixed(2):String(v);};
+// Chữ trong T/KX có thể chứa {khoá} -> tự thay bằng con số đang cài (vd "+{chkSelf}⭐")
+const fx=str=>str.indexOf("{")<0?str:str.replace(/\{([a-zA-Z_]+)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m);
+function wrapFx(o){return new Proxy(o,{get(t,k){const v=t[k];
+  if(typeof v==="string")return fx(v);
+  if(typeof v==="function")return function(){const r=v.apply(this,arguments);return typeof r==="string"?fx(r):r;};
+  return v;}});}
+const _LP={};
+const L=()=>_LP["T"+LANG]||(_LP["T"+LANG]=wrapFx(T[LANG]));
 const $=id=>document.getElementById(id);
 function getStorageUsage() {
   let total = 0;
@@ -1256,7 +1288,8 @@ function csvExport(days){if(days==null)days=hRepDays;const R=hRepData(days),tr=(
 
 /* ============ Kinh tế thưởng: ⭐ Sao + 🍬 Kẹo (fam.kid) ============ */
 const KIDKEY="fam.kid";
-const EVAL_DELTA={cn:2,n:1,bt:0,h:-1,ch:-2};
+const evalDelta=k=>Math.round(NUM("ev_"+k));
+const sgnN=v=>v>0?"+"+v:v<0?"−"+(-v):"0";
 function kidRaw(){try{return JSON.parse(localStorage.getItem(KIDKEY))||{};}catch(e){return {};}}
 // Cửa hàng mặc định: chỉ 2 nút chơi game, giá theo block 15′ = 2🍬 + 1✋. hand = số ✋ cần · min = phút game (tính giới hạn ngày)
 function defaultShop(){
@@ -1356,14 +1389,15 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.wishes))s.wishes=defaultWishes();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
-  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:5,rounds:0};
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   ensureHandWeek(s);
   return ensureGoalsThisWeek(s);}
 /* --- ✋ Sao giơ tay: ô riêng, chỉ dùng để chơi game / đổi kẹo, hết hạn khi sang tuần mới (thứ Hai 00:00) --- */
-const HAND_MAX_DAY=3;     // tối đa 3 lần giơ tay được thưởng mỗi ngày
-const GAME_DAY_MIN=30;    // mỗi ngày 2 block 15′ — muốn hơn thì bố mẹ cho thêm (nút ở tab Thưởng)
+const handMax=()=>Math.max(1,Math.round(NUM("handMax")));   // số lần giơ tay được thưởng mỗi ngày
+const gameDayMin=()=>Math.max(0,Math.round(NUM("gameMin"))); // phút game mỗi ngày (muốn hơn: bố mẹ bấm cho thêm)
+const iPos=k=>Math.max(1,Math.round(NUM(k)));
 const wkMon=d=>iso(mondayOf(d||new Date()));
 function ensureHandWeek(s){const wk=wkMon();
   if(!s.hand||typeof s.hand!=="object"){s.hand={wk,n:0};return s;}
@@ -1376,15 +1410,21 @@ function ensureHandWeek(s){const wk=wkMon();
     if(n>0){s.sao=(s.sao||0)+n;
       s.keoLog.unshift({date:d,ts:t,delta:-n,reason:"",k:"hand2sao",cur:"hand"},{date:d,ts:t,delta:n,reason:"",k:"hand2sao",cur:"sao"});}
     // Rồi ⭐ tự đổi sang 🍬 (3:1, phần lẻ giữ lại) -> không tích trữ ⭐ để lách trần kẹo
-    if(s.autoConv!==false&&(s.sao||0)>=3){const c=Math.floor(s.sao/3);s.sao-=3*c;s.keo=(s.keo||0)+c;
-      s.keoLog.unshift({date:d,ts:t+1,delta:-3*c,reason:"",k:"weekconv",cur:"sao"},{date:d,ts:t+1,delta:c,reason:"",k:"weekconv",cur:"keo"});}
+    const spk=iPos("saoPerKeo");
+    if(s.autoConv!==false&&(s.sao||0)>=spk){const c=Math.floor(s.sao/spk);s.sao-=spk*c;s.keo=(s.keo||0)+c;
+      s.keoLog.unshift({date:d,ts:t+1,delta:-spk*c,reason:"",k:"weekconv",cur:"sao"},{date:d,ts:t+1,delta:c,reason:"",k:"weekconv",cur:"keo"});}
     s.hand={wk,n:0};kidSave(s);}   // kidSave áp trần kẹo -> phần dư thành tiền
   return s;}
 const todayGameDay=s=>s.gameDay&&s.gameDay.date===iso(new Date())?s.gameDay:{date:iso(new Date()),min:0,extra:0};
 const todayGameMin=s=>todayGameDay(s).min||0;
-const todayGameLimit=s=>GAME_DAY_MIN+(todayGameDay(s).extra||0);
+const todayGameLimit=s=>gameDayMin()+(todayGameDay(s).extra||0);
 // Ghi nhật ký điểm (mới nhất ở đầu). ts = lúc ghi, để tab Lịch sử hiện giờ.
-const dragonPer=s=>Math.max(1,Math.round(s.dragon.per||5));
+const dragonPer=s=>Math.max(1,Math.round(s.dragon.per||4));
+// Một lần: 5⭐/viên -> 4⭐/viên (gọi Rồng thần khoảng mỗi tuần), giữ nguyên số viên + phần dở dang
+function migrateDragon4(){const s=kidState();if(s.dragon.v4)return;
+  if(Math.round(s.dragon.per||5)===5){const st=dragonState(s),left=Math.max(0,(s.saoLife||0)-(s.dragon.base||0)-st.n*st.per);
+    s.dragon.base=(s.saoLife||0)-st.n*4-Math.min(left,3);s.dragon.per=4;s.dragon.seen=st.n;}
+  s.dragon.v4=1;kidSave(s);}
 function dragonState(s){const per=dragonPer(s),p=Math.max(0,(s.saoLife||0)-(s.dragon.base||0)),n=Math.min(7,Math.floor(p/per));
   return {n,per,rem:n<7?per-(p-n*per):0,pct:n<7?Math.round((p-n*per)/per*100):100};}
 // Báo khi tìm được viên ngọc mới (gọi sau mỗi lần ⭐ kiếm được tăng). seen = số viên đã báo
@@ -1438,14 +1478,15 @@ const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nh�
 function logRemove(s,pred){const i=s.keoLog.findIndex(e=>e&&pred(e));if(i<0)return false;s.keoLog.splice(i,1);return true;}
 /* --- 🔒 Mã bố mẹ: khoá các nút cộng/trừ điểm, đánh giá, ⚙️, ↩... (con vẫn tự bấm checklist, giơ tay, mua game, đổi, gọi rồng).
    Mã chỉ lưu dạng băm trong máy (fam.pin), không bao giờ nằm trong code. Mở khoá 5 phút. Có mã khôi phục khi quên. --- */
-const PIN_KEY="fam.pin",UNLOCK_MS=5*60e3;let unlockUntil=0;
+const PIN_KEY="fam.pin";let unlockUntil=0;
+const unlockMs=()=>Math.max(1,NUM("unlockMin"))*60e3;
 function pinHash(str,salt){let h=2166136261>>>0;const x=salt+"|"+str;
   for(let r=0;r<2000;r++)for(let i=0;i<x.length;i++){h^=x.charCodeAt(i)+r;h=Math.imul(h,16777619)>>>0;}
   return h.toString(16);}
 const pinCfg=()=>{try{return JSON.parse(localStorage.getItem(PIN_KEY))||null;}catch(e){return null;}};
 const parentUnlocked=()=>!pinCfg()||Date.now()<unlockUntil;
 function needParent(fn){return function(){const a=arguments,self=this;
-  if(parentUnlocked()){unlockUntil=pinCfg()?Date.now()+UNLOCK_MS:0;return fn.apply(self,a);}
+  if(parentUnlocked()){unlockUntil=pinCfg()?Date.now()+unlockMs():0;return fn.apply(self,a);}
   askPin(()=>fn.apply(self,a));};}
 function askPin(onOk){const c=pinCfg();if(!c){onOk();return;}
   const back=ov.hidden?null:sheet.innerHTML;   // đang mở sheet khác -> hỏi mã đè lên rồi chạy tiếp
@@ -1454,8 +1495,8 @@ function askPin(onOk){const c=pinCfg();if(!c){onOk();return;}
     <div class="acts"><button class="cancel" id="pinNo">${L().cancel}</button><button class="save" id="pinOk">${L().pinOpen}</button></div>
     <button class="notebtn" id="pinForgot" style="margin-top:10px">${L().pinForgot}</button>`);
   const go=()=>{const v=($("pinIn").value||"").trim().toUpperCase();
-    if(v&&pinHash(v,c.salt)===c.h){unlockUntil=Date.now()+UNLOCK_MS;close();renderPinBar();onOk();return;}
-    if(v&&c.rh&&pinHash(v,c.salt)===c.rh){unlockUntil=Date.now()+UNLOCK_MS;close();renderPinBar();alert(L().pinRecovered);setPinForm();return;}
+    if(v&&pinHash(v,c.salt)===c.h){unlockUntil=Date.now()+unlockMs();close();renderPinBar();onOk();return;}
+    if(v&&c.rh&&pinHash(v,c.salt)===c.rh){unlockUntil=Date.now()+unlockMs();close();renderPinBar();alert(L().pinRecovered);setPinForm();return;}
     $("pinErr").textContent=L().pinWrong;$("pinIn").value="";$("pinIn").focus();};
   $("pinOk").onclick=go;$("pinIn").onkeydown=e=>{if(e.key==="Enter")go();};
   $("pinNo").onclick=()=>{close();if(back!==null)openSheet(back);};
@@ -1467,7 +1508,7 @@ function setPinForm(){
       if(p.length<4||p!==p2){alert(L().pinBad);return;}
       const salt=Math.random().toString(36).slice(2,10),rc=Array.from({length:8},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random()*32)]).join("");
       try{localStorage.setItem(PIN_KEY,JSON.stringify({salt,h:pinHash(p,salt),rh:pinHash(rc,salt)}));}catch(e){storageFull(e);return;}
-      unlockUntil=Date.now()+UNLOCK_MS;alert(L().pinSaved(rc));renderPinBar();}});}
+      unlockUntil=Date.now()+unlockMs();alert(L().pinSaved(rc));renderPinBar();}});}
 function renderPinBar(){const el=$("pinBar");if(!el)return;
   if(!pinCfg()){el.innerHTML="";return;}
   el.innerHTML=parentUnlocked()?`<button class="critbtn" id="pinLock" style="margin:0 0 6px;color:var(--g);border-color:#3a5a40">${L().pinUnlocked}</button>`
@@ -1479,7 +1520,7 @@ setInterval(()=>{if(pinCfg()&&unlockUntil&&Date.now()>=unlockUntil){unlockUntil=
 const KEO_CAP_DEF=15;
 const keoCap=s=>s.keoCap==null?KEO_CAP_DEF:Math.max(0,Math.round(Number(s.keoCap))||0);
 function applyKeoCap(s){const cap=keoCap(s);if(!cap||!((s.keo||0)>cap)||!Array.isArray(s.keoLog))return;
-  const x=s.keo-cap,eur=Number((x*0.2).toFixed(2));
+  const x=s.keo-cap,eur=Number((x*NUM("keoEuro")).toFixed(2));
   s.keo=cap;s.pocketMoney=Number(((s.pocketMoney||0)+eur).toFixed(4));
   logAdd(s,{delta:-x,reason:"",k:"cap",n:cap,cur:"keo"});logAdd(s,{delta:eur,reason:"",k:"cap",n:cap,cur:"euro"});
   kidCheer=dragonCheer=KL().capCheer(x,eur);}   // giữ lời báo tới khi con mở tab của con
@@ -1522,11 +1563,12 @@ function checkPocketMoneyAllowance() {
       temp.setDate(temp.getDate() + 1);
     }
     if (mondaysPassed > 0) {
-      s.pocketMoney = (s.pocketMoney || 0) + mondaysPassed * 2;
+      const alw = NUM("allowance");
+      s.pocketMoney = (s.pocketMoney || 0) + mondaysPassed * alw;
       s.pocketMoneyDate = iso(today);
       s.keoLog.unshift({
         date: iso(today),
-        delta: mondaysPassed * 2,
+        delta: mondaysPassed * alw,
         reason: LANG === "vi" ? `Tự động cộng tiền tiêu vặt (+2€/tuần × ${mondaysPassed})` : `Taschengeld automatisch (+2€/Woche × ${mondaysPassed})`,
         k: "allow", n: mondaysPassed,
         cur: "euro"
@@ -1558,7 +1600,7 @@ function dutyToggle(id){
   anToggle(id);
   const s=kidState();
   if(!allRoutineDone()){const ca=todayCheckAward(s);
-    if(ca){const n=ca.kind==="self"?2:1;
+    if(ca){const n=ca.n!=null?ca.n:(ca.kind==="self"?2:1);
       undoPush(`-${n}⭐ ${L().rsCheckUndo}`);
       s.sao-=n;s.saoLife-=n;s.checkAward=null;
       if(ca.prev){s.streak=ca.prev.streak;s.lastAllDone=ca.prev.last;s.bestStreak=ca.prev.best;}
@@ -1570,10 +1612,10 @@ function dutyToggle(id){
 }
 function answerChecklist(self){
   const s=kidState(),today=iso(new Date()),y=iso(new Date(Date.now()-864e5));
-  const n=self?2:1;
+  const n=Math.round(self?NUM("chkSelf"):NUM("chkHelp"));
   undoPush(`+${n}⭐ ${self?L().rsCheckSelf:L().rsCheckHelp}`);
   s.sao=(s.sao||0)+n;s.saoLife=(s.saoLife||0)+n;
-  s.checkAward={date:today,kind:self?"self":"help",prev:{streak:s.streak||0,last:s.lastAllDone||"",best:s.bestStreak||0}};
+  s.checkAward={date:today,kind:self?"self":"help",n,prev:{streak:s.streak||0,last:s.lastAllDone||"",best:s.bestStreak||0}};
   if(self){s.streak=(s.lastAllDone===y)?(s.streak||0)+1:1;s.lastAllDone=today;
     s.bestStreak=Math.max(s.bestStreak||0,s.streak);}
   logAdd(s,{delta:n,reason:self?L().rsCheckSelf:L().rsCheckHelp,k:"check",self:!!self,cur:"sao"});
@@ -1586,7 +1628,7 @@ function answerChecklist(self){
 /* --- Bố mẹ đánh giá 5 mức (chỉ đụng sao) — mỗi ngày đúng 1 dòng lịch sử, đổi/bỏ đánh giá thì sửa dòng đó --- */
 function applyEval(key){
   const ratingName = L().evalRatings.find(r=>r[0]===key)[1];
-  const s=kidState(),today=iso(new Date()),delta=EVAL_DELTA[key],cur=todayEval(s);
+  const s=kidState(),today=iso(new Date()),delta=evalDelta(key),cur=todayEval(s);
   const cancel=!!(cur&&cur.key===key);
   if(!confirm(cancel?L().evalCancelConfirm(ratingName):(LANG==="vi"?`Xác nhận đánh giá con là: ${ratingName}?`:`Bewertung "${ratingName}" für heute abgeben?`)))return;
   undoPush(L().rsEval(ratingName));
@@ -1664,11 +1706,11 @@ function addMoneyManual(n, reason) {
 }
 function pfandSelfAction() {
   if (!confirm(L().mPfandSelfConfirm)) return;
-  addMoneyManual(0.25, L().mPfandSelfReason);
+  addMoneyManual(NUM("pfandSelf"), L().mPfandSelfReason);
 }
 function pfandDadAction() {
   if (!confirm(L().mPfandDadConfirm)) return;
-  addMoneyManual(0.15, L().mPfandDadReason);
+  addMoneyManual(NUM("pfandDad"), L().mPfandDadReason);
 }
 function pfandAction() {
   openSheet(`<h3>${L().mPfand}</h3>
@@ -1702,7 +1744,7 @@ function checkPocketMoneyInterest() {
   let lastCalc = new Date(lastDate);
 
   while (temp <= end) {
-    const dailyInterest = currentBalance > 0 ? (currentBalance * 0.02 / 365) : 0;
+    const dailyInterest = currentBalance > 0 ? (currentBalance * NUM("interest") / 100 / 365) : 0;
     accrued += dailyInterest;
 
     if (temp.getMonth() !== lastCalc.getMonth()) {
@@ -1739,13 +1781,14 @@ function convertCandyToMoney() {
     return;
   }
   if (!confirm(KL().convertMoneyConfirm)) return;
-  undoPush("1🍬→0.20€");
+  const eur=NUM("keoEuro");
+  undoPush("1🍬→"+eur.toFixed(2)+"€");
   s.keo = (s.keo || 0) - 1;
-  s.pocketMoney = (s.pocketMoney || 0) + 0.20;
+  s.pocketMoney = Number(((s.pocketMoney || 0) + eur).toFixed(4));
   
-  const reason = LANG === "vi" ? "Đổi 1🍬 → 0.20€" : "1🍬 → 0.20€ getauscht";
+  const reason = LANG === "vi" ? "Đổi 1🍬 → "+eur.toFixed(2)+"€" : "1🍬 → "+eur.toFixed(2)+"€ getauscht";
   logAdd(s,{ delta: -1, reason: reason, cur: "keo" });
-  logAdd(s,{ delta: 0.20, reason: reason, cur: "euro" });
+  logAdd(s,{ delta: eur, reason: reason, cur: "euro" });
   
   kidSave(s);
   kidCheer = KL().convertMoneyOk;
@@ -1755,11 +1798,12 @@ function convertCandyToMoney() {
 }
 /* --- Đổi 3⭐→1🍬 · 3✋→1🍬 --- */
 function convertStars(){const s=kidState();
-  if((s.sao||0)<3){kidCheer=KL().convertBlocked;renderRewardAll();return;}
+  const spk=iPos("saoPerKeo");
+  if((s.sao||0)<spk){kidCheer=KL().convertBlocked;renderRewardAll();return;}
   if(!confirm(KL().convertConfirm))return;
-  undoPush("3⭐→1🍬");
-  s.sao-=3;s.keo=(s.keo||0)+1;
-  logAdd(s,{delta:-3,reason:KL().convertReason,cur:"sao"});
+  undoPush(spk+"⭐→1🍬");
+  s.sao-=spk;s.keo=(s.keo||0)+1;
+  logAdd(s,{delta:-spk,reason:KL().convertReason,cur:"sao"});
   logAdd(s,{delta:1,reason:KL().convertReason,cur:"keo"});
   kidSave(s);kidCheer=KL().convertOk;
   triggerConfetti();
@@ -1768,8 +1812,9 @@ function convertStars(){const s=kidState();
 function grantGameExtra(){
   if(!confirm(L().pGameExtraConfirm))return;
   const s=kidState(),gd=todayGameDay(s);
-  undoPush("🎮 +15′");
-  s.gameDay={date:gd.date,min:gd.min||0,extra:(gd.extra||0)+15,handPaid:!!gd.handPaid};
+  const ex=Math.max(1,Math.round(NUM("gameExtra")));
+  undoPush("🎮 +"+ex+"′");
+  s.gameDay={date:gd.date,min:gd.min||0,extra:(gd.extra||0)+ex,handPaid:!!gd.handPaid};
   kidSave(s);kidCheer=KL().gameExtraCheer(todayGameLimit(s));playSound('click');renderRewardAll();}
 function handManual(sign){
   amountForm((sign>0?L().hPlus:L().hMinus).replace(/^[＋－] /,"")+" ✋",sign>0?L().hPlusDef:L().hMinusDef,null,(n,reason)=>{
@@ -1777,19 +1822,20 @@ function handManual(sign){
     undoPush(`${d>0?"+":""}${d}✋ ${reason}`);
     s.hand.n=have+d;logAdd(s,{delta:d,reason,cur:"hand"});kidSave(s);playSound('click');renderRewardAll();});}
 function convertHand(){const s=kidState();
-  if((s.hand.n||0)<3){kidCheer=KL().convertHandBlocked;renderRewardAll();return;}
+  const hpk=iPos("handPerKeo");
+  if((s.hand.n||0)<hpk){kidCheer=KL().convertHandBlocked;renderRewardAll();return;}
   if(!confirm(KL().convertHandConfirm))return;
-  undoPush("3✋→1🍬");
-  s.hand.n-=3;s.keo=(s.keo||0)+1;
-  logAdd(s,{delta:-3,reason:KL().convertHandReason,cur:"hand"});
+  undoPush(hpk+"✋→1🍬");
+  s.hand.n-=hpk;s.keo=(s.keo||0)+1;
+  logAdd(s,{delta:-hpk,reason:KL().convertHandReason,cur:"hand"});
   logAdd(s,{delta:1,reason:KL().convertHandReason,cur:"keo"});
   kidSave(s);kidCheer=KL().convertOk;
   triggerConfetti();
   playSound('success');
   renderRewardAll();}
-/* --- Giơ tay phát biểu ✋ — tối đa HAND_MAX_DAY lần/ngày, mỗi lần +1✋ (ô riêng) --- */
+/* --- Giơ tay phát biểu ✋ — tối đa handMax() lần/ngày, mỗi lần +1✋ (ô riêng) --- */
 function raiseHand(){const s=kidState(),today=iso(new Date()),c=todayHandCount(s);
-  if(c>=HAND_MAX_DAY){kidCheer=KL().handMax;renderRewardAll();return;}
+  if(c>=handMax()){kidCheer=KL().handMax;renderRewardAll();return;}
   if(!confirm(KL().handConfirm(c+1)))return;
   undoPush("+1✋");
   s.handRaise={date:today,count:c+1};
@@ -1804,9 +1850,10 @@ function raiseHand(){const s=kidState(),today=iso(new Date()),c=todayHandCount(s
 function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>String(x.id)===String(id));if(!g)return;
   if(!g.done){
     if(!confirm(LANG==="vi"?"Xác nhận đạt mục tiêu tuần này?":"Wochenziel als ERREICHT markieren?"))return;
-    undoPush(`+3⭐ ${g.text}`);
-    g.done=true;s.sao+=3;s.saoLife+=3;
-    logAdd(s,{delta:3,reason:L().rsGoal(g.text),k:"goal",gid:g.id,cur:"sao"});
+    const gp=Math.round(NUM("goalStars"));
+    undoPush(`+${gp}⭐ ${g.text}`);
+    g.done=true;g.got=gp;s.sao+=gp;s.saoLife+=gp;
+    logAdd(s,{delta:gp,reason:L().rsGoal(g.text),k:"goal",gid:g.id,cur:"sao"});
     kidCheer=KL().goalDoneCheer(T_val(g.text));
     checkDragon(s);
     triggerConfetti();
@@ -1814,17 +1861,20 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>String(x.id)===Stri
   }
   else{
     if(!confirm(LANG==="vi"?"Hủy đạt mục tiêu tuần này?":"Erreichung des Wochenziels aufheben?"))return;
-    undoPush(`-3⭐ ${g.text}`);
-    g.done=false;s.sao-=3;s.saoLife-=3;kidCheer="";
+    const gp=g.got!=null?g.got:3;
+    undoPush(`-${gp}⭐ ${g.text}`);
+    g.done=false;s.sao-=gp;s.saoLife-=gp;kidCheer="";delete g.got;
     const wk=weekMonKey(iso(new Date()));
-    if(!logRemove(s,e=>e.cur==="sao"&&e.delta===3&&weekMonKey(e.date)===wk&&((e.k==="goal"&&e.gid===g.id)||(!e.k&&LEG.goalPre.some(p=>e.reason===p+g.text)))))
-      logAdd(s,{delta:-3,reason:L().rsGoalUndo(g.text),cur:"sao"});
+    if(!logRemove(s,e=>e.cur==="sao"&&e.delta===gp&&weekMonKey(e.date)===wk&&((e.k==="goal"&&e.gid===g.id)||(!e.k&&LEG.goalPre.some(p=>e.reason===p+g.text)))))
+      logAdd(s,{delta:-gp,reason:L().rsGoalUndo(g.text),cur:"sao"});
     playSound('click');
   }
   kidSave(s);renderRewardAll();}
 /* --- 🛒 Cửa hàng đổi thưởng (nút mua nhanh ở tab của con) --- */
 // ✋ trả theo NGÀY: món có hand>0 cần 1✋ cho lần mua đầu tiên trong ngày, các lần sau trong ngày không tốn ✋
 const handDue=(it,s)=>(it.hand||0)>0&&!(s&&todayGameDay(s).handPaid)?1:0;
+function keoToMin(s){const g=(s.shop||[]).filter(x=>x.min>0&&x.cost>0&&x.cur!=="sao").sort((a,b)=>a.min-b.min)[0];
+  return g?Math.max(0,Math.floor((s.keo||0)/g.cost))*g.min:0;}
 const costLabel=(it,s)=>{const h=s?(handDue(it,s)?"1✋":""):((it.hand||0)>0?"1✋/"+(LANG==="de"?"Tag":"ngày"):"");
   return it.cost>0||!h?`${it.cost}${it.cur==="sao"?"⭐":"🍬"}`+(h?" + "+h:""):h;};
 function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>String(x.id)===String(id));if(!it)return;
@@ -1855,7 +1905,7 @@ const CRIT=[
  {col:"#64748b",vi:["Bình thường (0)","Một ngày yên ổn, làm xong việc của mình — mặc định."],de:["Normal (0)","Ein ruhiger Tag, Aufgaben erledigt — Standard."]},
  {col:"#ea580c",vi:["Hư (−1)","Sai nhỏ: cãi lại/nói trống không, không chịu làm bài sau nhiều lần nhắc, nói dối nhỏ."],de:["Unartig (−1)","Kleines Fehlverhalten: widersprochen, Hausaufgaben verweigert, kleine Lüge."]},
  {col:"#dc2626",vi:["Cực hư (−2)","Nghiêm trọng, hiếm: đánh/làm đau người khác, nói dối lớn, đập phá, nguy hiểm, chống đối lặp lại."],de:["Sehr unartig (−2)","Ernst und selten: jemanden verletzt, große Lüge, Wutanfall, gefährlich, wiederholter Trotz."]}];
-function openCrit(){openSheet(`<h3>${L().critTitle}</h3>`+CRIT.map(c=>{const x=c[LANG];
+function openCrit(){openSheet(`<h3>${L().critTitle}</h3>`+CRIT.map((c,ci)=>{const x=c[LANG].slice();x[0]=x[0].replace(/\s*\([^)]*\)\s*$/,"")+" ("+sgnN(evalDelta(["cn","n","bt","h","ch"][ci]))+")";
   return `<div style="border-left:4px solid ${c.col};padding:4px 0 4px 12px;margin:10px 0"><b>${x[0]}</b><div style="font-size:13px;color:#c7ccd6;margin-top:3px">${x[1]}</div></div>`;}).join("")
   +`<div class="acts"><button class="cancel" id="cCancel">${L().cancel}</button></div>`);$("cCancel").onclick=close;}
 
@@ -1908,7 +1958,7 @@ document.addEventListener("click",e=>{
   const ma=e.target.closest("[data-mgadd]");if(ma){mgAdd(ma.dataset.mgadd);return;}
   const me=e.target.closest("[data-mgedit]");if(me){mgEdit(me.dataset.mgedit);return;}
   const md=e.target.closest("[data-mgdel]");if(md){mgDel(md.dataset.mgdel);return;}});
-$("gTest").onclick=needParent(()=>addKeo(2,L().gReasonTest));$("gKonig").onclick=needParent(()=>addKeo(10,L().gReasonKonig));$("gPay").onclick=needParent(payKeo);
+$("gTest").onclick=needParent(()=>addKeo(Math.round(NUM("testKeo")),L().gReasonTest));$("gKonig").onclick=needParent(()=>addKeo(Math.round(NUM("konigKeo")),L().gReasonKonig));$("gPay").onclick=needParent(payKeo);
 $("gPlus").onclick=needParent(()=>keoManual(1));$("gMinus").onclick=needParent(()=>keoManual(-1));$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
 
@@ -1928,8 +1978,8 @@ function logReason(e){
   if(e.k==="wish")return L().rsWish(T_val(e.reason||""));
   if(e.k==="wishdone")return L().rsWishDone(T_val(e.reason||""));
   if(e.k==="cap")return L().rsCap(e.n||KEO_CAP_DEF);
-  if(e.k==="allow"&&e.n)return LANG==="vi"?`Tự động cộng tiền tiêu vặt (+2€/tuần × ${e.n})`:`Taschengeld automatisch (+2€/Woche × ${e.n})`;
-  if(e.k==="interest"&&e.m)return LANG==="vi"?`Nhập gốc lãi tiết kiệm tháng ${e.m}/${e.y} (2%/năm)`:`Zinsgutschrift für ${e.m}/${e.y} (2%/Jahr)`;
+  if(e.k==="allow"&&e.n){const per=Number((e.delta/e.n).toFixed(2));return LANG==="vi"?`Tự động cộng tiền tiêu vặt (+${per}€/tuần × ${e.n})`:`Taschengeld automatisch (+${per}€/Woche × ${e.n})`;}
+  if(e.k==="interest"&&e.m)return LANG==="vi"?`Nhập gốc lãi tiết kiệm tháng ${e.m}/${e.y}`:`Zinsgutschrift für ${e.m}/${e.y}`;
   return T_val(e.reason||"");}
 function fmtDelta(e){const v=Number(e.delta)||0,n=e.cur==="euro"?Number(v.toFixed(4)):v;
   return (v>0?"+":v<0?"":"±")+n+(e.cur==="euro"?"€":"")+(CUR_IC[e.cur]||"🍬");}
@@ -2256,28 +2306,28 @@ const KX={
    pickColor:"Chọn màu của con",
    walletSaoSub:"sao của con",walletKeoSub:(n,cap)=>`≈ ${n} phút game`+(cap?` · tối đa ${cap}`:""),walletHandSub:"✋ giơ tay · CN dư → ⭐",
    walletMoneySub:"tiền tiêu vặt con có",
-   convertBtn:"🔄 Đổi 3 ⭐ → 1 🍬",convertBlocked:"Chưa đủ 3 ⭐ để đổi.",convertOk:"🍬 Đổi được 1 kẹo!",convertReason:"Đổi 3⭐ → 1🍬",
+   convertBtn:"🔄 Đổi {saoPerKeo} ⭐ → 1 🍬",convertBlocked:"Chưa đủ {saoPerKeo} ⭐ để đổi.",convertOk:"🍬 Đổi được 1 kẹo!",convertReason:"Đổi {saoPerKeo}⭐ → 1🍬",
    convertConfirm:"Xác nhận đổi 3 Sao ⭐ lấy 1 Kẹo 🍬?",
-   convertMoneyBtn:"🔄 Đổi 1 🍬 → 0.20 €",
+   convertMoneyBtn:"🔄 Đổi 1 🍬 → {keoEuro} €",
    convertMoneyBlocked:"Chưa có kẹo để đổi.",
-   convertMoneyConfirm:"Xác nhận đổi 1 Kẹo 🍬 lấy 0.20 € tiền tiêu vặt?",
-   convertMoneyOk:"💶 Đổi được 0.20 € tiền tiêu vặt! 🍬",
-   moneyInterest: accrued => `Lãi: +${fmtInterest(accrued)} (2%/năm)`,
+   convertMoneyConfirm:"Xác nhận đổi 1 Kẹo 🍬 lấy {keoEuro} € tiền tiêu vặt?",
+   convertMoneyOk:"💶 Đổi được {keoEuro} € tiền tiêu vặt! 🍬",
+   moneyInterest: accrued => `Lãi: +${fmtInterest(accrued)} ({interest}%/năm)`,
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
-   convertHandBtn:"🔄 Đổi 3 ✋ → 1 🍬",convertHandBlocked:"Chưa đủ 3 ✋ để đổi.",convertHandReason:"Đổi 3✋ → 1🍬",
-   convertHandConfirm:"Đổi 3 sao giơ tay ✋ lấy 1 kẹo 🍬?\n(✋ để chơi game sẽ ít đi 3)",
+   convertHandBtn:"🔄 Đổi {handPerKeo} ✋ → 1 🍬",convertHandBlocked:"Chưa đủ {handPerKeo} ✋ để đổi.",convertHandReason:"Đổi {handPerKeo}✋ → 1🍬",
+   convertHandConfirm:"Đổi {handPerKeo} sao giơ tay ✋ lấy 1 kẹo 🍬?\n(✋ để chơi game sẽ ít đi {handPerKeo})",
    gameT:(m,lim)=>`🎮 Chơi game · hôm nay đã chơi ${m}/${lim} phút`,
    gameRule:"Mỗi 15 phút game = 2 🍬. Mỗi ngày chơi game cần 1 ✋ (trừ ở lần mua đầu tiên trong ngày, chơi thêm trong ngày không mất ✋). Không có ✋ thì chưa chơi được.",
    shopNeedHand:(need,name,have)=>`Chưa đủ ✋ để "${name}": cần ${need} ✋, con đang có ${have} ✋.\nGiơ tay phát biểu ở lớp để có ✋ nhé!`,
-   gameLimit:(played,lim,mins)=>`Hôm nay con đã chơi ${played}/${lim} phút, không mua thêm ${mins} phút được nữa.\nMuốn chơi thêm thì hỏi bố mẹ. Bố mẹ đồng ý thì bấm "🎮 Bố mẹ cho chơi thêm 15 phút" ở tab 🎁 Thưởng.`,
+   gameLimit:(played,lim,mins)=>`Hôm nay con đã chơi ${played}/${lim} phút, không mua thêm ${mins} phút được nữa.\nMuốn chơi thêm thì hỏi bố mẹ. Bố mẹ đồng ý thì bấm "🎮 Bố mẹ cho chơi thêm {gameExtra} phút" ở tab 🎁 Thưởng.`,
    gameExtraCheer:lim=>`🎮 Hôm nay được chơi tới ${lim} phút.`,
    handQ:"✋ Giơ tay phát biểu ở lớp",
    handSub:(c,max)=>`Hôm nay: ${c}/${max} lần · mỗi lần +1 ✋ (dùng để chơi game)`,
    handBtn:"✋ Con vừa giơ tay phát biểu! (+1 ✋)",
-   handDone:"✋ Hôm nay đủ 3 lần rồi, giỏi lắm!",
-   handMax:"✋ Hôm nay đã đủ 3 lần giơ tay.",
-   handConfirm:n=>`Xác nhận con đã giơ tay phát biểu ở lớp? (lần ${n}/3 hôm nay)`,
-   handCheer:n=>`✋ Hoan hô con dũng cảm giơ tay! +1 ✋ (${n}/3 hôm nay)`,
+   handDone:"✋ Hôm nay đủ {handMax} lần rồi, giỏi lắm!",
+   handMax:"✋ Hôm nay đã đủ {handMax} lần giơ tay.",
+   handConfirm:n=>`Xác nhận con đã giơ tay phát biểu ở lớp? (lần ${n}/{handMax} hôm nay)`,
+   handCheer:n=>`✋ Hoan hô con dũng cảm giơ tay! +1 ✋ (${n}/{handMax} hôm nay)`,
    dragonT:"🐉 7 viên ngọc rồng · gom đủ 7 viên để gọi Rồng thần",
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
    dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per}⭐ là có thêm 1 viên ngọc`,
@@ -2291,11 +2341,11 @@ const KX={
      "Ngọc rồng chỉ đến với người kiên trì. Hẹn gặp lại con!","Sức mạnh của con đã tăng lên rất nhiều!",
      "Giơ tay phát biểu thật nhiều nhé, ta sẽ sớm gặp lại con!","Người dũng cảm là người dám thử dù còn ngại. Con làm được!"],
    handExpWarn:n=>`⏰ Hôm nay Chủ nhật: ${n} ✋ còn dư, sáng mai sẽ thành ${n} ⭐ rồi tự đổi sang 🍬.`,
-   goalsT:"🎯 Mục tiêu tuần này — mỗi mục = +3 ⭐",goalsEmpty:"Chưa có mục tiêu — nhờ bố mẹ thêm ở ⚙️.",
-   goalDoneCheer:t=>`🌟 Đạt mục tiêu tuần "${t}" — +3 ⭐!`,
-   askQ:"🎉 Con làm xong hết rồi! Con TỰ làm đúng không?",askYes:"Tự làm hết! 🌟 +2⭐",askNo:"Có nhắc +1⭐",
-   askDoneSelf:"✓ Đã thưởng +2⭐ (con tự làm hết 🌟) hôm nay",askDoneHelp:"✓ Đã thưởng +1⭐ (có bố mẹ nhắc) hôm nay",
-   selfCheer:"🌟 Con tự làm hết, giỏi lắm! +2 ⭐",helpCheer:"👍 Làm xong rồi, +1 ⭐ · lần sau thử tự làm nhé 💚",
+   goalsT:"🎯 Mục tiêu tuần này - mỗi mục = +{goalStars} ⭐",goalsEmpty:"Chưa có mục tiêu — nhờ bố mẹ thêm ở ⚙️.",
+   goalDoneCheer:t=>`🌟 Đạt mục tiêu tuần "${t}" - +{goalStars} ⭐!`,
+   askQ:"🎉 Con làm xong hết rồi! Con TỰ làm đúng không?",askYes:"Tự làm hết! 🌟 +{chkSelf}⭐",askNo:"Có nhắc +{chkHelp}⭐",
+   askDoneSelf:"✓ Đã thưởng +{chkSelf}⭐ (con tự làm hết 🌟) hôm nay",askDoneHelp:"✓ Đã thưởng +{chkHelp}⭐ (có bố mẹ nhắc) hôm nay",
+   selfCheer:"🌟 Con tự làm hết, giỏi lắm! +{chkSelf} ⭐",helpCheer:"👍 Làm xong rồi, +{chkHelp} ⭐ · lần sau thử tự làm nhé 💚",
    moodT:"Hôm nay con thấy thế nào?",goodT:"✨ Điều hay hôm nay",goodPh:"Hôm nay có gì vui?…",goodSave:"Lưu",thanks:"Cảm ơn con đã ghi! 💚",
    nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
  de:{morning:"Guten Morgen",afternoon:"Guten Tag",evening:"Guten Abend",close:"✓ Fertig",
@@ -2303,28 +2353,28 @@ const KX={
    pickColor:"Wähle deine Farbe",
    walletSaoSub:"Sterne des Kindes",walletKeoSub:(n,cap)=>`≈ ${n} Min. Videospiel`+(cap?` · max. ${cap}`:""),walletHandSub:"✋ Melde-Sterne · Rest So. → ⭐",
    walletMoneySub:"dein Taschengeld",
-   convertBtn:"🔄 3 ⭐ → 1 🍬 tauschen",convertBlocked:"Noch nicht genug ⭐ (3 nötig).",convertOk:"🍬 1 Süßigkeit erhalten!",convertReason:"3⭐ → 1🍬 getauscht",
+   convertBtn:"🔄 {saoPerKeo} ⭐ → 1 🍬 tauschen",convertBlocked:"Noch nicht genug ⭐ ({saoPerKeo} nötig).",convertOk:"🍬 1 Süßigkeit erhalten!",convertReason:"{saoPerKeo}⭐ → 1🍬 getauscht",
    convertConfirm:"Möchtest du wirklich 3 Sterne ⭐ gegen 1 Süßigkeit 🍬 tauschen?",
-   convertMoneyBtn:"🔄 1 🍬 → 0.20 € tauschen",
+   convertMoneyBtn:"🔄 1 🍬 → {keoEuro} € tauschen",
    convertMoneyBlocked:"Keine Süßigkeiten zum Tauschen.",
-   convertMoneyConfirm:"Möchtest du wirklich 1 Süßigkeit 🍬 gegen 0.20 € Taschengeld tauschen?",
-   convertMoneyOk:"💶 0.20 € Taschengeld erhalten! 🍬",
-   moneyInterest: accrued => `Zins: +${fmtInterest(accrued)} (2%/J)`,
+   convertMoneyConfirm:"Möchtest du wirklich 1 Süßigkeit 🍬 gegen {keoEuro} € Taschengeld tauschen?",
+   convertMoneyOk:"💶 {keoEuro} € Taschengeld erhalten! 🍬",
+   moneyInterest: accrued => `Zins: +${fmtInterest(accrued)} ({interest}%/J)`,
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
-   convertHandBtn:"🔄 3 ✋ → 1 🍬 tauschen",convertHandBlocked:"Noch nicht genug ✋ (3 nötig).",convertHandReason:"3✋ → 1🍬 getauscht",
-   convertHandConfirm:"3 Melde-Sterne ✋ gegen 1 Süßigkeit 🍬 tauschen?\n(dann 3 ✋ weniger für Videospiel)",
+   convertHandBtn:"🔄 {handPerKeo} ✋ → 1 🍬 tauschen",convertHandBlocked:"Noch nicht genug ✋ ({handPerKeo} nötig).",convertHandReason:"{handPerKeo}✋ → 1🍬 getauscht",
+   convertHandConfirm:"{handPerKeo} Melde-Sterne ✋ gegen 1 Süßigkeit 🍬 tauschen?\n(dann {handPerKeo} ✋ weniger für Videospiel)",
    gameT:(m,lim)=>`🎮 Videospiel · heute ${m}/${lim} Min. gespielt`,
    gameRule:"Je 15 Min. Videospiel = 2 🍬. Pro Spieltag braucht es 1 ✋ (beim ersten Kauf des Tages, weitere Käufe am selben Tag kosten kein ✋). Ohne ✋ noch kein Videospiel.",
    shopNeedHand:(need,name,have)=>`Nicht genug ✋ für "${name}": ${need} ✋ nötig, du hast ${have} ✋.\nMelde dich im Unterricht, dann bekommst du ✋!`,
-   gameLimit:(played,lim,mins)=>`Heute schon ${played}/${lim} Min. gespielt, ${mins} Min. mehr gehen nicht.\nFrag Mama oder Papa. Wenn sie ja sagen: im Tab 🎁 "🎮 Eltern erlauben heute 15 Min. extra" antippen.`,
+   gameLimit:(played,lim,mins)=>`Heute schon ${played}/${lim} Min. gespielt, ${mins} Min. mehr gehen nicht.\nFrag Mama oder Papa. Wenn sie ja sagen: im Tab 🎁 "🎮 Eltern erlauben heute {gameExtra} Min. extra" antippen.`,
    gameExtraCheer:lim=>`🎮 Heute sind bis zu ${lim} Min. erlaubt.`,
    handQ:"✋ Im Unterricht gemeldet",
    handSub:(c,max)=>`Heute: ${c}/${max}× · jedes Mal +1 ✋ (für Videospiel)`,
    handBtn:"✋ Ich habe mich gemeldet! (+1 ✋)",
-   handDone:"✋ Heute schon 3×, super!",
-   handMax:"✋ Heute schon 3× gemeldet.",
-   handConfirm:n=>`Hast du dich wirklich im Unterricht gemeldet? (heute ${n}/3)`,
-   handCheer:n=>`✋ Bravo, du hast dich gemeldet! +1 ✋ (heute ${n}/3)`,
+   handDone:"✋ Heute schon {handMax}×, super!",
+   handMax:"✋ Heute schon {handMax}× gemeldet.",
+   handConfirm:n=>`Hast du dich wirklich im Unterricht gemeldet? (heute ${n}/{handMax})`,
+   handCheer:n=>`✋ Bravo, du hast dich gemeldet! +1 ✋ (heute ${n}/{handMax})`,
    dragonT:"🐉 7 Drachenkugeln · sammle alle 7 und rufe den Drachen",
    dragonNext:(i,rem)=>`📡 Kugel-Radar: ${i}-Sterne-Kugel noch ${rem}⭐ entfernt`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
    dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Je ${per} verdiente ⭐ gibt es 1 Kugel`,
@@ -2338,15 +2388,15 @@ const KX={
      "Die Kugeln kommen nur zu denen, die durchhalten. Bis bald!","Deine Kraft ist enorm gewachsen!",
      "Melde dich weiter fleißig, dann sehen wir uns bald wieder!","Mutig ist, wer es trotzdem versucht. Du schaffst das!"],
    handExpWarn:n=>`⏰ Heute ist Sonntag: ${n} ✋ übrig, morgen werden daraus ${n} ⭐ und dann 🍬.`,
-   goalsT:"🎯 Wochenziele — jedes Ziel = +3 ⭐",goalsEmpty:"Noch keine Ziele — Eltern fragen unter ⚙️.",
-   goalDoneCheer:t=>`🌟 Wochenziel "${t}" erreicht — +3 ⭐!`,
-   askQ:"🎉 Alles erledigt! Hast du ALLES selbst gemacht?",askYes:"Ganz allein! 🌟 +2⭐",askNo:"Mit Erinnerung +1⭐",
-   askDoneSelf:"✓ Heute +2⭐ (ganz allein 🌟)",askDoneHelp:"✓ Heute +1⭐ (mit Erinnerung)",
-   selfCheer:"🌟 Super, ganz allein gemacht! +2 ⭐",helpCheer:"👍 Alles fertig, +1 ⭐ · versuch's nächstes Mal allein 💚",
+   goalsT:"🎯 Wochenziele - jedes Ziel = +{goalStars} ⭐",goalsEmpty:"Noch keine Ziele — Eltern fragen unter ⚙️.",
+   goalDoneCheer:t=>`🌟 Wochenziel "${t}" erreicht - +{goalStars} ⭐!`,
+   askQ:"🎉 Alles erledigt! Hast du ALLES selbst gemacht?",askYes:"Ganz allein! 🌟 +{chkSelf}⭐",askNo:"Mit Erinnerung +{chkHelp}⭐",
+   askDoneSelf:"✓ Heute +{chkSelf}⭐ (ganz allein 🌟)",askDoneHelp:"✓ Heute +{chkHelp}⭐ (mit Erinnerung)",
+   selfCheer:"🌟 Super, ganz allein gemacht! +{chkSelf} ⭐",helpCheer:"👍 Alles fertig, +{chkHelp} ⭐ · versuch's nächstes Mal allein 💚",
    moodT:"Wie fühlst du dich heute?",goodT:"✨ Schönes heute",goodPh:"Was war heute schön?…",goodSave:"Speichern",thanks:"Danke fürs Eintragen! 💚",
    nightHint:"Schlafenszeit 🌙 · tippen zum Ansehen",nightT:"🌙 Nachtmodus",nightOn:"Nachts automatisch abdunkeln",nightFrom:"Von",nightTo:"Bis"}
 };
-const KL=()=>KX[LANG];
+const KL=()=>_LP["K"+LANG]||(_LP["K"+LANG]=wrapFx(KX[LANG]));
 const AVATARS=["🦊","🐯","🐼","🐰","🦁","🐸","🐥","🦄","🐳","🤖","🦖","🌟","🐉","🐲","🐒","☁️","⚡","🔥"];
 const KCOLORS=["#5fd08a","#3f6fd0","#c0407f","#ffa53a","#a855f7","#ef4444","#06b6d4","#eab308"];
 function greetWord(){const h=new Date().getHours();return h<12?KL().morning:h<18?KL().afternoon:KL().evening;}
@@ -2380,7 +2430,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="wallets wallets4">
      <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
      <div class="wallet whand"><div class="n">✋ ${hn}</div><div class="sub">${KL().walletHandSub}</div></div>
-     <div class="wallet keo"><div class="n${negK}">🍬 ${s.keo||0}</div><div class="sub">${KL().walletKeoSub(Math.max(0,Math.floor((s.keo||0)/2))*15,keoCap(s))}</div></div>
+     <div class="wallet keo"><div class="n${negK}">🍬 ${s.keo||0}</div><div class="sub">${KL().walletKeoSub(keoToMin(s),keoCap(s))}</div></div>
      <div class="wallet money"><div class="n">€${Number((s.pocketMoney||0).toFixed(2))}</div><div class="sub">${KL().walletMoneySub}</div><div style="font-size:10.5px;color:#9fe0b0;margin-top:3px;line-height:1.25">${KL().moneyInterest(s.pocketMoneyAccruedInterest||0)}</div></div>
    </div>
    ${kidCheer?`<div class="kidcheer">${esc(kidCheer)}</div>`:""}
@@ -2389,11 +2439,11 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="kidrule">${KL().gameRule}</div>
    <div class="shopgrid">${shopBtns}</div>
    <div class="kidsec">${KL().handQ}</div>
-   <div class="hand"><div class="q">${KL().handSub(hc,HAND_MAX_DAY)}</div>
-      <button class="handbtn" id="kHand" ${hc>=HAND_MAX_DAY?'disabled style="background:var(--bd);color:var(--mut);cursor:default"':''}>${hc>=HAND_MAX_DAY?KL().handDone:KL().handBtn}</button></div>
+   <div class="hand"><div class="q">${KL().handSub(hc,handMax())}</div>
+      <button class="handbtn" id="kHand" ${hc>=handMax()?'disabled style="background:var(--bd);color:var(--mut);cursor:default"':''}>${hc>=handMax()?KL().handDone:KL().handBtn}</button></div>
    <div class="convrow">
-     <button class="gumbtn gold2" id="kConvert" ${(s.sao||0)<3?'disabled':''}>${KL().convertBtn}</button>
-     <button class="gumbtn" id="kConvertHand" style="background:var(--blue);color:#fff" ${hn<3?'disabled':''}>${KL().convertHandBtn}</button>
+     <button class="gumbtn gold2" id="kConvert" ${(s.sao||0)<iPos("saoPerKeo")?'disabled':''}>${KL().convertBtn}</button>
+     <button class="gumbtn" id="kConvertHand" style="background:var(--blue);color:#fff" ${hn<iPos("handPerKeo")?'disabled':''}>${KL().convertHandBtn}</button>
      <button class="gumbtn indigo" id="kConvertMoney" ${(s.keo||0)<1?'disabled':''}>${KL().convertMoneyBtn}</button>
    </div>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:8px 0 4px">${KL().streak(s.streak||0)}</div>
@@ -2443,8 +2493,8 @@ function renderParentReward(){const s=kidState();
   $("sPlus").textContent=L().sPlus;$("sMinus").textContent=L().sMinus;
   const hc=todayHandCount(s);
   $("h_hand").textContent=L().h_hand;$("pHand").textContent="✋ "+(s.hand.n||0);
-  $("pHandUnit").textContent=L().pHandUnit(hc,HAND_MAX_DAY);
-  $("pHandBtn").textContent=hc>=HAND_MAX_DAY?L().pHandMax:L().pHandBtn;$("pHandBtn").disabled=hc>=HAND_MAX_DAY;
+  $("pHandUnit").textContent=L().pHandUnit(hc,handMax());
+  $("pHandBtn").textContent=hc>=handMax()?L().pHandMax:L().pHandBtn;$("pHandBtn").disabled=hc>=handMax();
   $("pHandBtn").onclick=raiseHand;
   $("hPlus").textContent=L().hPlus;$("hMinus").textContent=L().hMinus;
   $("hPlus").onclick=needParent(()=>handManual(1));$("hMinus").onclick=needParent(()=>handManual(-1));
@@ -2470,7 +2520,7 @@ function renderParentReward(){const s=kidState();
   $("mPfand").textContent=L().mPfand;
 
   const ev=todayEval(s);
-  $("evalBtns").innerHTML=L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}${ev&&ev.key===r[0]?' sel':''}" data-eval="${r[0]}">${r[1]}<br>${r[2]}</button>`).join("");
+  $("evalBtns").innerHTML=L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}${ev&&ev.key===r[0]?' sel':''}" data-eval="${r[0]}">${r[1]}<br>${sgnN(evalDelta(r[0]))}</button>`).join("");
   $("evalStatus").textContent=L().evalStatus(ev?L().evalRatings.find(r=>r[0]===ev.key)[1]:null);
   const dgp=dragonState(s);
   $("pDragon").innerHTML=`<div class="row">${L().pDragon(dgp.n,dgp.per,s.dragon.rounds||0)}</div>`
@@ -2550,7 +2600,7 @@ function shopForm(title,init,save){
     {key:"cost",label:LANG==="vi"?"Giá (số điểm)":"Preis (Punkte)",type:"number",min:0,value:init.cost!=null?init.cost:2,required:true},
     {key:"cur",label:LANG==="vi"?"Tiêu bằng loại điểm":"Punkteart",type:"chips",options:[["sao","⭐ "+(LANG==="vi"?"Sao":"Sterne")],["keo","🍬 "+(LANG==="vi"?"Kẹo":"Süßigkeiten")]],value:init.cur||"keo"},
     {key:"hand",label:LANG==="vi"?"✋ Cần 1 sao giơ tay mỗi ngày (lần mua đầu trong ngày)":"✋ Braucht 1 Melde-Stern pro Tag (erster Kauf am Tag)",type:"chips",options:[["1",LANG==="vi"?"Có":"Ja"],["0",LANG==="vi"?"Không":"Nein"]],value:(init.hand||0)>0?"1":"0"},
-    {key:"min",label:LANG==="vi"?`🎮 Số phút game (tính vào giới hạn ${GAME_DAY_MIN} phút/ngày · 0 = không phải game)`:`🎮 Spielminuten (zählt zum Limit ${GAME_DAY_MIN} Min./Tag · 0 = kein Spiel)`,type:"number",min:0,value:init.min!=null?init.min:0},
+    {key:"min",label:LANG==="vi"?`🎮 Số phút game (tính vào giới hạn ${gameDayMin()} phút/ngày · 0 = không phải game)`:`🎮 Spielminuten (zählt zum Limit ${gameDayMin()} Min./Tag · 0 = kein Spiel)`,type:"number",min:0,value:init.min!=null?init.min:0},
     {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"🎁"}],
    onSave:v=>{
      const cost=Math.max(0,Math.round(v.cost||0));
@@ -2587,7 +2637,9 @@ function renderManageBody(){
     ${rowsHtml||`<div class="empty">${L().mgEmpty}</div>`}
     <button class="add" data-mgadd="${addKind}">${addLabel}</button>`;
   $("mgBody").innerHTML=
-     sec(L().mgSecCheck, anItems().map(c=>row(esc(T_val(c.t)),"check:"+c.id)).join(""), "check", L().mgAddCheck)
+     `<div class="lbl" style="margin-top:4px">${L().mgSecRules}</div>
+      <div class="chk" style="cursor:default"><span class="nm" style="font-size:13.5px;line-height:1.5">${rulesSummary()}</span><span class="ic" data-mgedit="rules:x">✏️</span></div>`
+    +sec(L().mgSecCheck, anItems().map(c=>row(esc(T_val(c.t)),"check:"+c.id)).join(""), "check", L().mgAddCheck)
     +sec(L().mgSecSaoAdjust, saoAdjusts().map(adj => row(`${em(adj.emoji)}${esc(adj.text)} / ${esc(adj.textDe || adj.text)} · <b style="color:${adj.delta < 0 ? 'var(--r)' : 'var(--g)'}">${adj.delta > 0 ? '+' : ''}${adj.delta}⭐</b>`, "saoadj:" + adj.id)).join(""), "saoadj", L().mgAddSaoAdjust)
     +sec(L().mgSecGoal, s.goals.map(g=>row(`${em(g.emoji)}${esc(T_val(g.text))}`,"goal:"+g.id)).join(""), "goal", L().mgAddGoal)
     +sec(L().mgSecShop, s.shop.map(it=>row(`${em(it.e)}${esc(T_val(it.name))} · <b style="color:${it.cur==='sao'?'var(--y)':'#c99bff'}">${costLabel(it)}</b>${it.min?` · ${it.min}′`:""}`,"shop:"+it.id)).join(""), "shop", L().mgAddShop)
@@ -2614,6 +2666,7 @@ function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1)
   else if(t==="shop")editShopPrompt(id);
   else if(t==="wish"){const w0=kidState().wishes.find(x=>String(x.id)===String(id));if(w0)wishForm(L().mgSecWish,w0,v=>{const s=kidState(),w=s.wishes.find(x=>String(x.id)===String(id));if(!w)return;
     if(v.text===T_val(w.text))v.text=w.text;Object.assign(w,v);kidSave(s);renderRewardAll();});}
+  else if(t==="rules")openRules();
   else if(t==="autoconv"){const s=kidState();s.autoConv=s.autoConv===false;kidSave(s);openManage();}
   else if(t==="keocap")openForm({title:L().mgKeoCap(keoCap(kidState())),fields:[{key:"cap",label:L().mgKeoCapAsk,type:"number",min:0,value:keoCap(kidState()),required:true}],
     onSave:v=>{const n=Math.max(0,Math.round(v.cap||0));const s=kidState();s.keoCap=n;kidSave(s);renderRewardAll();}});
@@ -2629,6 +2682,18 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   else if(t==="shop")delShopPrompt(id);
   else if(t==="wish"){if(confirm(LANG==="vi"?"Xoá điều ước này?":"Diesen Wunsch löschen?")){const s=kidState();s.wishes=s.wishes.filter(x=>String(x.id)!==String(id));s.dragon.offer=null;kidSave(s);renderRewardAll();}}
   if($("mgBody"))renderManageBody();}
+// Các con số luật chơi (fam.cfg) — 1 form, không cần sửa code
+const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
+  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1]];
+function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
+function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_]+)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
+function openRules(){
+  openForm({title:L().mgSecRules,fields:RULE_FIELDS.map(([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)})),
+    onSave:v=>{const o={};RULE_FIELDS.forEach(([k])=>{const n=v[k];if(n==null||!isFinite(n))return;
+        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin"].includes(k))x=Math.max(1,x);
+        if(!CFG_EURO.includes(k)&&k!=="interest")x=Math.round(x);if(x!==CFG_DEF[k])o[k]=x;});
+      try{localStorage.setItem(CFG_KEY,JSON.stringify(o));}catch(e){storageFull(e);}
+      _cfg=null;renderAll();}});}
 function wishForm(title,init,save){
   openForm({title,fields:[
     {key:"text",label:L().wishText,type:"text",value:init.text!=null?T_val(init.text):"",required:true},
@@ -2666,7 +2731,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
