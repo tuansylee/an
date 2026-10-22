@@ -178,7 +178,6 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .dbar{height:8px;background:#3a2a10;border-radius:6px;margin-top:6px;overflow:hidden}.dbar span{display:block;height:100%;background:linear-gradient(90deg,#ffb340,#ff7a00)}
 .dsummon{margin-top:10px;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:800;color:#1a0d00;background:linear-gradient(90deg,#ffd84d,#ff9a1a);cursor:pointer;animation:dglow .9s ease-in-out infinite alternate}
 @keyframes dglow{from{box-shadow:0 0 0 #ffb34000}to{box-shadow:0 0 18px #ffb340cc}}
-.kidpow{font-size:14px;font-weight:800;color:#ffd84d;margin-top:2px;letter-spacing:.02em}
 /* 💪 Phong độ: hào quang quanh avatar theo cấp (0 hết sức … 5 Siêu Saiyan 3) */
 .kform{margin-top:6px;font-size:13px;font-weight:700;color:#cfd6e4}
 .kform .kfn{font-size:15px;font-weight:800}
@@ -201,6 +200,18 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 @keyframes dsky{0%{background-color:#000;opacity:0}15%{opacity:1;filter:brightness(2.2)}25%{filter:brightness(.6)}35%{filter:brightness(1.8)}100%{filter:none}}
 #dragonOv .dbig{font-size:min(42vw,190px);line-height:1;filter:drop-shadow(0 0 28px #5fd08a) drop-shadow(0 0 60px #ffd84d88);animation:drise 1.6s cubic-bezier(.2,.8,.2,1)}
 @keyframes drise{0%{transform:translateY(55vh) scale(.2) rotate(-25deg);opacity:0}60%{opacity:1}100%{transform:none}}
+#dragonOv .dname{font-size:17px;font-weight:800;color:#fff;opacity:0;animation:dfade .6s 1.5s forwards}
+#dragonOv .dname b{background:#ff3b5c;color:#fff;border-radius:8px;padding:1px 7px;margin-right:6px;font-size:13px}
+@keyframes rainbow{to{filter:hue-rotate(360deg) saturate(1.6) drop-shadow(0 0 28px #fff)}}
+/* 📖 Album rồng */
+.dalbbtn{margin-top:10px;width:100%;border:1px solid #8a5a1a;border-radius:12px;padding:10px;font-size:14px;font-weight:800;color:#ffd98a;background:#1e150a;cursor:pointer}
+.dalb{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.dalb .dc{background:#16110c;border:1px solid #3a2a10;border-radius:14px;padding:10px 4px;text-align:center;min-width:0}
+.dalb .dc .e{font-size:44px;line-height:1.1;display:block}
+.dalb .dc .nm{font-size:12px;font-weight:800;display:block;margin-top:4px}
+.dalb .dc .dt{font-size:10.5px;color:var(--mut);display:block;margin-top:2px}
+.dalb .dc.lock .e{filter:brightness(0);opacity:.35}
+.dalb .dc.lock .nm{color:var(--mut)}
 #dragonOv .dtitle{font-size:24px;font-weight:900;color:#ffd84d;text-shadow:0 0 14px #ff9a1a;opacity:0;animation:dfade .6s 1.3s forwards}
 #dragonOv .dsay{font-size:18px;font-weight:700;color:#e9ffe9;max-width:520px;line-height:1.4;opacity:0;animation:dfade .6s 1.9s forwards}
 #dragonOv .dhint{font-size:13px;color:#7fae8a;opacity:0;animation:dfade .6s 2.6s forwards}
@@ -417,7 +428,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-22·6";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -555,7 +566,9 @@ const T={
    importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
    importModeHint:"Ghi đè: thay toàn bộ dữ liệu máy này bằng file. Gộp: giữ dữ liệu hiện tại, chỉ thêm bản ghi chưa có (theo id) — dùng để lấy dữ liệu từ máy khác.",
    mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`,
-   statsT:"📊 Thống kê", statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
+   statsT:"📊 Thống kê", statsSum:"🏆 Tổng kết", statsLife:"tổng sao đã kiếm từ trước tới nay", statsForm:n=>`phong độ 7 ngày · ${n}`,
+   statsDragon:(n,t)=>`lần gọi Rồng thần · album ${n}/${t}`, statsHandAll:"lần giơ tay (đã ghi lại)",
+   statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
    statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
    statsMore:"Xem thêm 50", histMore:"Xem thêm ▾",
    statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
@@ -673,7 +686,9 @@ const T={
    importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
    importModeHint:"Überschreiben: ersetzt alle Daten dieses Geräts. Zusammenführen: behält aktuelle Daten, ergänzt nur fehlende Einträge (per id) — für Daten von einem zweiten Gerät.",
    mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`,
-   statsT:"📊 Statistik", statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
+   statsT:"📊 Statistik", statsSum:"🏆 Überblick", statsLife:"Sterne insgesamt verdient", statsForm:n=>`Form 7 Tage · ${n}`,
+   statsDragon:(n,t)=>`Drachen gerufen · Album ${n}/${t}`, statsHandAll:"Meldungen (aufgezeichnet)",
+   statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
    statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
    statsMore:"50 weitere", histMore:"Mehr anzeigen ▾",
    statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
@@ -1473,6 +1488,35 @@ function checkDragon(s){const n=dragonState(s).n,seen=s.dragon.seen||0;
   if(n<seen)s.dragon.seen=n;
   else if(n>seen){s.dragon.seen=n;kidCheer=dragonCheer=n<7?KL().ballFound(n):KL().ballAll;triggerConfetti();playSound('success');}}
 let dragonCheer="";   // giữ lời báo ngọc tới khi con mở tab của con
+// 📖 12 con rồng màu (tô màu emoji 🐉 bằng CSS filter, không dùng hình có bản quyền). Lần gọi thứ n -> rồng thứ (n-1)%12.
+const DRAGONS=[
+ {f:"none",g:"#5fd08a",vi:"Rồng Lục Bảo",de:"Smaragd-Drache"},
+ {f:"hue-rotate(-120deg) saturate(1.4)",g:"#ff5a4a",vi:"Rồng Lửa Đỏ",de:"Feuer-Drache"},
+ {f:"hue-rotate(110deg) saturate(1.3)",g:"#4da3ff",vi:"Rồng Biển Xanh",de:"Meeres-Drache"},
+ {f:"sepia(1) saturate(5) hue-rotate(-8deg) brightness(1.15)",g:"#ffd84d",vi:"Rồng Vàng",de:"Gold-Drache"},
+ {f:"hue-rotate(160deg) saturate(1.3)",g:"#b07bff",vi:"Rồng Tím",de:"Lila Drache"},
+ {f:"hue-rotate(200deg) saturate(1.2) brightness(1.1)",g:"#ff7ac8",vi:"Rồng Hồng",de:"Rosa Drache"},
+ {f:"hue-rotate(55deg) saturate(1.3)",g:"#3fe0d0",vi:"Rồng Ngọc Lam",de:"Türkis-Drache"},
+ {f:"hue-rotate(-90deg) saturate(1.6)",g:"#ff9a1a",vi:"Rồng Cam",de:"Orangen-Drache"},
+ {f:"grayscale(1) brightness(1.5)",g:"#e0e6ef",vi:"Rồng Bạc",de:"Silber-Drache"},
+ {f:"hue-rotate(80deg) saturate(.4) brightness(1.45)",g:"#bff2ff",vi:"Rồng Băng",de:"Eis-Drache"},
+ {f:"grayscale(1) brightness(.4)",g:"#8a5cff",vi:"Rồng Bóng Đêm",de:"Schatten-Drache"},
+ {f:"rainbow",g:"#ffffff",vi:"Rồng Cầu Vồng",de:"Regenbogen-Drache"}];
+const dragonOf=round=>DRAGONS[((Math.max(1,round)-1)%DRAGONS.length)];
+const dName=d=>d.de;   // tên rồng bằng tiếng Đức như lá điều ước (con tự đọc)
+function dStyle(d,big){return d.f==="rainbow"?"animation:rainbow 2.4s linear infinite"+(big?",drise 1.6s cubic-bezier(.2,.8,.2,1)":""):
+  `filter:${d.f==="none"?"":d.f+" "}drop-shadow(0 0 ${big?28:10}px ${d.g})${big?` drop-shadow(0 0 60px ${d.g}88)`:""}`;}
+function dragonAlbum(s){const a=Array.isArray(s.dragon.album)?s.dragon.album:[];
+  if(a.length<(s.dragon.rounds||0))for(let i=a.length;i<s.dragon.rounds;i++)a.push({date:""});   // các lần gọi trước khi có album
+  s.dragon.album=a;return a;}
+function openAlbum(){const s=kidState(),a=dragonAlbum(s),N=DRAGONS.length,got=Math.min(a.length,N);
+  const tiles=DRAGONS.map((d,i)=>{const seen=a.filter((x,j)=>j%N===i).length;
+    if(!seen)return `<div class="dc lock"><span class="e">🐉</span><span class="nm">???</span></div>`;
+    const dt=a[i].date?a[i].date.split("-").reverse().join("/"):"";
+    return `<div class="dc" style="border-color:${d.g}"><span class="e" style="${dStyle(d,false)}">🐉</span><span class="nm" style="color:${d.g}">${esc(dName(d))}</span><span class="dt">${dt}${dt&&seen>1?" · ":""}${esc(KL().albSeen(seen))}</span></div>`;}).join("");
+  openSheet(`<h3>${KL().albT} (${got}/${N})</h3><div style="font-size:13px;color:#c7ccd6;margin-bottom:10px">${esc(KL().albSub(got,N))}</div>
+    <div class="dalb">${tiles}</div><div class="acts"><button class="cancel" id="albClose">✓</button></div>`);
+  $("albClose").onclick=close;}
 // 💪 Phong độ = trung bình đánh giá của bố mẹ trong 7 ngày gần nhất (ngày chưa đánh giá thì bỏ qua).
 // Chỉ đổi khi bố mẹ đánh giá (nút có khoá bố mẹ) -> con không tự bơm được. Không cho kẹo/sao, chỉ để khoe hào quang.
 const FORM_PT={cn:100,n:75,bt:50,h:25,ch:0};
@@ -1497,6 +1541,7 @@ function pickWish(wid){const s=kidState(),w=s.wishes.find(x=>String(x.id)===Stri
   const today=iso(new Date());
   undoPush("🐉 "+wMain(w));
   s.dragon.base=(s.dragon.base||0)+7*dragonPer(s);   // ⭐ dư giữ sang vòng mới
+  dragonAlbum(s).push({date:today});
   s.dragon.rounds=(s.dragon.rounds||0)+1;s.dragon.last=today;s.dragon.seen=dragonState(s).n;s.dragon.offer=null;
   logAdd(s,{delta:1,reason:w.text,k:"summon",n:s.dragon.rounds,cur:"dragon"});
   const ws=Math.max(0,Math.round(w.sao||0)),wk=Math.max(0,Math.round(w.keo||0));
@@ -1513,7 +1558,9 @@ function wishDone(id){const s=kidState(),p=(s.dragon.pending||[]).find(x=>String
 function showDragon(round,offer){
   const say=KL().dragonSay,msg=say[Math.floor(Math.random()*say.length)];
   const ov=document.createElement("div");ov.id="dragonOv";
-  ov.innerHTML=`<div class="dbig">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div><div class="dsay">${esc(msg)}</div>
+  const dg=dragonOf(round),isNew=round<=DRAGONS.length;
+  ov.innerHTML=`<div class="dbig" style="${dStyle(dg,true)}">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div>
+    <div class="dname">${isNew?`<b>${esc(KL().albNew)}</b>`:""}${esc(dName(dg))}</div><div class="dsay">${esc(msg)}</div>
     <div class="dhint">${esc(KL().dragonPick)}</div>
     <div class="dcards">${offer.map((w,i)=>`<button class="dcard" data-pick="${esc(w.id)}" style="--wc:${esc(w.c||"#ffb340")};animation-delay:${2.5+i*.25}s">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(wName(w,true))}</span>${wTag(w)}</button>`).join("")}</div>`;
   document.body.appendChild(ov);playSound('dragon');setTimeout(triggerConfetti,1300);
@@ -2161,7 +2208,14 @@ function openStats(){
   const tal={bo:0,me:0};
   for(let w=-3;w<=0;w++){const mon=new Date(m0);mon.setDate(m0.getDate()+w*7);
     for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);SHIFTS.forEach(sh=>{tal[owner(d,sh.k)]++;});}}
+  // 0. 🏆 tổng kết: ⭐ tổng đã kiếm, phong độ, rồng, giơ tay
+  const fm=formState(s),fl=KX[LANG].formLv[fm.lv],handAll=fullLog(s).filter(e=>e.k==="hand"&&e.delta>0).length;
+  const tile=(v,l)=>`<div style="flex:1 1 110px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800">${v}</div><div style="font-size:11.5px;color:var(--mut);margin-top:2px">${l}</div></div>`;
+  const sumBox=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px">${
+    tile("⭐ "+(s.saoLife||0),L().statsLife)+tile(fl.split(" ")[0]+" "+fm.pct+"%",L().statsForm(fl.slice(fl.indexOf(" ")+1)))+
+    tile("🐉 "+(s.dragon.rounds||0),L().statsDragon(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length))+tile("✋ "+handAll,L().statsHandAll)}</div>`;
   openSheet(`<h3>${L().statsT}</h3>
+    <div class="lbl">${L().statsSum}</div>${sumBox}
     <div class="lbl">${L().statsSao}</div>${saoChart}
     <div style="font-size:13px;color:#ffd98a;margin:0 0 12px">${L().statsStreak(s.streak||0,s.bestStreak||0)}</div>
     <div class="lbl">${L().statsHand}</div>${handChart}
@@ -2303,7 +2357,8 @@ function openCog(){
     <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
     <div class="lbl" id="ioStatus" style="min-height:1.2em;text-transform:none;letter-spacing:0;color:var(--g)"></div>
     <div class="lbl" style="margin-top:10px">${L().expHist}</div><div class="hist">${expList}</div>
-    <button class="notebtn" id="bName" style="margin-top:10px">${L().nameSet} — ${esc(CHILD())}</button>
+    <button class="notebtn" id="bStats" style="margin-top:10px">${L().statsT}</button>
+    <button class="notebtn" id="bName" style="margin-top:6px">${L().nameSet} — ${esc(CHILD())}</button>
     <button class="notebtn" id="bPin" style="margin-top:6px">${pinCfg()?L().pinChange:L().pinSet}</button>
     ${pinCfg()?`<button class="notebtn" id="bPinOff" style="margin-top:6px;color:#ffb0b0">${L().pinOff}</button>`:""}
     <div class="lbl" style="margin-top:14px">${KL().nightT}</div>
@@ -2325,6 +2380,7 @@ function openCog(){
     askImportMode(o);};
   $("bPin").onclick=()=>{formBack=openCog;setPinForm();};
   if($("bPinOff"))$("bPinOff").onclick=()=>{if(!confirm(L().pinOffConfirm))return;localStorage.removeItem(PIN_KEY);unlockUntil=0;renderPinBar();openCog();};
+  $("bStats").onclick=openStats;
   $("bName").onclick=()=>{formBack=openCog;
     openForm({title:L().nameSet.replace(/^✏️ /,""),fields:[{key:"n",label:L().nameAsk,type:"text",value:CHILD()}],
       onSave:v=>{if(v.n)localStorage.setItem("fam.childname",v.n);else localStorage.removeItem("fam.childname");renderAll();}});};
@@ -2391,7 +2447,9 @@ const KX={
    dragonT:"🐉 7 viên ngọc rồng · gom đủ 7 viên để gọi Rồng thần",
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
    dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per}⭐ là có thêm 1 viên ngọc`,
-   power:p=>`⚡ Sức mạnh: ${p}`,
+   albBtn:(n,t)=>`📖 Album rồng (${n}/${t})`, albT:"📖 Album rồng của con", albNew:"MỚI",
+   albSub:(n,t)=>n>=t?`Con đã sưu tập đủ ${t} con rồng! Gọi tiếp để gặp lại các bạn rồng nhé.`:`Mỗi lần gọi Rồng thần sẽ gặp một con rồng màu mới. Còn ${t-n} con chưa gặp!`,
+   albSeen:n=>n>1?`đã gặp ${n} lần`:"",
    formLv:["😵 Hết sức","🙂 Bình thường","💪 Chiến binh","⚡ Siêu Saiyan","⚡⚡ Siêu Saiyan 2","🌟 Siêu Saiyan 3"],
    formSub:f=>`Phong độ 7 ngày: ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run} lần cực ngoan liền`:""),
    formNext:["Ngoan lại vài ngày là hồi sức ngay!","Ngoan đều để thành Chiến binh 💪","Cực ngoan nhiều ngày để biến Siêu Saiyan ⚡",
@@ -2443,7 +2501,9 @@ const KX={
    dragonT:"🐉 7 Drachenkugeln · sammle alle 7 und rufe den Drachen",
    dragonNext:(i,rem)=>`📡 Kugel-Radar: ${i}-Sterne-Kugel noch ${rem}⭐ entfernt`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
    dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Je ${per} verdiente ⭐ gibt es 1 Kugel`,
-   power:p=>`⚡ Kraft: ${p}`,
+   albBtn:(n,t)=>`📖 Drachen-Album (${n}/${t})`, albT:"📖 Dein Drachen-Album", albNew:"NEU",
+   albSub:(n,t)=>n>=t?`Du hast alle ${t} Drachen gesammelt! Ruf weiter, um sie wiederzusehen.`:`Bei jedem Ruf kommt ein Drache in einer neuen Farbe. Noch ${t-n} fehlen!`,
+   albSeen:n=>n>1?`${n}× gesehen`:"",
    formLv:["😵 Erschöpft","🙂 Normal","💪 Krieger","⚡ Super-Saiyajin","⚡⚡ Super-Saiyajin 2","🌟 Super-Saiyajin 3"],
    formSub:f=>`Form (7 Tage): ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run}× in Folge sehr brav`:""),
    formNext:["Ein paar brave Tage und du bist wieder fit!","Bleib brav und werde ein Krieger 💪","Viele sehr brave Tage machen dich zum Super-Saiyajin ⚡",
@@ -2497,8 +2557,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   const fm=formState(s);
   $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav aura${fm.lv}" id="kAv">${s.avatar}</span>
-     <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟<div class="kidpow">${KL().power(((s.saoLife||0)*10).toLocaleString(LANG==="de"?"de-DE":"vi-VN"))}</div>
-       <div class="kform lv${fm.lv}"><div class="kfn">${KL().formLv[fm.lv]}</div><div class="kfbar"><span style="width:${fm.pct}%"></span></div>
+     <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟       <div class="kform lv${fm.lv}"><div class="kfn">${KL().formLv[fm.lv]}</div><div class="kfbar"><span style="width:${fm.pct}%"></span></div>
        <div class="kfsub">${esc(KL().formSub(fm))}<br>${esc(fx(KL().formNext[fm.lv]))}</div></div></div></div>
    <div class="wallets wallets4">
      <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
@@ -2524,6 +2583,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    <div class="dragon"><div class="dballs">${[1,2,3,4,5,6,7].map(i=>`<div class="dball${i<=dg.n?' got':''}">${"<i>★</i>".repeat(i)}</div>`).join("")}</div>
      <div class="dprog">${dg.n<7?KL().dragonNext(dg.n+1,dg.rem):KL().dragonReady}</div>
      ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().dragonRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().dragonBtn}</button>`}
+     <button class="dalbbtn" id="kAlbum">${KL().albBtn(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length)}</button>
      ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wName(p,true))}`).join("<br>")}</div>`:""}</div>
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
@@ -2545,6 +2605,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   $("kConvert").onclick=convertStars;
   $("kConvertHand").onclick=convertHand;
   if($("kSummon"))$("kSummon").onclick=summonDragon;
+  if($("kAlbum"))$("kAlbum").onclick=openAlbum;
   $("kConvertMoney").onclick=convertCandyToMoney;
   $("kHand").onclick=raiseHand;
   P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=needParent(()=>toggleGoal(g.dataset.gk)));
