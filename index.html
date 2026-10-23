@@ -179,6 +179,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .dsummon{margin-top:10px;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:800;color:#1a0d00;background:linear-gradient(90deg,#ffd84d,#ff9a1a);cursor:pointer;animation:dglow .9s ease-in-out infinite alternate}
 @keyframes dglow{from{box-shadow:0 0 0 #ffb34000}to{box-shadow:0 0 18px #ffb340cc}}
 /* 💪 Phong độ: hào quang quanh avatar theo cấp (0 hết sức … 5 Siêu Saiyan 3) */
+.plainlbl .lbl{text-transform:none;letter-spacing:0;font-size:13px}
 .kform{margin-top:6px;font-size:13px;font-weight:700;color:#cfd6e4}
 .kform .kfn{font-size:15px;font-weight:800}
 .kform.lv0 .kfn{color:#9aa3b2}.kform.lv2 .kfn{color:#7cc0ff}.kform.lv3 .kfn,.kform.lv4 .kfn,.kform.lv5 .kfn{color:#ffd84d}
@@ -296,6 +297,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
   <div><div class="d" id="dateLbl"></div><div class="t" id="weekLbl"></div></div>
   <div class="lang"><button id="statsBtn" title="Thống kê">📊</button><button id="nightBtn" title="Ban đêm">🌙</button><button data-lang="vi" class="on">VI</button><button data-lang="de">DE</button><button id="cog">⚙️</button></div>
 </div>
+<div class="mockbanner" id="evalReminder" hidden style="cursor:pointer;background:#2a2410;border-color:#6a5520;color:#ffd98a"></div>
 <div class="mockbanner" id="backupReminder" hidden style="cursor:pointer;background:#1a2a16;border-color:#3a5a40;color:#9fe0b0"></div>
 <div class="mockbanner" id="acariReminder" hidden style="cursor:pointer"></div>
 <div class="mockbanner" id="swUpdateReminder" hidden style="cursor:pointer;background:#1d3557;border-color:#457b9d;color:#f1faee;text-align:center" onclick="location.reload()"></div>
@@ -428,7 +430,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-23·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-23·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -511,9 +513,10 @@ const T={
    amounts:["Ít","Vừa","Nhiều"], sides:["Trái","Phải","Cả hai"],
    moods:["😀 Rất vui","🙂 Ổn","😐 Bình thường","😟 Buồn","😣 Khó chịu"],
    addnote:"＋ Thêm ghi chú", save:"Lưu", cancel:"Huỷ", notePh:"Ghi chú (nếu cần)…",
-   nohist:"Chưa có bản ghi hôm nay.", reportTitle:"Gesundheitsbericht",
    h_sao:"⭐ Sao của con (bố mẹ đánh giá)", pSaoUnit:n=>`sao hiện có · tổng đã kiếm: <b>${n}</b> (gom ngọc rồng 🐉)`,
    evalRatings:[["cn","Cực ngoan","+2"],["n","Ngoan","+1"],["bt","Bình thường","0"],["h","Hư","−1"],["ch","Cực hư","−2"]],
+   evalRemindToday:"⭐ Tối nay chưa đánh giá con - chạm để đánh giá", evalRemindYest:"⏪ Hôm qua quên đánh giá con - chạm để chấm bù (đến 12h trưa)",
+   evalYestT:"⏪ Đánh giá bù cho hôm qua", evalYestConfirm:n=>`Chấm bù hôm qua: ${n}?`, evalRemindNight:"⭐ Chưa đánh giá con hôm nay",
    evalStatus:r=>r?`Hôm nay đã chấm: ${r} · chạm mức khác để đổi, chạm lại để bỏ`:"Chưa chấm điểm hôm nay.",
    critBtn:"❓ Tiêu chí chấm điểm", critTitle:"Tiêu chí chấm điểm",
    h_dragon:"🐉 Ngọc rồng",
@@ -521,18 +524,15 @@ const T={
    gTest:"📝 Đúng hết bài kiểm tra (+{testKeo})", gKonig:"👑 König / nhất lớp (+{konigKeo})", gPay:"🍬 Đã đưa kẹo thật (trừ)",
    gPlus:"＋ Cộng kẹo", gMinus:"－ Trừ kẹo", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
    gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay",
-   gPayAsk:"Đưa con mấy cái kẹo?", gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
+   gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
    sPlus:"＋ Cộng sao", sMinus:"－ Trừ sao", sPlusDef:"Cộng sao tay", sMinusDef:"Trừ sao tay",
-   sDelay:"⏳ Trì hoãn / Câu giờ (−1⭐)", sDelayReason:"Câu giờ (trì hoãn)", sDelayConfirm:"Trừ 1 sao vì con câu giờ / trì hoãn?",
    h_money:"💶 Tiền tiêu vặt của con (bố mẹ nợ)", moneyUnit:"euro bố mẹ nợ con (+{allowance}€ mỗi thứ Hai)",
    mPlus:"＋ Cộng tiền", mMinus:"－ Trừ tiền", mPlusDef:"Bố mẹ cộng tiền tiêu vặt", mMinusDef:"Con tiêu tiền tiêu vặt",
-   mAmtAsk:"Số tiền (Euro)?", mConfirm:amt=>`Xác nhận điều chỉnh ${amt}€ tiền tiêu vặt?`, mPfand:"🍾 Nhặt chai (Pfand)", mPfandSelf:"🍾 Tự trả chai (+{pfandSelf}€)", mPfandSelfConfirm:"Cộng +{pfandSelf}€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
+   mPfand:"🍾 Nhặt chai (Pfand)", mPfandSelf:"🍾 Tự trả chai (+{pfandSelf}€)", mPfandSelfConfirm:"Cộng +{pfandSelf}€ tiền tự nhặt trả chai cho con?", mPfandSelfReason:"Con tự trả chai Pfand",
    mPfandDad:"👨 nhờ Bố trả (+{pfandDad}€)", mPfandDadConfirm:"Cộng +{pfandDad}€ tiền nhờ bố trả chai Pfand cho con?", mPfandDadReason:"Nhờ bố trả chai Pfand",
    moneyInterest: accrued => `Lãi tích luỹ: +${fmtInterest(accrued)} ({interest}%/năm)`,
    storageUsage: "Bộ nhớ đã dùng",
    swUpdate: "✨ Có bản cập nhật mới! Chạm vào đây để tải lại trang.",
-   h_shop:"🛒 Cửa hàng đổi thưởng — chỗ tiêu",
-   shopHint:"Chạm 1 món để đổi cho con (trừ điểm + ghi log) · phải đủ điểm · thêm/sửa/xóa món & giá ở ⚙️ menu quản lý cuối trang.",
    shopBlocked:(cost,icon,name,bal)=>`Con chưa đủ ${cost}${icon} để đổi "${name}" (con đang có ${bal}${icon}).`,
    shopConfirm:(name,cost,icon)=>`Con muốn đổi "${name}"?\nSẽ trừ ${cost}${icon}.`,
    shopOk:(name,cost,icon)=>`🎉 Đã đổi "${name}"! −${cost}${icon}`,
@@ -544,14 +544,20 @@ const T={
    mgSecGoal:"🎯 Mục tiêu tuần", mgAddGoal:"＋ Thêm mục tiêu",
    mgSecShop:"🛒 Cửa hàng đổi thưởng", mgAddShop:"＋ Thêm món",
    mgEmpty:"— trống —",
-   cog:"⚙️", backupT:"Sao lưu & dữ liệu", autoOn:"Tự động sao lưu mỗi đêm: BẬT (trong máy)", lastSnap:"Bản tự động gần nhất",
+   cogT:"⚙️ Cài đặt", cogSettings:"Cài đặt", cogDanger:"Khôi phục (cẩn thận)", cogDangerHint:"Các nút dưới đây GHI ĐÈ dữ liệu hiện tại bằng bản cũ. Chỉ dùng khi cần cứu dữ liệu.",
+   abT:"Tự lưu file backup mỗi ngày", abNow:"Lưu ngay", abKeepBtn:n=>`Giữ ${n} file`, abKeepAsk:"Giữ bao nhiêu file mới nhất (file cũ hơn tự xoá)", abDirAsk:"Thư mục (để trống = tự tìm)",
+   abOff:"Đang TẮT.", abNone:"Chưa lưu lần nào.",
+   abFully:(d,dir,k,ok)=>`✅ Lần cuối: ${d} · qua Fully, vào ${dir}`+(ok?` · giữ ${k} file mới nhất, file cũ tự xoá`:" · (Fully không cho xem danh sách file nên chưa xoá được file cũ)"),
+   abDownload:d=>`⬇️ Lần cuối: ${d} · tải file xuống thư mục Download (mỗi 7 ngày; trình duyệt không tự xoá được file cũ)`,
+   abHint:"Muốn lưu MỖI NGÀY và TỰ XOÁ file cũ: Fully Kiosk → Settings → Advanced Web Settings → bật Enable JavaScript Interface (bản PLUS).",
+   cog:"⚙️", backupT:"Sao lưu & dữ liệu", autoOn:"Bản tự lưu trong app mỗi ngày: BẬT (giữ 4 ngày)", lastSnap:"Bản tự động gần nhất",
    exportFile:"Xuất ra file", importFile:"Nhập từ file (backup hoặc /lich)", snapHist:"Bản tự lưu (4 ngày gần nhất) - chạm ↩ để khôi phục",
    expHist:"📁 Bản đã xuất (giữ trong máy) — ↩ khôi phục (ghi đè) · ✕ xoá",
    restoreAsk:"Khôi phục về bản này? Dữ liệu hiện tại sẽ bị ghi đè.", restoreFull:"⚠️ Bộ nhớ đầy, khôi phục chưa xong hết (sao/kẹo được ghi trước). Hãy xuất file backup ngay.", importOk:"Đã nhập ✅",
    importErr:"File không hợp lệ ❌", importNone:"File không có dữ liệu hợp lệ (cần backup app này hoặc export /lich).",
    pasteT:"📋 Hoặc chép/dán JSON trực tiếp (không cần file)", pasteExport:"Xuất ra ô", pasteImport:"Nhập từ ô (ghi đè)",
    pastePh:"Dán JSON sao lưu (app này hoặc /lich) vào đây rồi bấm \"Nhập từ ô\"…",
-   pasteCopied:"Đã điền JSON — bôi đen + copy cất vào ghi chú điện thoại.", pasteOk:n=>`Đã nhập + áp dụng ✅ (${n} mục)`, pasteEmpty:"Ô đang trống.",
+   pasteCopied:"Đã điền JSON — bôi đen + copy cất vào ghi chú điện thoại.", pasteEmpty:"Ô đang trống.",
    dlBlocked:"Trình duyệt/tablet không cho tải file. Hãy dùng ô 'chép/dán JSON' bên dưới — bấm 'Xuất ra ô' rồi copy cất vào ghi chú.",
    nameSet:"✏️ Đặt tên con", nameAsk:"Tên con hiển thị trong app (chỉ lưu trên máy):",
    backupWarn:"⚠️ Lâu chưa xuất ra ngoài — nên 'Xuất ra file' cất vào Drive/ghi chú phòng tablet hỏng.",
@@ -562,16 +568,17 @@ const T={
    acariRemind:d=>`💊 Acarizax sắp hết — còn ~${d} ngày, nên đặt mua thêm.`,
    undoBtn:l=>`↩ Hoàn tác: ${l}`, undoConfirm:l=>`Hoàn tác thao tác gần nhất (${l})?\nSao/kẹo/tiền sẽ trở về trạng thái trước đó.`, undoDone:"↺ Đã hoàn tác.",
    rsCheckSelf:"Checklist xong — tự làm", rsCheckHelp:"Checklist xong — có nhắc", rsCheckUndo:"Bỏ tick checklist",
-   rsEval:n=>`Đánh giá: ${n}`, rsEvalUndo:n=>`Hủy đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
+   rsEval:n=>`Đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
    importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
    importModeHint:"Ghi đè: thay toàn bộ dữ liệu máy này bằng file. Gộp: giữ dữ liệu hiện tại, chỉ thêm bản ghi chưa có (theo id) — dùng để lấy dữ liệu từ máy khác.",
    snapPre:(d,b)=>`${d} · trước khi cập nhật (bản ${b})`,
    mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`, mergeKidKept:"ℹ️ Sao/kẹo/tiền của con trên máy này giữ nguyên (gộp không chép điểm). Muốn lấy điểm từ file thì chọn \"Ghi đè\".",
+   rsDebtClear:"🧽 Tuần mới: xoá nợ sao tuần trước",
    statsT:"📊 Thống kê", statsSum:"🏆 Tổng kết", statsLife:"tổng sao đã kiếm từ trước tới nay", statsForm:n=>`phong độ 7 ngày · ${n}`,
    statsDragon:(n,t)=>`lần gọi Rồng thần · album ${n}/${t}`, statsHandAll:"lần giơ tay (đã ghi lại)",
    statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
    statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
-   statsMore:"Xem thêm 50", histMore:"Xem thêm ▾",
+   histMore:"Xem thêm ▾",
    statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
    tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử - mọi bản ghi (chỉ xem)",
    histGoPts:"🕘 Xem toàn bộ lịch sử ⭐✋🍬€", histGoSk:"🕘 Xem toàn bộ lịch sử sức khỏe",
@@ -583,16 +590,19 @@ const T={
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
    rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, mgSecDragon:"🐉 Ngọc rồng",
    rsHand2Sao:"✋ dư cuối tuần → ⭐", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
+   ruleGroups:[["✋ Giơ tay & 🎮 game",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sao",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
+     ["🍬 Kẹo & 💶 tiền",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin"]]],
    mgSecRules:"🔧 Luật & con số (chạm ✏️ để chỉnh)", ruleEval:n=>`⭐ Đánh giá "${n}"`,
    rules:{handMax:"✋ Số lần giơ tay được thưởng mỗi ngày",gameMin:"🎮 Phút game tối đa mỗi ngày",gameExtra:"🎮 Nút \"bố mẹ cho thêm\" (phút mỗi lần)",
      chkSelf:"📝 Checklist tự làm hết (+⭐)",chkHelp:"📝 Checklist có nhắc (+⭐)",goalStars:"🎯 Mỗi mục tiêu tuần (+⭐)",
      testKeo:"📝 Đúng hết bài kiểm tra (+🍬)",konigKeo:"👑 König / nhất lớp (+🍬)",saoPerKeo:"🔄 Số ⭐ đổi được 1🍬",handPerKeo:"🔄 Số ✋ đổi được 1🍬",
      keoEuro:"💶 1🍬 đổi được bao nhiêu €",allowance:"💶 Tiền tiêu vặt mỗi thứ Hai (€)",interest:"💶 Lãi tiết kiệm (%/năm)",
      pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",
-     formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
+     formTired:"😵 Phong độ dưới % là Hết sức",formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
    rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
      "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
-   mgAutoConv:on=>`🔄 Thứ Hai tự đổi ✋ dư → ⭐ → 🍬 (3:1): <b>${on?"BẬT":"TẮT"}</b>`,
+   mgAutoConv:on=>`🔄 Thứ Hai tự đổi ✋ dư → ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"BẬT":"TẮT"}</b>`,
+   mgHoliday:on=>`🏖️ Chế độ nghỉ lễ (chơi game không cần ✋): <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
    pinForgotHint:"Nhập MÃ KHÔI PHỤC 8 ký tự (được cho lúc đặt mã) thay cho mã.", pinRecovered:"Đã mở bằng mã khôi phục - hãy đặt mã mới.",
    pinSetT:"🔒 Đặt mã bố mẹ", pinNew:"Mã mới (ít nhất 4 ký tự)", pinNew2:"Nhập lại mã", pinBad:"Mã quá ngắn hoặc 2 lần nhập không giống nhau.",
@@ -632,9 +642,10 @@ const T={
    amounts:["Wenig","Mittel","Viel"], sides:["Links","Rechts","Beide"],
    moods:["😀 Sehr gut","🙂 Gut","😐 Normal","😟 Traurig","😣 Unwohl"],
    addnote:"＋ Notiz hinzufügen", save:"Speichern", cancel:"Abbrechen", notePh:"Notiz (optional)…",
-   nohist:"Noch keine Einträge heute.", reportTitle:"Gesundheitsbericht",
    h_sao:"⭐ Sterne des Kindes (Elternbewertung)", pSaoUnit:n=>`Sterne aktuell · insgesamt verdient: <b>${n}</b> (für Drachenkugeln 🐉)`,
    evalRatings:[["cn","Sehr brav","+2"],["n","Brav","+1"],["bt","Normal","0"],["h","Unartig","−1"],["ch","Sehr unartig","−2"]],
+   evalRemindToday:"⭐ Heute noch nicht bewertet - tippen zum Bewerten", evalRemindYest:"⏪ Gestern nicht bewertet - tippen zum Nachholen (bis 12 Uhr)",
+   evalYestT:"⏪ Bewertung für gestern nachholen", evalYestConfirm:n=>`Gestern nachträglich: ${n}?`, evalRemindNight:"⭐ Heute noch nicht bewertet",
    evalStatus:r=>r?`Heute bewertet: ${r} · andere Stufe = ändern, gleiche = entfernen`:"Heute noch nicht bewertet.",
    critBtn:"❓ Bewertungskriterien", critTitle:"Bewertungskriterien",
    h_dragon:"🐉 Drachenkugeln",
@@ -642,18 +653,15 @@ const T={
    gTest:"📝 Test fehlerfrei (+{testKeo})", gKonig:"👑 König (+{konigKeo})", gPay:"🍬 Süßigkeit gegeben (−)",
    gPlus:"＋ Plus", gMinus:"－ Minus", gReasonTest:"Test fehlerfrei", gReasonKonig:"König",
    gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −",
-   gPayAsk:"Wie viele Süßigkeiten gegeben?", gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
+   gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
    sPlus:"＋ Sterne", sMinus:"－ Sterne", sPlusDef:"Manuell Sterne +", sMinusDef:"Manuell Sterne −",
-   sDelay:"⏳ Zeit schinden (−1⭐)", sDelayReason:"Zeit schinden", sDelayConfirm:"1 Stern abziehen wegen Zeit schinden?",
    h_money:"💶 Taschengeld (Eltern schulden)", moneyUnit:"Euro von Eltern geschuldet (+{allowance}€ jeden Montag)",
    mPlus:"＋ Geld dazu", mMinus:"－ Geld weg", mPlusDef:"Taschengeld von Eltern erhalten", mMinusDef:"Taschengeld ausgegeben",
-   mAmtAsk:"Betrag (Euro)?", mConfirm:amt=>`Änderung von ${amt}€ Taschengeld bestätigen?`, mPfand:"🍾 Pfandflasche", mPfandSelf:"🍾 Selbst abgeben (+{pfandSelf}€)", mPfandSelfConfirm:"Bestätigen: +{pfandSelf}€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
+   mPfand:"🍾 Pfandflasche", mPfandSelf:"🍾 Selbst abgeben (+{pfandSelf}€)", mPfandSelfConfirm:"Bestätigen: +{pfandSelf}€ für selbst abgegebene Pfandflasche?", mPfandSelfReason:"Pfandflasche selbst abgegeben",
    mPfandDad:"👨 Hilfe von Papa (+{pfandDad}€)", mPfandDadConfirm:"Bestätigen: +{pfandDad}€ (Flasche durch Papa abgegeben)?", mPfandDadReason:"Pfandflasche durch Papa abgegeben",
    moneyInterest: accrued => `Zinsguthaben: +${fmtInterest(accrued)} ({interest}%/Jahr)`,
    storageUsage: "Speicherbelegung",
    swUpdate: "✨ Neue Version verfügbar! Tippe hier, um die Seite neu zu laden.",
-   h_shop:"🛒 Belohnungs-Shop — Ausgabestelle",
-   shopHint:"Artikel antippen, um für das Kind einzulösen (zieht Punkte ab + Protokoll) · Punkte müssen reichen · Artikel/Preise bearbeiten unter ⚙️ Verwaltung unten.",
    shopBlocked:(cost,icon,name,bal)=>`Du hast noch nicht genug ${icon} für "${name}" (nötig ${cost}${icon}, du hast ${bal}${icon}).`,
    shopConfirm:(name,cost,icon)=>`Möchtest du "${name}" einlösen?\nDas kostet ${cost}${icon}.`,
    shopOk:(name,cost,icon)=>`🎉 "${name}" eingelöst! −${cost}${icon}`,
@@ -665,6 +673,12 @@ const T={
    mgSecGoal:"🎯 Wochenziele", mgAddGoal:"＋ Ziel hinzufügen",
    mgSecShop:"🛒 Belohnungs-Shop", mgAddShop:"＋ Artikel hinzufügen",
    mgEmpty:"— leer —",
+   cogT:"⚙️ Einstellungen", cogSettings:"Einstellungen", cogDanger:"Wiederherstellen (Vorsicht)", cogDangerHint:"Diese Knöpfe ÜBERSCHREIBEN die aktuellen Daten mit einer alten Version. Nur zur Datenrettung.",
+   abT:"Backup-Datei täglich automatisch speichern", abNow:"Jetzt speichern", abKeepBtn:n=>`${n} Dateien behalten`, abKeepAsk:"Wie viele neueste Dateien behalten (ältere werden gelöscht)", abDirAsk:"Ordner (leer = automatisch)",
+   abOff:"AUS.", abNone:"Noch nie gespeichert.",
+   abFully:(d,dir,k,ok)=>`✅ Zuletzt: ${d} · über Fully nach ${dir}`+(ok?` · die ${k} neuesten bleiben, ältere werden gelöscht`:" · (Fully zeigt keine Dateiliste, alte Dateien noch nicht gelöscht)"),
+   abDownload:d=>`⬇️ Zuletzt: ${d} · Download-Ordner (alle 7 Tage; der Browser kann alte Dateien nicht löschen)`,
+   abHint:"Für TÄGLICH + automatisches Löschen: Fully Kiosk → Settings → Advanced Web Settings → Enable JavaScript Interface (PLUS).",
    cog:"⚙️", backupT:"Sicherung & Daten", autoOn:"Auto-Sicherung jede Nacht: AN (im Gerät)", lastSnap:"Letzte Auto-Sicherung",
    exportFile:"Als Datei exportieren", importFile:"Aus Datei importieren (Backup oder /lich)", snapHist:"Auto-Sicherungen (letzte 4 Tage) - ↩ zum Wiederherstellen",
    expHist:"📁 Exportierte Stände (im Gerät) — ↩ wiederherstellen (überschreiben) · ✕ löschen",
@@ -672,7 +686,7 @@ const T={
    importErr:"Ungültige Datei ❌", importNone:"Keine gültigen Daten (Backup dieser App oder /lich-Export nötig).",
    pasteT:"📋 Oder JSON direkt kopieren/einfügen (ohne Datei)", pasteExport:"In Feld exportieren", pasteImport:"Aus Feld importieren (überschreiben)",
    pastePh:"Backup-JSON (diese App oder /lich) hier einfügen, dann \"Aus Feld importieren\"…",
-   pasteCopied:"JSON eingefügt — markieren + in Handy-Notizen kopieren.", pasteOk:n=>`Importiert + angewendet ✅ (${n} Einträge)`, pasteEmpty:"Feld ist leer.",
+   pasteCopied:"JSON eingefügt — markieren + in Handy-Notizen kopieren.", pasteEmpty:"Feld ist leer.",
    dlBlocked:"Browser/Tablet erlaubt keinen Datei-Download. Bitte das JSON-Feld unten verwenden — 'In Feld exportieren' und in Notizen kopieren.",
    nameSet:"✏️ Name des Kindes", nameAsk:"Angezeigter Name des Kindes (nur lokal gespeichert):",
    backupWarn:"⚠️ Lange nicht extern gesichert — bitte 'Exportieren' und in Drive/Notizen ablegen.",
@@ -683,16 +697,17 @@ const T={
    acariRemind:d=>`💊 Acarizax fast leer — noch ~${d} Tage, bitte nachbestellen.`,
    undoBtn:l=>`↩ Rückgängig: ${l}`, undoConfirm:l=>`Letzte Aktion rückgängig machen (${l})?\nSterne/Süßigkeiten/Geld werden zurückgesetzt.`, undoDone:"↺ Rückgängig gemacht.",
    rsCheckSelf:"Checkliste fertig — allein", rsCheckHelp:"Checkliste fertig — mit Erinnerung", rsCheckUndo:"Checkliste zurückgenommen",
-   rsEval:n=>`Bewertung: ${n}`, rsEvalUndo:n=>`Bewertung entfernt: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
+   rsEval:n=>`Bewertung: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
    importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
    importModeHint:"Überschreiben: ersetzt alle Daten dieses Geräts. Zusammenführen: behält aktuelle Daten, ergänzt nur fehlende Einträge (per id) — für Daten von einem zweiten Gerät.",
    snapPre:(d,b)=>`${d} · vor dem Update (Version ${b})`,
    mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`, mergeKidKept:"ℹ️ Sterne/Süßigkeiten/Geld auf diesem Gerät bleiben (Zusammenführen kopiert keine Punkte). Für Punkte aus der Datei \"Überschreiben\" wählen.",
+   rsDebtClear:"🧽 Neue Woche: Sterne-Schulden gelöscht",
    statsT:"📊 Statistik", statsSum:"🏆 Überblick", statsLife:"Sterne insgesamt verdient", statsForm:n=>`Form 7 Tage · ${n}`,
    statsDragon:(n,t)=>`Drachen gerufen · Album ${n}/${t}`, statsHandAll:"Meldungen (aufgezeichnet)",
    statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
    statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
-   statsMore:"50 weitere", histMore:"Mehr anzeigen ▾",
+   histMore:"Mehr anzeigen ▾",
    statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
    tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf - alle Einträge (nur Ansicht)",
    histGoPts:"🕘 Ganzer Verlauf ⭐✋🍬€", histGoSk:"🕘 Ganzer Gesundheitsverlauf",
@@ -704,16 +719,19 @@ const T={
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
    rsSummon:n=>`🐉 Drache gerufen (${n}.)`, mgSecDragon:"🐉 Drachenkugeln",
    rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
+   ruleGroups:[["✋ Melden & 🎮 Videospiel",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sterne",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
+     ["🍬 Süßigkeiten & 💶 Geld",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin"]]],
    mgSecRules:"🔧 Regeln & Zahlen (✏️ zum Ändern)", ruleEval:n=>`⭐ Bewertung "${n}"`,
    rules:{handMax:"✋ Belohnte Meldungen pro Tag",gameMin:"🎮 Max. Spielminuten pro Tag",gameExtra:"🎮 Button \"Eltern erlauben extra\" (Min. pro Tippen)",
      chkSelf:"📝 Checkliste ganz allein (+⭐)",chkHelp:"📝 Checkliste mit Erinnerung (+⭐)",goalStars:"🎯 Pro Wochenziel (+⭐)",
      testKeo:"📝 Test fehlerfrei (+🍬)",konigKeo:"👑 König (+🍬)",saoPerKeo:"🔄 ⭐ für 1🍬",handPerKeo:"🔄 ✋ für 1🍬",
      keoEuro:"💶 1🍬 ist wie viel €",allowance:"💶 Taschengeld jeden Montag (€)",interest:"💶 Sparzins (%/Jahr)",
      pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",
-     formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
+     formTired:"😵 Form unter % = Erschöpft",formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
    rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
      "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
-   mgAutoConv:on=>`🔄 Montags ✋-Rest → ⭐ → 🍬 (3:1): <b>${on?"AN":"AUS"}</b>`,
+   mgAutoConv:on=>`🔄 Montags ✋-Rest → ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"AN":"AUS"}</b>`,
+   mgHoliday:on=>`🏖️ Ferienmodus (Videospiel ohne ✋): <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
    pinForgotHint:"Statt des Codes den 8-stelligen WIEDERHERSTELLUNGSCODE eingeben.", pinRecovered:"Mit Wiederherstellungscode entsperrt - bitte neuen Code setzen.",
    pinSetT:"🔒 Eltern-Code setzen", pinNew:"Neuer Code (mind. 4 Zeichen)", pinNew2:"Code wiederholen", pinBad:"Code zu kurz oder nicht gleich.",
@@ -744,7 +762,7 @@ const T={
 const CFG_KEY="fam.cfg";
 const CFG_DEF={handMax:3,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
   testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,
-  formWarrior:70,formSS:87,formSS2:95,formSS3:10};
+  formTired:35,formWarrior:70,formSS:87,formSS2:95,formSS3:10};
 const CFG_EURO=["keoEuro","allowance","pfandSelf","pfandDad"];   // hiện 2 số lẻ
 let _cfg=null;
 function cfgAll(){if(!_cfg){let o={};try{o=JSON.parse(localStorage.getItem(CFG_KEY))||{};}catch(e){}_cfg=Object.assign({},CFG_DEF,o);}return _cfg;}
@@ -1112,7 +1130,6 @@ function openSheet(html){sheet.innerHTML=html;ov.hidden=false;}
 function close(){ov.hidden=true;}
 ov.addEventListener("click",e=>{if(e.target===ov)close();});
 let draft={};
-function chipRow(key,arr){return `<div class="chips">`+arr.map(v=>`<span class="chip" data-pick="${key}" data-val="${v}">${v}</span>`).join("")+`</div>`;}
 
 /* --- Form builder dùng chung (thay prompt()) ---
    openForm({title, fields:[{key,label,type,value,options,placeholder,required,min,step}], onSave})
@@ -1123,6 +1140,7 @@ function openForm(cfg){
   const back=formBack;formBack=null;
   const F=cfg.fields||[];
   const fieldHtml=f=>{
+    if(f.type==="sec")return `<div style="margin:16px 0 2px;font-size:15px;font-weight:800;color:var(--y)">${esc(f.label||"")}</div>`;
     const lbl=`<div class="lbl">${esc(f.label||"")}${f.required?' *':''}</div>`;
     const v=f.value==null?"":f.value;
     if(f.type==="chips"){
@@ -1134,7 +1152,7 @@ function openForm(cfg){
     if(f.type==="textarea")return lbl+`<textarea id="ff_${f.key}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
     const extra=(f.type==="number"?` inputmode="decimal" step="${f.step||1}"${f.min!=null?` min="${f.min}"`:""}`:"");
     return lbl+`<input id="ff_${f.key}" type="${f.type||"text"}" value="${esc(v)}" placeholder="${esc(f.placeholder||"")}"${extra}>`;};
-  openSheet(`<h3>${esc(cfg.title||"")}</h3><div class="addform" style="border:0;padding:0;margin:0;background:transparent">${F.map(fieldHtml).join("")}</div>
+  openSheet(`<h3>${esc(cfg.title||"")}</h3><div class="addform${cfg.plain?" plainlbl":""}" style="border:0;padding:0;margin:0;background:transparent">${F.map(fieldHtml).join("")}</div>
     <div class="acts"><button class="cancel" id="fCancel">${L().cancel}</button><button class="save" id="fSave">${L().save}</button></div>`);
   const chipVals={};F.forEach(f=>{if(f.type==="chips")chipVals[f.key]=f.value==null?null:String(f.value);});
   sheet.querySelectorAll("[data-fchip]").forEach(c=>c.onclick=()=>{
@@ -1145,6 +1163,7 @@ function openForm(cfg){
   $("fSave").onclick=()=>{
     const out={};let ok=true;
     F.forEach(f=>{
+      if(f.type==="sec")return;
       let val;
       if(f.type==="chips")val=chipVals[f.key];
       else{const el=$("ff_"+f.key);val=el?el.value:"";
@@ -1475,6 +1494,8 @@ function ensureHandWeek(s){const wk=wkMon();
     const spk=iPos("saoPerKeo");
     if(s.autoConv!==false&&(s.sao||0)>=spk){const c=Math.floor(s.sao/spk);s.sao-=spk*c;s.keo=(s.keo||0)+c;
       s.keoLog.unshift({date:d,ts:t+1,delta:-spk*c,reason:"",k:"weekconv",cur:"sao"},{date:d,ts:t+1,delta:c,reason:"",k:"weekconv",cur:"keo"});}
+    // Tuần mới bắt đầu sạch: ⭐ âm (nợ) của tuần cũ được xoá, không kéo sang tuần sau
+    if((s.sao||0)<0){s.keoLog.unshift({date:d,ts:t+2,delta:-s.sao,reason:"",k:"debtclear",cur:"sao"});s.sao=0;}
     s.hand={wk,n:0};kidSave(s);}   // kidSave áp trần kẹo -> phần dư thành tiền
   return s;}
 const todayGameDay=s=>s.gameDay&&s.gameDay.date===iso(new Date())?s.gameDay:{date:iso(new Date()),min:0,extra:0};
@@ -1531,7 +1552,7 @@ function formState(s){const hist=Object.assign({},s.evalHist||{});if(s.eval&&s.e
   for(let i=0;i<7;i++){const k=hist[iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()-i))];if(k in FORM_PT)pts.push(FORM_PT[k]);}
   const pct=pts.length?Math.round(pts.reduce((a,b)=>a+b,0)/pts.length):50;
   let run=0;Object.keys(hist).sort().reverse().some(k=>hist[k]==="cn"?(run++,false):true);   // số lần Cực ngoan liền gần nhất
-  let lv=pct<50?0:pct<NUM("formWarrior")?1:pct<NUM("formSS")?2:3;
+  let lv=pct<NUM("formTired")?0:pct<NUM("formWarrior")?1:pct<NUM("formSS")?2:3;
   if(lv===3&&pts.length<3)lv=2;                               // ít nhất 3 ngày có đánh giá mới biến hình
   if(lv===3&&pts.length>=5&&pct>=NUM("formSS2"))lv=4;
   if(run>=Math.max(1,NUM("formSS3")))lv=5;
@@ -1763,6 +1784,23 @@ function applyEval(key){
   playSound('click');
   renderRewardAll();
 }
+// ⏪ Quên đánh giá tối qua: sáng hôm sau (trước 12h) vẫn chấm bù được 1 lần cho hôm qua
+function canEvalYesterday(s){const y=isoAdd(-1),h=s.evalHist||{};return new Date().getHours()<12&&!h[y]&&Object.keys(h).length>0;}
+function applyEvalYesterday(key){const s=kidState(),y=isoAdd(-1);if(!canEvalYesterday(s))return;
+  const name=L().evalRatings.find(r=>r[0]===key)[1],delta=evalDelta(key),life=Math.max(0,delta);
+  if(!confirm(L().evalYestConfirm(name)))return;
+  undoPush(L().rsEval(name));
+  s.sao+=delta;s.saoLife=(s.saoLife||0)+life;s.evalHist[y]=key;
+  logAdd(s,{date:y,delta,reason:L().rsEval(name),k:"eval",key,cur:"sao"});
+  checkDragon(s);checkForm(s);kidSave(s);playSound('click');close();renderRewardAll();}
+function openEvalYesterday(){
+  openSheet(`<h3>${L().evalYestT}</h3><div class="grid5">${L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}" data-evy="${r[0]}">${r[1]}<br>${sgnN(evalDelta(r[0]))}</button>`).join("")}</div>
+    <div class="acts"><button class="cancel" id="evyNo">${L().cancel}</button></div>`);
+  sheet.querySelectorAll("[data-evy]").forEach(b=>b.onclick=()=>applyEvalYesterday(b.dataset.evy));$("evyNo").onclick=close;}
+function renderEvalReminder(){const el=$("evalReminder");if(!el)return;const s=kidState(),h=new Date().getHours();
+  if(!todayEval(s)&&h>=19){el.hidden=false;el.textContent=L().evalRemindToday;el.onclick=()=>{setTab("con");const b=$("evalBtns");if(b)b.scrollIntoView({block:"center"});};return;}
+  if(canEvalYesterday(s)){el.hidden=false;el.textContent=L().evalRemindYest;el.onclick=needParent(openEvalYesterday);return;}
+  el.hidden=true;}
 /* --- Kẹo: thao tác tay + đúng bài + König --- */
 function addKeo(n,reason){const s=kidState();
   undoPush(`${n>0?"+":""}${n}🍬 ${reason||""}`);
@@ -1994,7 +2032,7 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>String(x.id)===Stri
   kidSave(s);renderRewardAll();}
 /* --- 🛒 Cửa hàng đổi thưởng (nút mua nhanh ở tab của con) --- */
 // ✋ trả theo NGÀY: món có hand>0 cần 1✋ cho lần mua đầu tiên trong ngày, các lần sau trong ngày không tốn ✋
-const handDue=(it,s)=>(it.hand||0)>0&&!(s&&todayGameDay(s).handPaid)?1:0;
+const handDue=(it,s)=>(it.hand||0)>0&&!(s&&(s.holiday||todayGameDay(s).handPaid))?1:0;   // 🏖️ nghỉ lễ: không cần ✋
 function keoToMin(s){const g=(s.shop||[]).filter(x=>x.min>0&&x.cost>0&&x.cur!=="sao").sort((a,b)=>a.min-b.min)[0];
   return g?Math.max(0,Math.floor((s.keo||0)/g.cost))*g.min:0;}
 const costLabel=(it,s)=>{const h=s?(handDue(it,s)?"1✋":""):((it.hand||0)>0?"1✋/"+(LANG==="de"?"Tag":"ngày"):"");
@@ -2036,8 +2074,7 @@ const SX={
  vi:{sleep:"😴 Nhật ký ngủ",temp:"🌡️ Nhiệt độ (khi ốm)",growth:"📈 Tăng trưởng",
    addSleep:"＋ Thêm giấc ngủ",addTemp:"＋ Thêm lần đo",addGrowth:"＋ Thêm số đo",
    bed:"Giờ ngủ",wake:"Giờ dậy",quality:"Chất lượng",qualities:["Tốt","Khá","Kém"],
-   tempVal:"Nhiệt độ (°C)",height:"Cao (cm)",weight:"Nặng (kg)",weightL:"Cân nặng",
-   none:"Chưa có dữ liệu.",fever:"sốt",dur:"tiếng",save:"Lưu",cancel:"Huỷ",note:"Ghi chú (nếu cần)…",
+   tempVal:"Nhiệt độ (°C)",height:"Cao (cm)",weight:"Nặng (kg)",none:"Chưa có dữ liệu.",fever:"sốt",dur:"tiếng",save:"Lưu",cancel:"Huỷ",note:"Ghi chú (nếu cần)…",
    bSleep:"Ngủ",bTemp:"Nhiệt độ",bGrowth:"Tăng trưởng",today:"Hôm nay",yest:"Hôm qua",now:"Bây giờ",
    ago:n=>n===0?"hôm nay":n===1?"hôm qua":`${n} ngày trước`,wd:["CN","T2","T3","T4","T5","T6","T7"],
    date:"Ngày",time:"Giờ",wakeDay:"Ngày thức dậy",recent:"🕑 Gần đây · sửa / xoá",
@@ -2051,8 +2088,7 @@ const SX={
  de:{sleep:"😴 Schlafprotokoll",temp:"🌡️ Temperatur (krank)",growth:"📈 Wachstum",
    addSleep:"＋ Schlaf hinzufügen",addTemp:"＋ Messung hinzufügen",addGrowth:"＋ Maße hinzufügen",
    bed:"Zubettzeit",wake:"Aufwachzeit",quality:"Qualität",qualities:["Gut","Mittel","Schlecht"],
-   tempVal:"Temperatur (°C)",height:"Größe (cm)",weight:"Gewicht (kg)",weightL:"Gewicht",
-   none:"Noch keine Daten.",fever:"Fieber",dur:"Std",save:"Speichern",cancel:"Abbrechen",note:"Notiz (optional)…",
+   tempVal:"Temperatur (°C)",height:"Größe (cm)",weight:"Gewicht (kg)",none:"Noch keine Daten.",fever:"Fieber",dur:"Std",save:"Speichern",cancel:"Abbrechen",note:"Notiz (optional)…",
    bSleep:"Schlaf",bTemp:"Temperatur",bGrowth:"Wachstum",today:"Heute",yest:"Gestern",now:"Jetzt",
    ago:n=>n===0?"heute":n===1?"gestern":`vor ${n} Tagen`,wd:["So","Mo","Di","Mi","Do","Fr","Sa"],
    date:"Datum",time:"Uhrzeit",wakeDay:"Aufwachtag",recent:"🕑 Letzte Einträge · bearbeiten / löschen",
@@ -2097,6 +2133,7 @@ function logReason(e){
   if(e.k==="hand")return L().rsHand;
   if(e.k==="handexp")return L().rsHandExp;
   if(e.k==="hand2sao")return L().rsHand2Sao;
+  if(e.k==="debtclear")return L().rsDebtClear;
   if(e.k==="weekconv")return L().rsWeekConv;
   if(e.k==="summon")return L().rsSummon(e.n||1)+(e.reason?": "+wReason(e.reason):"");
   if(e.k==="wish")return L().rsWish(wReason(e.reason));
@@ -2302,7 +2339,7 @@ function famRestore(o){let n=0;
   try{if(localStorage.getItem(ARCH_KEY)===null&&localStorage.getItem(ARCH_BAK)!==null){localStorage.setItem(ARCH_KEY,localStorage.getItem(ARCH_BAK));localStorage.removeItem(ARCH_BAK);}}catch(e){}   // khôi phục bản trước reset -> lấy lại lịch sử cũ
   return n;}
 // Gộp: mảng có id -> union theo id (trùng id giữ bản local); key khác -> chỉ ghi nếu local chưa có.
-const MERGE_LIST_KEYS=["fam.an.items","fam.chores","fam.dl.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
+const MERGE_LIST_KEYS=["fam.an.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
 let mergeKidSkipped=false;
 function famMerge(o){let n=0;mergeKidSkipped=false;
   const norm={};Object.keys(o).forEach(k=>{
@@ -2365,44 +2402,97 @@ function importFile(ev){const f=ev.target.files[0];if(!f)return;const r=new File
     if(!o||typeof o!=="object"){alert(L().importErr);return;}
     askImportMode(o);};
   r.readAsText(f);ev.target.value="";}
+/* ============ 💾 Tự lưu file backup ra bộ nhớ tablet (mỗi ngày, xoá file cũ) ============
+   Fully Kiosk có bật "JavaScript Interface": ghi thẳng file vào thư mục + xoá file cũ nhất (giữ KEEP file).
+   Không có (trình duyệt thường): tải file xuống thư mục Download mỗi 7 ngày (web không xoá được file cũ). */
+const AB_KEY="fam.snap_auto";   // tiền tố fam.snap -> không nằm trong file backup
+function abCfg(){try{return Object.assign({on:true,keep:14},JSON.parse(localStorage.getItem(AB_KEY))||{});}catch(e){return {on:true,keep:14};}}
+function abSave(c){try{localStorage.setItem(AB_KEY,JSON.stringify(c));}catch(e){}}
+const hasFully=()=>typeof window.fully==="object"&&window.fully&&typeof window.fully.writeFile==="function";
+const AB_RE=/^an-backup-\d{4}-\d{2}-\d{2}\.json$/;
+function abList(dir){if(typeof fully.getFileList!=="function")return null;
+  try{const a=JSON.parse(fully.getFileList(dir));if(!Array.isArray(a))return null;
+    return a.map(x=>typeof x==="string"?x.split("/").pop():String(x.name||x.filename||x.path||"").split("/").pop()).filter(Boolean);}catch(e){return null;}}
+function abDirs(c){const out=[];if(c.dir)out.push(c.dir);
+  ["getExternalStorageDir","getExternalStoragePath","getInternalStorageDir"].forEach(f=>{try{if(typeof fully[f]==="function"){const b=fully[f]();if(b)out.push(String(b).replace(/\/$/,"")+"/Download/an-backup");}}catch(e){}});
+  out.push("/sdcard/Download/an-backup","/storage/emulated/0/Download/an-backup","/sdcard/Android/data/de.ozerov.fully/files/an-backup");
+  return out.filter((d,i)=>out.indexOf(d)===i);}
+function autoBackup(force){const c=abCfg(),today=iso(new Date());if(!c.on&&!force)return;
+  const fu=hasFully(),every=fu?1:7;
+  if(!force&&c.last&&c.last<=today){const g=Math.round((new Date(today+"T00:00:00")-new Date(c.last+"T00:00:00"))/864e5);if(g<every)return;}
+  const name="an-backup-"+today+".json",txt=JSON.stringify(famDump(true));
+  if(fu){for(const dir of abDirs(c)){
+      try{if(typeof fully.createFolder==="function")fully.createFolder(dir);}catch(e){}
+      try{fully.writeFile(dir+"/"+name,txt);}catch(e){continue;}
+      const ls=abList(dir);
+      if(ls&&ls.indexOf(name)<0)continue;   // ghi không được vào thư mục này -> thử chỗ khác
+      let del=0;if(ls&&typeof fully.deleteFile==="function")ls.filter(n=>AB_RE.test(n)).sort().reverse().slice(Math.max(1,c.keep|0)).forEach(n=>{try{fully.deleteFile(dir+"/"+n);del++;}catch(e){}});
+      Object.assign(c,{last:today,method:"fully",dir,ok:!!ls,err:""});abSave(c);
+      localStorage.setItem("fam.lastexport",today);renderBackupReminder();return true;}
+    Object.assign(c,{last:today,method:"fully",ok:false,err:"write"});abSave(c);}   // Fully từ chối ghi -> rơi xuống tải file
+  const ok=downloadFile(name,txt,"application/json");
+  Object.assign(c,{last:today,method:"download",ok,err:ok?"":"download"});abSave(c);
+  if(ok){localStorage.setItem("fam.lastexport",today);renderBackupReminder();}
+  return ok;}
+function abStatus(){const c=abCfg();
+  if(!c.on)return L().abOff;
+  const when=c.last?c.last.split("-").reverse().join("/"):"–";
+  if(c.method==="fully"&&!c.err)return L().abFully(when,c.dir,c.keep,c.ok);
+  if(c.method==="download")return L().abDownload(when)+(hasFully()?"":"\n"+L().abHint);
+  return L().abNone+(hasFully()?"":"\n"+L().abHint);}
 function renderBackupReminder(){const el=$("backupReminder"),le=localStorage.getItem("fam.lastexport");
   const u=getStorageUsage();
   if(u.pct>=80){el.hidden=false;el.textContent=LANG==="vi"?`⚠️ Bộ nhớ app đã dùng ${u.pct}% - chạm để xuất file backup cất đi (Drive / ghi chú).`:`⚠️ App-Speicher zu ${u.pct}% voll - tippen und Backup exportieren (Drive / Notizen).`;return;}
   if(!le){el.hidden=false;el.textContent=L().backupNever;return;}
   const days=Math.round((new Date(iso(new Date())+"T00:00:00")-new Date(le+"T00:00:00"))/864e5);
-  if(days>=3){el.hidden=false;el.textContent=L().backupRemind(days);}else el.hidden=true;}
+  if(days>=(abCfg().on?8:3)){el.hidden=false;el.textContent=L().backupRemind(days);}else el.hidden=true;}
 function openCog(){
   const last=localStorage.getItem("fam.snap_last");
   const le=localStorage.getItem("fam.lastexport");
   const days=le?Math.round((new Date(iso(new Date())+"T00:00:00")-new Date(le+"T00:00:00"))/864e5):null;
-  const warn=(days===null||days>=3);
+  const warn=(days===null||days>=(abCfg().on?8:3)),ab=abCfg();
   const snapList=snaps().slice(0,SNAPS_KEEP).map(d=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>📦 ${d.split("-").reverse().join("/")}</span><button class="chip" data-restore="${d}">↩</button></div>`).join("")||`<div class="row" style="color:var(--mut)">—</div>`;
   const exps=ld("fam.exports").slice().reverse();
   const expList=exps.length?exps.map(e=>`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>⬇️ ${e.label}</span><span style="display:flex;gap:6px"><button class="chip" data-exprestore="${e.ts}">↩</button><button class="chip" data-expdel="${e.ts}" style="color:var(--r)">✕</button></span></div>`).join(""):`<div class="row" style="color:var(--mut)">—</div>`;
-  openSheet(`<h3>💾 ${L().backupT}</h3>
+  const sec=(x,c)=>`<div style="margin:18px 0 8px;padding-top:12px;border-top:1px solid var(--bd);font-size:16px;font-weight:800;color:${c||'var(--fg)'}">${x}</div>`;
+  openSheet(`<h3>${L().cogT}</h3>
+    ${sec("💾 "+L().backupT)}
     <div style="font-size:13px;color:#c7ccd6;margin-bottom:8px">${L().autoOn}<br>${L().lastSnap}: <b>${last?last.split("-").reverse().join("/"):"–"}</b></div>
+    <div style="background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px;margin-bottom:10px">
+      <label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700"><input type="checkbox" id="abOn" style="width:auto;margin:0" ${ab.on?"checked":""}> ${L().abT}</label>
+      <div style="font-size:12.5px;color:#c7ccd6;margin-top:6px;white-space:pre-line">${esc(abStatus())}</div>
+      <div class="acts" style="margin-top:8px"><button class="cancel" id="abKeep">🗂️ ${L().abKeepBtn(ab.keep)}</button><button class="save" id="abNow">💾 ${L().abNow}</button></div></div>
     ${warn?`<div class="mockbanner" style="margin:0 0 10px">${L().backupWarn}</div>`:""}
-    <div class="acts" style="margin-top:0"><button class="cancel" id="bImp">📂 ${L().importFile}</button><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
+    <div class="acts" style="margin-top:0"><button class="save" id="bExp">⬇️ ${L().exportFile}</button></div>
     <div style="font-size:12px;color:var(--mut);margin-top:6px;display:flex;justify-content:space-between"><span>📊 ${L().storageUsage}: <b>${getStorageUsage().kb} KB / 5000 KB (${getStorageUsage().pct}%)</b></span></div>
     <div class="lbl" style="margin-top:14px">${L().pasteT}</div>
     <textarea id="ioBox" placeholder="${esc(L().pastePh)}" style="font:12px/1.4 monospace;min-height:96px"></textarea>
     <div class="acts" style="margin-top:8px"><button class="cancel" id="bIoExp">⬆️ ${L().pasteExport}</button><button class="save" id="bIoImp">⬇️ ${L().pasteImport}</button></div>
     <div class="lbl" id="ioStatus" style="min-height:1.2em;text-transform:none;letter-spacing:0;color:var(--g)"></div>
-    <div class="lbl" style="margin-top:10px">${L().expHist}</div><div class="hist">${expList}</div>
-    <button class="notebtn" id="bStats" style="margin-top:10px">${L().statsT}</button>
+    ${sec("⚙️ "+L().cogSettings)}
+    <button class="notebtn" id="bStats">${L().statsT}</button>
     <button class="notebtn" id="bName" style="margin-top:6px">${L().nameSet} — ${esc(CHILD())}</button>
     <button class="notebtn" id="bPin" style="margin-top:6px">${pinCfg()?L().pinChange:L().pinSet}</button>
-    ${pinCfg()?`<button class="notebtn" id="bPinOff" style="margin-top:6px;color:#ffb0b0">${L().pinOff}</button>`:""}
     <div class="lbl" style="margin-top:14px">${KL().nightT}</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:#c7ccd6">
       <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nOn" style="width:auto;margin:0"> ${KL().nightOn}</label>
       <span style="color:var(--mut)">${KL().nightFrom}</span><input id="nFrom" type="time" style="width:auto;margin:0">
       <span style="color:var(--mut)">${KL().nightTo}</span><input id="nTo" type="time" style="width:auto;margin:0">
     </div>
+    ${sec("⚠️ "+L().cogDanger,"#ffb0b0")}
+    <div style="font-size:12.5px;color:var(--mut);margin-bottom:8px">${L().cogDangerHint}</div>
+    <button class="notebtn" id="bImp">📂 ${L().importFile}</button>
     <div class="lbl" style="margin-top:14px">${L().snapHist}</div><div class="hist">${snapList}${(()=>{try{const o=JSON.parse(localStorage.getItem("fam.snap_pre"));
       return o?`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>🛟 ${L().snapPre(o.date.split("-").reverse().join("/"),o.from)}</span><button class="chip" id="bRestorePre">↩</button></div>`:"";}catch(e){return "";}})()}</div>
+    <div class="lbl" style="margin-top:10px">${L().expHist}</div><div class="hist">${expList}</div>
+    ${pinCfg()?`<button class="notebtn" id="bPinOff" style="margin-top:10px;color:#ffb0b0">${L().pinOff}</button>`:""}
     <div class="acts"><button class="cancel" id="bClose">${L().cancel}</button></div>`);
   $("bExp").onclick=()=>{exportFile();renderBackupReminder();openCog();};
+  $("abOn").onchange=()=>{const c=abCfg();c.on=$("abOn").checked;abSave(c);renderBackupReminder();openCog();};
+  $("abNow").onclick=()=>{autoBackup(true);openCog();};
+  $("abKeep").onclick=()=>{formBack=openCog;const c=abCfg();
+    openForm({title:L().abT,fields:[{key:"k",label:L().abKeepAsk,type:"number",min:1,value:c.keep},{key:"d",label:L().abDirAsk,type:"text",value:c.dir||"",placeholder:"/sdcard/Download/an-backup"}],
+      onSave:v=>{c.keep=Math.max(1,Math.round(v.k||14));c.dir=(v.d||"").trim();abSave(c);}});};
   $("bImp").onclick=()=>$("impFile").click();
   $("bIoExp").onclick=()=>{const txt=JSON.stringify(famDump(true),null,2);$("ioBox").value=txt;$("ioBox").select();
     $("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteCopied;
@@ -2454,7 +2544,6 @@ function acariBuyFn(){const s0=acari();
 const KX={
  vi:{morning:"Chào buổi sáng",afternoon:"Chào buổi chiều",evening:"Chào buổi tối",close:"✓ Xong",
    streak:n=>n>0?`🔥 ${n} ngày liền con tự làm hết!`:"Làm hết việc để được thưởng sao nhé!",
-   pickColor:"Chọn màu của con",
    walletSaoSub:"sao của con",walletKeoSub:(n,cap)=>`≈ ${n} phút game`+(cap?` · tối đa ${cap}`:""),walletHandSub:"✋ giơ tay · CN dư → ⭐",
    walletMoneySub:"tiền tiêu vặt con có",
    convertBtn:"🔄 Đổi {saoPerKeo} ⭐ → 1 🍬",convertBlocked:"Chưa đủ {saoPerKeo} ⭐ để đổi.",convertOk:"🍬 Đổi được 1 kẹo!",convertReason:"Đổi {saoPerKeo}⭐ → 1🍬",
@@ -2468,6 +2557,7 @@ const KX={
    convertHandBtn:"🔄 Đổi {handPerKeo} ✋ → 1 🍬",convertHandBlocked:"Chưa đủ {handPerKeo} ✋ để đổi.",convertHandReason:"Đổi {handPerKeo}✋ → 1🍬",
    convertHandConfirm:"Đổi {handPerKeo} sao giơ tay ✋ lấy 1 kẹo 🍬?\n(✋ để chơi game sẽ ít đi {handPerKeo})",
    gameT:(m,lim)=>`🎮 Chơi game · hôm nay đã chơi ${m}/${lim} phút`,
+   gameRuleHoliday:"🏖️ Nghỉ lễ: chơi game không cần ✋, chỉ cần 🍬 (mỗi 15 phút = 2 🍬).",
    gameRule:"Mỗi 15 phút game = 2 🍬. Mỗi ngày chơi game cần 1 ✋ (trừ ở lần mua đầu tiên trong ngày, chơi thêm trong ngày không mất ✋). Không có ✋ thì chưa chơi được.",
    shopNeedHand:(need,name,have)=>`Chưa đủ ✋ để "${name}": cần ${need} ✋, con đang có ${have} ✋.\nGiơ tay phát biểu ở lớp để có ✋ nhé!`,
    gameLimit:(played,lim,mins)=>`Hôm nay con đã chơi ${played}/${lim} phút, không mua thêm ${mins} phút được nữa.\nMuốn chơi thêm thì hỏi bố mẹ. Bố mẹ đồng ý thì bấm "🎮 Bố mẹ cho chơi thêm {gameExtra} phút" ở tab 🎁 Thưởng.`,
@@ -2494,7 +2584,6 @@ const KX={
    dragonCome:n=>`Rồng thần xuất hiện! (lần ${n})`, dragonPick:"Ta cho con chọn 1 điều ước:",
    wishCheer:(t,k)=>`🐉 Điều ước "${t}" đã thành sự thật!`+(k?"":" Nhớ nhắc bố mẹ nhé.")+" 7 viên ngọc bay đi rồi, gom lại từ đầu nào!",
    wishPendingKid:"🐉 Điều ước đang chờ bố mẹ:", capCheer:(x,eur)=>`🐷 Kẹo đã đầy - ${x}🍬 dư thành +${eur}€ tiền tiết kiệm`,
-   dragonGone:"✨ 7 viên ngọc đã bay đi khắp nơi. Gom lại từ đầu nhé!",
    dragonSay:["Ta là Rồng thần! Con đã gom đủ 7 viên ngọc. Giỏi lắm!","Ta thấy con chăm chỉ lắm. Cứ thế mà phát huy!",
      "Ngọc rồng chỉ đến với người kiên trì. Hẹn gặp lại con!","Sức mạnh của con đã tăng lên rất nhiều!",
      "Giơ tay phát biểu thật nhiều nhé, ta sẽ sớm gặp lại con!","Người dũng cảm là người dám thử dù còn ngại. Con làm được!"],
@@ -2508,7 +2597,6 @@ const KX={
    nightHint:"Giờ ngủ rồi 🌙 · chạm để xem",nightT:"🌙 Tối ban đêm",nightOn:"Tự tối vào giờ ngủ",nightFrom:"Từ",nightTo:"Đến"},
  de:{morning:"Guten Morgen",afternoon:"Guten Tag",evening:"Guten Abend",close:"✓ Fertig",
    streak:n=>n>0?`🔥 ${n} Tage in Folge selbst gemacht!`:"Mach alles fertig für eine Belohnung!",
-   pickColor:"Wähle deine Farbe",
    walletSaoSub:"Sterne des Kindes",walletKeoSub:(n,cap)=>`≈ ${n} Min. Videospiel`+(cap?` · max. ${cap}`:""),walletHandSub:"✋ Melde-Sterne · Rest So. → ⭐",
    walletMoneySub:"dein Taschengeld",
    convertBtn:"🔄 {saoPerKeo} ⭐ → 1 🍬 tauschen",convertBlocked:"Noch nicht genug ⭐ ({saoPerKeo} nötig).",convertOk:"🍬 1 Süßigkeit erhalten!",convertReason:"{saoPerKeo}⭐ → 1🍬 getauscht",
@@ -2522,6 +2610,7 @@ const KX={
    convertHandBtn:"🔄 {handPerKeo} ✋ → 1 🍬 tauschen",convertHandBlocked:"Noch nicht genug ✋ ({handPerKeo} nötig).",convertHandReason:"{handPerKeo}✋ → 1🍬 getauscht",
    convertHandConfirm:"{handPerKeo} Melde-Sterne ✋ gegen 1 Süßigkeit 🍬 tauschen?\n(dann {handPerKeo} ✋ weniger für Videospiel)",
    gameT:(m,lim)=>`🎮 Videospiel · heute ${m}/${lim} Min. gespielt`,
+   gameRuleHoliday:"🏖️ Ferien: Videospiel ohne ✋, nur mit 🍬 (je 15 Min. = 2 🍬).",
    gameRule:"Je 15 Min. Videospiel = 2 🍬. Pro Spieltag braucht es 1 ✋ (beim ersten Kauf des Tages, weitere Käufe am selben Tag kosten kein ✋). Ohne ✋ noch kein Videospiel.",
    shopNeedHand:(need,name,have)=>`Nicht genug ✋ für "${name}": ${need} ✋ nötig, du hast ${have} ✋.\nMelde dich im Unterricht, dann bekommst du ✋!`,
    gameLimit:(played,lim,mins)=>`Heute schon ${played}/${lim} Min. gespielt, ${mins} Min. mehr gehen nicht.\nFrag Mama oder Papa. Wenn sie ja sagen: im Tab 🎁 "🎮 Eltern erlauben heute {gameExtra} Min. extra" antippen.`,
@@ -2548,7 +2637,6 @@ const KX={
    dragonCome:n=>`Der Drache erscheint! (${n}.)`, dragonPick:"Wähle einen Wunsch:",
    wishCheer:(t,k)=>`🐉 Wunsch "${t}" erfüllt!`+(k?"":" Sag Mama oder Papa Bescheid.")+" Die 7 Kugeln sind davongeflogen, sammle sie neu!",
    wishPendingKid:"🐉 Offene Wünsche:", capCheer:(x,eur)=>`🐷 Süßigkeiten voll - ${x}🍬 Rest wird +${eur}€ Sparkonto`,
-   dragonGone:"✨ Die 7 Kugeln sind in alle Richtungen geflogen. Sammle sie neu!",
    dragonSay:["Ich bin der Drache! Du hast alle 7 Kugeln gesammelt. Großartig!","Ich sehe, wie fleißig du bist. Mach weiter so!",
      "Die Kugeln kommen nur zu denen, die durchhalten. Bis bald!","Deine Kraft ist enorm gewachsen!",
      "Melde dich weiter fleißig, dann sehen wir uns bald wieder!","Mutig ist, wer es trotzdem versucht. Du schaffst das!"],
@@ -2603,7 +2691,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
    ${kidCheer?`<div class="kidcheer">${esc(kidCheer)}</div>`:""}
    ${lastDay?`<div class="kidwarn">${esc(KL().handExpWarn(hn))}</div>`:""}
    <div class="kidsec">${KL().gameT(played,todayGameLimit(s))}</div>
-   <div class="kidrule">${KL().gameRule}</div>
+   <div class="kidrule">${s.holiday?KL().gameRuleHoliday:KL().gameRule}</div>
    <div class="shopgrid">${shopBtns}</div>
    <div class="kidsec">${KL().handQ}</div>
    <div class="hand"><div class="q">${KL().handSub(hc,handMax())}</div>
@@ -2731,7 +2819,7 @@ function renderParentReward(){const s=kidState();
   $("mPlus").onclick=needParent(()=>moneyManual(1));
   $("mMinus").onclick=needParent(()=>moneyManual(-1));
   $("mPfand").onclick=needParent(pfandAction);}
-function renderRewardAll(){renderDutyAsk();renderParentReward();renderKid();}
+function renderRewardAll(){renderDutyAsk();renderParentReward();renderKid();renderEvalReminder();}
 /* --- Checklist ngày: seed 1 lần các việc mới (idempotent, không trùng) --- */
 function seedDailyChecklist(){
   if(localStorage.getItem("fam.an.seeded_v2")==="1")return;
@@ -2817,7 +2905,8 @@ function renderManageBody(){
     +`<div class="chk" style="cursor:default"><span class="nm">${L().mgDragonPer(dragonPer(s))}</span><span class="ic" data-mgedit="dragonper:x">✏️</span></div>`
     +sec(L().mgSecWish, s.wishes.map(w=>row(`<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${esc(w.c||"#ffb340")};margin-right:6px"></span>${em(w.e)}${esc(wMain(w))}${w.sao>0?` · <b style="color:var(--y)">+${w.sao}⭐</b>`:""}${w.keo>0?` · <b style="color:#c99bff">+${w.keo}🍬</b>`:""} · <span style="color:var(--mut)">×${Math.max(1,Math.round(w.w||1))}</span><br><span style="color:var(--mut);font-size:12px">${esc(wSub(w))}</span>`,"wish:"+w.id)).join(""), "wish", L().mgAddWish)
     +`<div class="chk" style="cursor:default;margin-top:14px"><span class="nm">${L().mgKeoCap(keoCap(s))}</span><span class="ic" data-mgedit="keocap:x">✏️</span></div>`
-    +`<div class="chk" style="cursor:default"><span class="nm">${L().mgAutoConv(s.autoConv!==false)}</span><span class="ic" data-mgedit="autoconv:x">🔁</span></div>`;
+    +`<div class="chk" style="cursor:default"><span class="nm">${L().mgAutoConv(s.autoConv!==false)}</span><span class="ic" data-mgedit="autoconv:x">🔁</span></div>`
+    +`<div class="chk" style="cursor:default"><span class="nm">${L().mgHoliday(!!s.holiday)}</span><span class="ic" data-mgedit="holiday:x">🔁</span></div>`;
   // [data-mgadd/mgedit/mgdel] handled by global delegate at document level
 }
 function mgAdd(kind){
@@ -2838,6 +2927,7 @@ function mgEdit(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1)
     Object.assign(w,v);s.dragon.offer=null;kidSave(s);renderRewardAll();});}
   else if(t==="rules")openRules();
   else if(t==="autoconv"){const s=kidState();s.autoConv=s.autoConv===false;kidSave(s);openManage();}
+  else if(t==="holiday"){const s=kidState();s.holiday=!s.holiday;kidSave(s);renderRewardAll();openManage();}
   else if(t==="keocap")openForm({title:L().mgKeoCap(keoCap(kidState())),fields:[{key:"cap",label:L().mgKeoCapAsk,type:"number",min:0,value:keoCap(kidState()),required:true}],
     onSave:v=>{const n=Math.max(0,Math.round(v.cap||0));const s=kidState();s.keoCap=n;kidSave(s);renderRewardAll();}});
   else if(t==="dragonper")openForm({title:L().mgSecDragon,fields:[{key:"per",label:L().mgDragonPerAsk,type:"number",min:1,value:dragonPer(kidState()),required:true}],
@@ -2855,11 +2945,15 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
 // Các con số luật chơi (fam.cfg) — 1 form, không cần sửa code
 const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
   ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],
-  ["formWarrior",1],["formSS",1],["formSS2",1],["formSS3",1]];
+  ["formTired",1],["formWarrior",1],["formSS",1],["formSS2",1],["formSS3",1]];
 function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
 function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
 function openRules(){
-  openForm({title:L().mgSecRules,fields:RULE_FIELDS.map(([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)})),
+  const fld=([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)});
+  const used=new Set(),fields=[];
+  L().ruleGroups.forEach(([title,keys])=>{fields.push({type:"sec",label:title});keys.forEach(k=>{const f=RULE_FIELDS.find(x=>x[0]===k);if(f){used.add(k);fields.push(fld(f));}});});
+  RULE_FIELDS.filter(x=>!used.has(x[0])).forEach(f=>fields.push(fld(f)));
+  openForm({title:L().mgSecRules,plain:true,fields,
     onSave:v=>{const o={};RULE_FIELDS.forEach(([k])=>{const n=v[k];if(n==null||!isFinite(n))return;
         let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
         if(!CFG_EURO.includes(k)&&k!=="interest")x=Math.round(x);if(x!==CFG_DEF[k])o[k]=x;});
@@ -2883,7 +2977,8 @@ function inWin(now,from,to){const m=now.getHours()*60+now.getMinutes(),f=from.sp
 function showNight(){const now=new Date();
   $("nightClock").textContent=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
   $("nightDate").textContent=L().dayShort[now.getDay()]+" · "+iso(now).split("-").reverse().join("/");
-  $("nightHint").textContent=KL().nightHint;$("night").hidden=false;}
+  let noEv=false;try{noEv=!todayEval(kidState());}catch(e){}
+  $("nightHint").textContent=KL().nightHint+(noEv?" · "+L().evalRemindNight:"");$("night").hidden=false;}
 function tickNight(){
   if(TAB==="kid"||!$("ov").hidden){$("night").hidden=true;return;}   // đang dùng (tab con / popup) -> không tối
   const c=nightCfg(),now=new Date();
@@ -2901,7 +2996,7 @@ function renderAll(){
   $("h_today").textContent=L().today+" "+CHILD();$("h_week").textContent=L().week;
   $("repBtn").textContent=L().repBtn;$("h_report").textContent=L().report;$("histGoSk").textContent=L().histGoSk;
   $("h_manage").textContent=L().h_manage;$("mgOpenBtn").textContent=L().mgOpenBtn;
-  renderDuty();renderDaily();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderKid();if(TAB==="hist")renderHist();
+  renderDuty();renderDaily();renderHealth();renderParentReward();renderSleep();renderTemp();renderGrowth();renderAcari();renderAcariReminder();renderBackupReminder();renderEvalReminder();renderKid();if(TAB==="hist")renderHist();
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
@@ -2914,7 +3009,9 @@ $("statsBtn").onclick=openStats;
 $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health");
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
-tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();},120000);
+tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();
+  try{renderEvalReminder();autoSnapshot();autoBackup();}catch(e){}},120000);   // tablet chạy liền nhiều ngày không tải lại
+setTimeout(()=>{try{autoBackup();}catch(e){}},6000);
 /* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~06:00 ============ */
 let _lastDate=iso(new Date());
 function checkDateChange(){const now=iso(new Date());if(now!==_lastDate){_lastDate=now;
