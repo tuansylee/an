@@ -36,8 +36,9 @@ self.addEventListener('fetch', (event) => {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE);
       const ctl = typeof AbortController === 'function' ? new AbortController() : null;   // wifi có sóng mà không có mạng: đừng treo mãi
-      if (ctl) setTimeout(() => ctl.abort(), 10000);
+      const tmo = ctl ? setTimeout(() => ctl.abort(), 10000) : 0;
       const net = fetch(req.url, { credentials: 'same-origin', cache: 'no-cache', signal: ctl ? ctl.signal : undefined }).then((r) => {
+        clearTimeout(tmo);   // đã có phản hồi: đừng huỷ giữa lúc đang tải phần thân
         if (r && r.redirected) return Response.redirect(r.url, 302);   // vd /an -> /an/: trả lệnh chuyển hướng, không lưu
         if (r && r.ok && r.type === 'basic') cache.put(SHELL, r.clone());
         return r;

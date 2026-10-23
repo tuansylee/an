@@ -158,7 +158,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .tauschbtn{width:100%;margin-top:10px;min-height:52px;border:0;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;color:#1a1200;background:linear-gradient(90deg,#ffd84d,#c99bff)}
 .tausch .gumbtn{min-height:56px;font-size:17px;margin-top:10px}
 .kgoalhint{font-size:13px;color:var(--mut);margin:-4px 2px 8px}
-body.kidmode #backupReminder,body.kidmode #acariReminder,body.kidmode #h_manage,body.kidmode #mgOpenBtn{display:none!important}
+body.kidmode #evalReminder,body.kidmode #backupReminder,body.kidmode #acariReminder,body.kidmode #h_manage,body.kidmode #mgOpenBtn{display:none!important}
 @keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
 .kidask{background:linear-gradient(155deg,#16241a,#0f1d14);border:2px solid var(--g);border-radius:18px;padding:16px;margin-bottom:12px;text-align:center;animation:pop .4s}
 .kidask .q{font-size:18px;font-weight:800;margin-bottom:12px;line-height:1.3}
@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-23·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-23·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -613,7 +613,7 @@ const T={
      pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",
      formTired:"😵 Phong độ dưới % là Hết sức",formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
    rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Thứ Hai tự đổi ✋ dư → ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"BẬT":"TẮT"}</b>`,
    mgHoliday:on=>`🏖️ Chế độ nghỉ lễ (chơi game không cần ✋): <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
@@ -742,7 +742,7 @@ const T={
      pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",
      formTired:"😵 Form unter % = Erschöpft",formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
    rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Montags ✋-Rest → ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"AN":"AUS"}</b>`,
    mgHoliday:on=>`🏖️ Ferienmodus (Videospiel ohne ✋): <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
@@ -933,7 +933,8 @@ const sv=(k,a)=>{try{localStorage.setItem(k,JSON.stringify(a));}catch(e){storage
 function storageFull(e){
   // Quota đầy: xoá snapshot cũ nhất rồi báo — dữ liệu thao tác hiện tại có thể chưa lưu được.
   const ss=snaps(),ex=ld("fam.exports");
-  if(ex.length>1){sv("fam.exports",ex.slice(-1));}
+  if(localStorage.getItem("fam.snap_pre")!==null){localStorage.removeItem("fam.snap_pre");}   // bản chụp trước cập nhật: bỏ trước tiên
+  else if(ex.length>1){sv("fam.exports",ex.slice(-1));}
   else if(ss.length>1)localStorage.removeItem("fam.snap."+ss[ss.length-1]);
   else{alert(LANG==="vi"?"⚠️ Bộ nhớ đầy, thao tác vừa rồi CHƯA lưu được. Hãy Xuất file backup (⚙️) rồi báo để dọn bộ nhớ.":"⚠️ Speicher voll, die letzte Aktion wurde NICHT gespeichert. Bitte Backup exportieren (⚙️).");return;}
   alert(LANG==="vi"?"⚠️ Bộ nhớ đầy - đã xoá bớt bản sao lưu cũ trong máy. Hãy Xuất file backup rồi thử lại.":"⚠️ Speicher voll - alte Sicherung im Gerät gelöscht. Bitte Backup exportieren und erneut versuchen.");}
@@ -1686,9 +1687,12 @@ function undoPop(){
   a.pop();sv(UNDO_KEY,a);
   let data=last.data;
   try{const old=JSON.parse(last.data),cur=kidRaw();   // chỉ lùi điểm/số dư; cài đặt bố mẹ sửa sau đó giữ nguyên
-    ["shop","wishes","autoConv","keoCap","avatar","color"].forEach(k=>{if(k in cur)old[k]=cur[k];else delete old[k];});
+    ["shop","wishes","autoConv","keoCap","avatar","color","holiday"].forEach(k=>{if(k in cur)old[k]=cur[k];else delete old[k];});
     if(Array.isArray(cur.goals))old.goals=cur.goals.map(g=>{const o=(old.goals||[]).find(x=>x&&x.id===g.id),n=Object.assign({},g);
       if(o){n.done=o.done;n.week=o.week;if(o.got!=null)n.got=o.got;else delete n.got;}return n;});
+    if(cur.dragon&&old.dragon&&cur.dragon.per&&cur.dragon.per!==old.dragon.per){   // số ⭐/viên đã đổi sau đó: giữ số mới, tính lại mốc như khi đổi trong ⚙️
+      const st=dragonState(old),n=Math.max(1,Math.round(cur.dragon.per)),left=Math.max(0,(old.saoLife||0)-(old.dragon.base||0)-st.n*st.per);
+      old.dragon.per=n;old.dragon.base=(old.saoLife||0)-st.n*n-Math.min(left,n-1);old.dragon.seen=st.n;}
     data=JSON.stringify(old);}catch(e){}
   try{localStorage.setItem(KIDKEY,data);
     if(last.arch){const b=localStorage.getItem(ARCH_BAK);if(b!==null){localStorage.setItem(ARCH_KEY,b);localStorage.removeItem(ARCH_BAK);}}}catch(e){storageFull(e);}
@@ -1804,8 +1808,9 @@ function applyEvalYesterday(key){const s=kidState(),y=isoAdd(-1);if(!canEvalYest
   const name=L().evalRatings.find(r=>r[0]===key)[1],delta=evalDelta(key),life=Math.max(0,delta);
   if(!confirm(L().evalYestConfirm(name)))return;
   undoPush(L().rsEval(name));
-  s.sao+=delta;s.saoLife=(s.saoLife||0)+life;s.evalHist[y]=key;
-  logAdd(s,{date:y,delta,reason:L().rsEval(name),k:"eval",key,cur:"sao"});
+  const eff=(delta<0&&wkMon(new Date(y+"T12:00:00"))!==wkMon())?0:delta;   // chấm bù CN vào sáng T2: tuần mới đã xoá nợ, không trừ lại
+  s.sao+=eff;s.saoLife=(s.saoLife||0)+life;s.evalHist[y]=key;
+  logAdd(s,{date:y,delta:eff,reason:L().rsEval(name),k:"eval",key,cur:"sao"});
   checkDragon(s);checkForm(s);kidSave(s);playSound('click');close();renderRewardAll();}
 function openEvalYesterday(){
   openSheet(`<h3>${L().evalYestT}</h3><div class="grid5">${L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}" data-evy="${r[0]}">${r[1]}<br>${sgnN(evalDelta(r[0]))}</button>`).join("")}</div>
@@ -2352,7 +2357,8 @@ function famRestore(o){let n=0;
     if(k.indexOf("fam.")===0){put(k,o[k]);n++;}
     else if(k.indexOf("lich.")===0){if(k==="lich.pinok")return;put("fam."+k.slice(5),o[k]);n++;}});}
   catch(e){alert(L().restoreFull);return -1;}
-  try{if(localStorage.getItem(ARCH_KEY)===null&&localStorage.getItem(ARCH_BAK)!==null){localStorage.setItem(ARCH_KEY,localStorage.getItem(ARCH_BAK));localStorage.removeItem(ARCH_BAK);}}catch(e){}   // khôi phục bản trước reset -> lấy lại lịch sử cũ
+  let preReset=false;try{preReset=!JSON.parse(localStorage.getItem(KIDKEY)||"{}").resetAt;}catch(e){}   // chỉ bản chụp TRƯỚC reset mới lấy lại lịch sử cũ
+  try{if(preReset&&localStorage.getItem(ARCH_KEY)===null&&localStorage.getItem(ARCH_BAK)!==null){localStorage.setItem(ARCH_KEY,localStorage.getItem(ARCH_BAK));localStorage.removeItem(ARCH_BAK);}}catch(e){}   // khôi phục bản trước reset -> lấy lại lịch sử cũ
   return n;}
 // Gộp: mảng có id -> union theo id (trùng id giữ bản local); key khác -> chỉ ghi nếu local chưa có.
 const MERGE_LIST_KEYS=["fam.an.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
@@ -2400,11 +2406,11 @@ function askImportMode(o){
   $("imCancel").onclick=()=>{close();openCog();};}
 // Bản mới vừa tải về: chụp 1 bản dữ liệu TRƯỚC khi các bước nâng cấp chạy (1 ô duy nhất, ghi đè lần cập nhật sau)
 function preUpdateSnapshot(){const seen=localStorage.getItem("fam.snap_build");if(seen===BUILD)return;
-  try{if(seen&&localStorage.getItem(KIDKEY))localStorage.setItem("fam.snap_pre",JSON.stringify({from:seen,to:BUILD,date:iso(new Date()),data:famDump()}));
-    localStorage.setItem("fam.snap_build",BUILD);}catch(e){storageFull(e);}}
+  try{localStorage.setItem("fam.snap_build",BUILD);}catch(e){}
+  try{if(seen&&localStorage.getItem(KIDKEY)){localStorage.removeItem("fam.snap_pre");localStorage.setItem("fam.snap_pre",JSON.stringify({from:seen,to:BUILD,date:iso(new Date()),data:famDump()}));}}catch(e){}}   // không đủ chỗ thì bỏ qua lặng lẽ
 function snaps(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("fam.snap.")===0)a.push(k.slice(9));}return a.sort().reverse();}
-function autoSnapshot(){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
-  try{localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);}catch(e){storageFull(e);}
+function autoSnapshot(silent){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
+  try{localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);}catch(e){if(!silent)storageFull(e);}   // chạy định kỳ: im lặng, không bật thông báo mỗi 2 phút
   snaps().forEach(d=>{if(d>today)localStorage.removeItem("fam.snap."+d);});   // bản mang ngày tương lai (đồng hồ máy từng chạy sai) -> bỏ, kẻo đẩy bản thật ra
   snaps().slice(SNAPS_KEEP).forEach(d=>localStorage.removeItem("fam.snap."+d));}
 function exportFile(){
@@ -2423,7 +2429,7 @@ function importFile(ev){const f=ev.target.files[0];if(!f)return;const r=new File
    Không có (trình duyệt thường): tải file xuống thư mục Download mỗi 7 ngày (web không xoá được file cũ). */
 const AB_KEY="fam.snap_auto";   // tiền tố fam.snap -> không nằm trong file backup
 function abCfg(){try{return Object.assign({on:true,keep:14},JSON.parse(localStorage.getItem(AB_KEY))||{});}catch(e){return {on:true,keep:14};}}
-function abSave(c){try{localStorage.setItem(AB_KEY,JSON.stringify(c));}catch(e){}}
+function abSave(c){try{localStorage.setItem(AB_KEY,JSON.stringify(c));return true;}catch(e){return false;}}
 const hasFully=()=>typeof window.fully==="object"&&window.fully&&typeof window.fully.writeFile==="function";
 const AB_RE=/^an-backup-\d{4}-\d{2}-\d{2}\.json$/;
 function abList(dir){if(typeof fully.getFileList!=="function")return null;
@@ -2436,6 +2442,7 @@ function abDirs(c){const out=[];if(c.dir)out.push(c.dir);
 function autoBackup(force){const c=abCfg(),today=iso(new Date());if(!c.on&&!force)return;
   const fu=hasFully(),every=fu?1:7;
   if(!force&&c.last&&c.last<=today){const g=Math.round((new Date(today+"T00:00:00")-new Date(c.last+"T00:00:00"))/864e5);if(g<every)return;}
+  if(!abSave(Object.assign({},c,{last:today})))return false;   // không ghi được ngày -> dừng, kẻo lần nào cũng tải file
   const name="an-backup-"+today+".json",txt=JSON.stringify(famDump(true));
   if(fu){for(const dir of abDirs(c)){
       try{if(typeof fully.createFolder==="function")fully.createFolder(dir);}catch(e){}
@@ -2741,7 +2748,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   P.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{const st=kidState();st.color=b.dataset.color;kidSave(st);renderKid();});
   $("kAv").onclick=()=>{$("kAvPick").hidden=!$("kAvPick").hidden;};
   $("kTausch").onclick=openTausch;
-  if($("kCheer")){const msg=kidCheer,el=$("kCheer"),hide=()=>{el.classList.add("out");setTimeout(()=>{if(kidCheer===msg){kidCheer="";dragonCheer="";}el.remove();},500);};
+  if($("kCheer")&&TAB==="kid"){const msg=kidCheer,el=$("kCheer"),hide=()=>{el.classList.add("out");setTimeout(()=>{if(kidCheer===msg){kidCheer="";dragonCheer="";}el.remove();},500);};
     el.onclick=hide;setTimeout(hide,7000);}
   if($("kSummon"))$("kSummon").onclick=summonDragon;
   if($("kAlbum"))$("kAlbum").onclick=openAlbum;
@@ -2899,7 +2906,7 @@ function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   const s=kidState();
   undoPush("↺ Reset",true);
   try{const a=localStorage.getItem(ARCH_KEY);if(a!==null)localStorage.setItem(ARCH_BAK,a);localStorage.removeItem(ARCH_KEY);}catch(e){}
-  s.sao=0;s.saoLife=0;s.keo=0;s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;
+  s.sao=0;s.saoLife=0;s.keo=0;s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;s.resetAt=iso(new Date());
   s.dragon=Object.assign({},s.dragon,{base:0,seen:0,offer:null});   // giữ cờ migrate (khỏi ghi đè điều ước đã sửa), album, điều ước còn nợ
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
@@ -2973,7 +2980,7 @@ const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["c
 function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
 function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
 function openRules(){
-  const fld=([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)});
+  const fld=([k,st])=>({key:k,label:ruleLabel(k)+` (${LANG==="vi"?"mặc định":"Standard"} ${LANG==="de"?String(CFG_DEF[k]).replace(".",","):CFG_DEF[k]})`,type:"number",step:st,value:NUM(k)});
   const used=new Set(),fields=[];
   L().ruleGroups.forEach(([title,keys])=>{fields.push({type:"sec",label:title});keys.forEach(k=>{const f=RULE_FIELDS.find(x=>x[0]===k);if(f){used.add(k);fields.push(fld(f));}});});
   RULE_FIELDS.filter(x=>!used.has(x[0])).forEach(f=>fields.push(fld(f)));
@@ -3034,7 +3041,7 @@ $("acariBuy").onclick=acariBuyFn;$("acariReminder").onclick=()=>setTab("health")
 $("nightBtn").onclick=()=>{manualNight=true;showNight();};
 $("night").onclick=()=>{manualNight=false;wakeUntil=Date.now()+120000;$("night").hidden=true;};
 tickNight();setInterval(()=>{if(!$("night").hidden&&(TAB!=="kid"&&$("ov").hidden))showNight();tickNight();
-  try{renderEvalReminder();autoSnapshot();autoBackup();}catch(e){}},120000);   // tablet chạy liền nhiều ngày không tải lại
+  try{renderEvalReminder();autoSnapshot(true);autoBackup();}catch(e){}},120000);   // tablet chạy liền nhiều ngày không tải lại
 setTimeout(()=>{try{autoBackup();}catch(e){}},6000);
 /* ============ Tự làm mới: đổi ngày → renderAll() · re-render khi sáng màn/focus · hard reload ~06:00 ============ */
 let _lastDate=iso(new Date());
