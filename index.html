@@ -428,7 +428,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-22·6";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-23·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -565,7 +565,8 @@ const T={
    rsEval:n=>`Đánh giá: ${n}`, rsEvalUndo:n=>`Hủy đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
    importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
    importModeHint:"Ghi đè: thay toàn bộ dữ liệu máy này bằng file. Gộp: giữ dữ liệu hiện tại, chỉ thêm bản ghi chưa có (theo id) — dùng để lấy dữ liệu từ máy khác.",
-   mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`,
+   snapPre:(d,b)=>`${d} · trước khi cập nhật (bản ${b})`,
+   mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`, mergeKidKept:"ℹ️ Sao/kẹo/tiền của con trên máy này giữ nguyên (gộp không chép điểm). Muốn lấy điểm từ file thì chọn \"Ghi đè\".",
    statsT:"📊 Thống kê", statsSum:"🏆 Tổng kết", statsLife:"tổng sao đã kiếm từ trước tới nay", statsForm:n=>`phong độ 7 ngày · ${n}`,
    statsDragon:(n,t)=>`lần gọi Rồng thần · album ${n}/${t}`, statsHandAll:"lần giơ tay (đã ghi lại)",
    statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
@@ -685,7 +686,8 @@ const T={
    rsEval:n=>`Bewertung: ${n}`, rsEvalUndo:n=>`Bewertung entfernt: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
    importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
    importModeHint:"Überschreiben: ersetzt alle Daten dieses Geräts. Zusammenführen: behält aktuelle Daten, ergänzt nur fehlende Einträge (per id) — für Daten von einem zweiten Gerät.",
-   mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`,
+   snapPre:(d,b)=>`${d} · vor dem Update (Version ${b})`,
+   mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`, mergeKidKept:"ℹ️ Sterne/Süßigkeiten/Geld auf diesem Gerät bleiben (Zusammenführen kopiert keine Punkte). Für Punkte aus der Datei \"Überschreiben\" wählen.",
    statsT:"📊 Statistik", statsSum:"🏆 Überblick", statsLife:"Sterne insgesamt verdient", statsForm:n=>`Form 7 Tage · ${n}`,
    statsDragon:(n,t)=>`Drachen gerufen · Album ${n}/${t}`, statsHandAll:"Meldungen (aufgezeichnet)",
    statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
@@ -880,6 +882,8 @@ function playSound(type) {
   }
 }
 const iso=d=>{const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");};
+// ngày lịch cách hôm nay n ngày (đúng cả ngày đổi giờ mùa hè/đông, khác Date.now()±864e5)
+const isoAdd=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d);};
 const fmtInterest=val=>{
   const cents=Number((val*100).toFixed(6));
   const unit=LANG==="de"?"Cent":"cent";
@@ -1382,6 +1386,8 @@ function defaultGoals(){const wk=isoWeek(iso(new Date()));
 }
 // Migration idempotent: fam.kid cũ {stars,streak,goal,...} + fam.game cũ {gum,gumLog} -> fam.kid v2. KHÔNG mất data thật.
 function migrateKid(){
+  const str=localStorage.getItem(KIDKEY);
+  if(str&&str!=="{}"){try{JSON.parse(str);}catch(e){try{localStorage.setItem("fam.kid_corrupt",str);}catch(e2){}}}   // dữ liệu hỏng: cất bản gốc trước khi tạo mới
   const raw=kidRaw();
   if(raw.v===2)return; // đã migrate — không chạy lại
   const out={};
@@ -1605,7 +1611,7 @@ function askPin(onOk){const c=pinCfg();if(!c){onOk();return;}
     $("pinErr").textContent=L().pinWrong;$("pinIn").value="";$("pinIn").focus();};
   $("pinOk").onclick=go;$("pinIn").onkeydown=e=>{if(e.key==="Enter")go();};
   $("pinNo").onclick=()=>{close();if(back!==null)openSheet(back);};
-  $("pinForgot").onclick=()=>{$("pinErr").textContent=L().pinForgotHint;$("pinIn").focus();};
+  $("pinForgot").onclick=()=>{$("pinErr").textContent=L().pinForgotHint;const i=$("pinIn");i.setAttribute("inputmode","text");i.type="text";i.setAttribute("autocapitalize","characters");i.blur();i.focus();};   // mã khôi phục có chữ -> bàn phím chữ
   setTimeout(()=>$("pinIn")&&$("pinIn").focus(),50);}
 function setPinForm(){
   openForm({title:L().pinSetT,fields:[{key:"p",label:L().pinNew,type:"text",required:true,placeholder:"4-8"},{key:"p2",label:L().pinNew2,type:"text",required:true}],
@@ -1640,9 +1646,16 @@ function undoPush(label,arch){
 function undoPop(){
   const a=ld(UNDO_KEY);if(!a.length)return;
   const last=a[a.length-1];
-  if(!confirm(L().undoConfirm(last.label)))return;
+  const m=Math.round((Date.now()-(last.ts||Date.now()))/6e4),age=m<60?m+"′":m<1440?Math.round(m/60)+"h":Math.round(m/1440)+(LANG==="vi"?" ngày":" Tg.");
+  if(!confirm(L().undoConfirm(last.label+" · "+age)))return;
   a.pop();sv(UNDO_KEY,a);
-  try{localStorage.setItem(KIDKEY,last.data);
+  let data=last.data;
+  try{const old=JSON.parse(last.data),cur=kidRaw();   // chỉ lùi điểm/số dư; cài đặt bố mẹ sửa sau đó giữ nguyên
+    ["shop","wishes","autoConv","keoCap","avatar","color"].forEach(k=>{if(k in cur)old[k]=cur[k];else delete old[k];});
+    if(Array.isArray(cur.goals))old.goals=cur.goals.map(g=>{const o=(old.goals||[]).find(x=>x&&x.id===g.id),n=Object.assign({},g);
+      if(o){n.done=o.done;n.week=o.week;if(o.got!=null)n.got=o.got;else delete n.got;}return n;});
+    data=JSON.stringify(old);}catch(e){}
+  try{localStorage.setItem(KIDKEY,data);
     if(last.arch){const b=localStorage.getItem(ARCH_BAK);if(b!==null){localStorage.setItem(ARCH_KEY,b);localStorage.removeItem(ARCH_BAK);}}}catch(e){storageFull(e);}
   archiveOldLog();   // bản undo cũ có thể còn dòng đã chuyển sang lưu trữ
   kidCheer=L().undoDone;playSound('click');renderRewardAll();}
@@ -1653,6 +1666,8 @@ function checkPocketMoneyAllowance() {
     s.pocketMoneyDate = iso(today);
     s.pocketMoney = s.pocketMoney || 0;
     kidSave(s);
+  } else if (s.pocketMoneyDate > iso(today)) {   // đồng hồ máy từng chạy vượt lên tương lai -> đặt lại, không cộng
+    s.pocketMoneyDate = iso(today); kidSave(s);
   } else {
     const lastDate = new Date(s.pocketMoneyDate + "T00:00:00");
     let mondaysPassed = 0;
@@ -1674,7 +1689,7 @@ function checkPocketMoneyAllowance() {
       s.keoLog.unshift({
         date: iso(today),
         delta: mondaysPassed * alw,
-        reason: LANG === "vi" ? `Tự động cộng tiền tiêu vặt (+2€/tuần × ${mondaysPassed})` : `Taschengeld automatisch (+2€/Woche × ${mondaysPassed})`,
+        reason: LANG === "vi" ? `Tự động cộng tiền tiêu vặt (+${alw}€/tuần × ${mondaysPassed})` : `Taschengeld automatisch (+${alw}€/Woche × ${mondaysPassed})`,
         k: "allow", n: mondaysPassed,
         cur: "euro"
       });
@@ -1716,7 +1731,8 @@ function dutyToggle(id){
   renderRewardAll();
 }
 function answerChecklist(self){
-  const s=kidState(),today=iso(new Date()),y=iso(new Date(Date.now()-864e5));
+  const s=kidState(),today=iso(new Date()),y=isoAdd(-1);
+  if(todayCheckAward(s)||!allRoutineDone()){renderRewardAll();return;}   // màn hình còn của hôm qua (vừa qua nửa đêm) / đã thưởng rồi
   const n=Math.round(self?NUM("chkSelf"):NUM("chkHelp"));
   undoPush(`+${n}⭐ ${self?L().rsCheckSelf:L().rsCheckHelp}`);
   s.sao=(s.sao||0)+n;s.saoLife=(s.saoLife||0)+n;
@@ -1836,6 +1852,7 @@ function checkPocketMoneyInterest() {
     kidSave(s);
     return;
   }
+  if (s.interestLastDate > iso(today)) { s.interestLastDate = iso(today); kidSave(s); return; }   // đồng hồ từng chạy sai
   const lastDate = new Date(s.interestLastDate + "T00:00:00");
   const temp = new Date(lastDate);
   temp.setDate(temp.getDate() + 1);
@@ -1858,7 +1875,7 @@ function checkPocketMoneyInterest() {
         s.keoLog.unshift({
           date: iso(temp),
           delta: Number(accrued.toFixed(4)),
-          reason: LANG === "vi" ? `Nhập gốc lãi tiết kiệm tháng ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (2%/năm)` : `Zinsgutschrift für ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (2%/Jahr)`,
+          reason: LANG === "vi" ? `Nhập gốc lãi tiết kiệm tháng ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (${NUM("interest")}%/năm)` : `Zinsgutschrift für ${lastCalc.getMonth() + 1}/${lastCalc.getFullYear()} (${NUM("interest")}%/Jahr)`,
           k: "interest", m: lastCalc.getMonth() + 1, y: lastCalc.getFullYear(),
           cur: "euro"
         });
@@ -2116,7 +2133,7 @@ function histEntries(){
   return out.sort((a,b)=>b.date.localeCompare(a.date)||b.tm.localeCompare(a.tm)||b.rec-a.rec);}
 function histDayLabel(d){const dt=new Date(d+"T00:00:00");if(isNaN(dt))return d;
   const base=L().dayShort[dt.getDay()]+" "+dt.getDate()+"/"+(dt.getMonth()+1)+(dt.getFullYear()!==new Date().getFullYear()?"/"+dt.getFullYear():"");
-  return d===iso(new Date())?L().histToday+" · "+base:d===iso(new Date(Date.now()-864e5))?L().histYesterday+" · "+base:base;}
+  return d===iso(new Date())?L().histToday+" · "+base:d===isoAdd(-1)?L().histYesterday+" · "+base:base;}
 function renderHist(){
   const chips=[["all",L().histAll],["diem",L().histDiem],["sk",L().histSk],["do",L().histDo],["nk",L().histNk]];
   $("histPanel").innerHTML=`<h2>${L().histT}</h2>
@@ -2272,21 +2289,31 @@ function pushExport(dumpObj){const a=ld("fam.exports"),now=new Date();
 // Nhập thông minh: key "fam.*" giữ nguyên; key "lich.*" đổi tiền tố sang "fam.*" (bỏ lich.pinok).
 // Trả về số key đã ghi, -1 nếu hết bộ nhớ giữa chừng (fam.kid được ghi trước tiên)
 function famRestore(o){let n=0;
-  const put=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){
-    localStorage.removeItem(UNDO_KEY);localStorage.removeItem("fam.exports");localStorage.setItem(k,v);}};   // dọn bản sao trong máy rồi thử lại 1 lần
+  const put=(k,v)=>{if(typeof v!=="string")v=JSON.stringify(v);
+    try{localStorage.setItem(k,v);}catch(e){
+    localStorage.removeItem(UNDO_KEY);localStorage.removeItem("fam.exports");localStorage.removeItem("fam.snap_pre");
+    snaps().slice(1).forEach(d=>localStorage.removeItem("fam.snap."+d));   // dọn bản sao trong máy (giữ bản tự lưu mới nhất) rồi thử lại
+    try{localStorage.setItem(k,v);}catch(e2){snaps().forEach(d=>localStorage.removeItem("fam.snap."+d));localStorage.setItem(k,v);}}};
   const keys=Object.keys(o).sort((a,b)=>(b===KIDKEY)-(a===KIDKEY));
   try{keys.forEach(k=>{
     if(k.indexOf("fam.")===0){put(k,o[k]);n++;}
     else if(k.indexOf("lich.")===0){if(k==="lich.pinok")return;put("fam."+k.slice(5),o[k]);n++;}});}
   catch(e){alert(L().restoreFull);return -1;}
+  try{if(localStorage.getItem(ARCH_KEY)===null&&localStorage.getItem(ARCH_BAK)!==null){localStorage.setItem(ARCH_KEY,localStorage.getItem(ARCH_BAK));localStorage.removeItem(ARCH_BAK);}}catch(e){}   // khôi phục bản trước reset -> lấy lại lịch sử cũ
   return n;}
 // Gộp: mảng có id -> union theo id (trùng id giữ bản local); key khác -> chỉ ghi nếu local chưa có.
 const MERGE_LIST_KEYS=["fam.an.items","fam.chores","fam.dl.items","fam.health.logs","fam.sleep","fam.temp","fam.growth","fam.kid.diary"];
-function famMerge(o){let n=0;
+let mergeKidSkipped=false;
+function famMerge(o){let n=0;mergeKidSkipped=false;
   const norm={};Object.keys(o).forEach(k=>{
     if(k.indexOf("fam.")===0)norm[k]=o[k];
     else if(k.indexOf("lich.")===0&&k!=="lich.pinok")norm["fam."+k.slice(5)]=o[k];});
   Object.keys(norm).forEach(k=>{
+    if(k===KIDKEY){const c=kidRaw();   // máy mới/vừa reset (chưa có điểm, chưa có lịch sử) -> lấy luôn điểm từ file
+      if(!(c.saoLife||c.sao||c.keo||c.pocketMoney||(c.keoLog||[]).length||(c.dragon&&c.dragon.rounds))){try{localStorage.setItem(k,norm[k]);n++;}catch(e){storageFull(e);}}
+      else mergeKidSkipped=true;
+      return;}
+    if(k===ARCH_KEY&&localStorage.getItem(k)===null){try{localStorage.setItem(k,norm[k]);n++;}catch(e){storageFull(e);}return;}
     if(isMetaKey(k)||k===ARCH_KEY||k===ARCH_BAK)return;
     if(MERGE_LIST_KEYS.includes(k)){
       let inc;try{inc=JSON.parse(norm[k]);}catch(e){return;}
@@ -2316,11 +2343,16 @@ function askImportMode(o){
     afterRestore(L().importOk+" ("+n+")");};
   $("imMerge").onclick=()=>{close();
     const n=famMerge(o);
-    afterRestore(L().mergeOk(n));};
+    afterRestore(L().mergeOk(n)+(mergeKidSkipped?"\n"+L().mergeKidKept:""));};
   $("imCancel").onclick=()=>{close();openCog();};}
+// Bản mới vừa tải về: chụp 1 bản dữ liệu TRƯỚC khi các bước nâng cấp chạy (1 ô duy nhất, ghi đè lần cập nhật sau)
+function preUpdateSnapshot(){const seen=localStorage.getItem("fam.snap_build");if(seen===BUILD)return;
+  try{if(seen&&localStorage.getItem(KIDKEY))localStorage.setItem("fam.snap_pre",JSON.stringify({from:seen,to:BUILD,date:iso(new Date()),data:famDump()}));
+    localStorage.setItem("fam.snap_build",BUILD);}catch(e){storageFull(e);}}
 function snaps(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("fam.snap.")===0)a.push(k.slice(9));}return a.sort().reverse();}
 function autoSnapshot(){const today=iso(new Date());if(localStorage.getItem("fam.snap_last")===today)return;
   try{localStorage.setItem("fam.snap."+today,JSON.stringify(famDump()));localStorage.setItem("fam.snap_last",today);}catch(e){storageFull(e);}
+  snaps().forEach(d=>{if(d>today)localStorage.removeItem("fam.snap."+d);});   // bản mang ngày tương lai (đồng hồ máy từng chạy sai) -> bỏ, kẻo đẩy bản thật ra
   snaps().slice(SNAPS_KEEP).forEach(d=>localStorage.removeItem("fam.snap."+d));}
 function exportFile(){
   const ok=downloadFile("gia-dinh-backup-"+iso(new Date())+".json",JSON.stringify(famDump(true),null,2),"application/json");
@@ -2367,12 +2399,14 @@ function openCog(){
       <span style="color:var(--mut)">${KL().nightFrom}</span><input id="nFrom" type="time" style="width:auto;margin:0">
       <span style="color:var(--mut)">${KL().nightTo}</span><input id="nTo" type="time" style="width:auto;margin:0">
     </div>
-    <div class="lbl" style="margin-top:14px">${L().snapHist}</div><div class="hist">${snapList}</div>
+    <div class="lbl" style="margin-top:14px">${L().snapHist}</div><div class="hist">${snapList}${(()=>{try{const o=JSON.parse(localStorage.getItem("fam.snap_pre"));
+      return o?`<div class="row" style="display:flex;justify-content:space-between;align-items:center"><span>🛟 ${L().snapPre(o.date.split("-").reverse().join("/"),o.from)}</span><button class="chip" id="bRestorePre">↩</button></div>`:"";}catch(e){return "";}})()}</div>
     <div class="acts"><button class="cancel" id="bClose">${L().cancel}</button></div>`);
   $("bExp").onclick=()=>{exportFile();renderBackupReminder();openCog();};
   $("bImp").onclick=()=>$("impFile").click();
-  $("bIoExp").onclick=()=>{$("ioBox").value=JSON.stringify(famDump(true),null,2);$("ioBox").select();
-    localStorage.setItem("fam.lastexport",iso(new Date()));renderBackupReminder();$("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteCopied;};
+  $("bIoExp").onclick=()=>{const txt=JSON.stringify(famDump(true),null,2);$("ioBox").value=txt;$("ioBox").select();
+    $("ioStatus").style.color="var(--g)";$("ioStatus").textContent=L().pasteCopied;
+    try{navigator.clipboard.writeText(txt).then(()=>{localStorage.setItem("fam.lastexport",iso(new Date()));renderBackupReminder();},()=>{});}catch(e){}};   // chỉ tính là đã backup khi chép được thật
   $("bIoImp").onclick=()=>{const v=$("ioBox").value.trim();
     if(!v){$("ioStatus").style.color="var(--o)";$("ioStatus").textContent=L().pasteEmpty;return;}
     let o;try{o=JSON.parse(v);}catch(e){$("ioStatus").style.color="var(--r)";$("ioStatus").textContent=L().importErr;return;}
@@ -2388,6 +2422,7 @@ function openCog(){
     const sN=()=>nightSave({on:$("nOn").checked,from:$("nFrom").value||"23:00",to:$("nTo").value||"06:00"});
     $("nOn").onchange=sN;$("nFrom").onchange=sN;$("nTo").onchange=sN;})();
   $("bClose").onclick=close;
+  if($("bRestorePre"))$("bRestorePre").onclick=()=>{if(!confirm(L().restoreAsk))return;try{const o=JSON.parse(localStorage.getItem("fam.snap_pre"));famRestore(o.data);afterRestore();}catch(e){alert(L().importErr);}};
   sheet.querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>{if(confirm(L().restoreAsk)){const s=localStorage.getItem("fam.snap."+b.dataset.restore);if(s){famRestore(JSON.parse(s));afterRestore();}close();}});
   sheet.querySelectorAll("[data-exprestore]").forEach(b=>b.onclick=()=>{if(confirm(L().restoreAsk)){const e=ld("fam.exports").find(x=>String(x.ts)===b.dataset.exprestore);if(e&&e.data){famRestore(e.data);afterRestore();}close();}});
   sheet.querySelectorAll("[data-expdel]").forEach(b=>b.onclick=()=>{sv("fam.exports",ld("fam.exports").filter(x=>String(x.ts)!==b.dataset.expdel));openCog();});}
@@ -2423,7 +2458,7 @@ const KX={
    walletSaoSub:"sao của con",walletKeoSub:(n,cap)=>`≈ ${n} phút game`+(cap?` · tối đa ${cap}`:""),walletHandSub:"✋ giơ tay · CN dư → ⭐",
    walletMoneySub:"tiền tiêu vặt con có",
    convertBtn:"🔄 Đổi {saoPerKeo} ⭐ → 1 🍬",convertBlocked:"Chưa đủ {saoPerKeo} ⭐ để đổi.",convertOk:"🍬 Đổi được 1 kẹo!",convertReason:"Đổi {saoPerKeo}⭐ → 1🍬",
-   convertConfirm:"Xác nhận đổi 3 Sao ⭐ lấy 1 Kẹo 🍬?",
+   convertConfirm:"Xác nhận đổi {saoPerKeo} Sao ⭐ lấy 1 Kẹo 🍬?",
    convertMoneyBtn:"🔄 Đổi 1 🍬 → {keoEuro} €",
    convertMoneyBlocked:"Chưa có kẹo để đổi.",
    convertMoneyConfirm:"Xác nhận đổi 1 Kẹo 🍬 lấy {keoEuro} € tiền tiêu vặt?",
@@ -2477,7 +2512,7 @@ const KX={
    walletSaoSub:"Sterne des Kindes",walletKeoSub:(n,cap)=>`≈ ${n} Min. Videospiel`+(cap?` · max. ${cap}`:""),walletHandSub:"✋ Melde-Sterne · Rest So. → ⭐",
    walletMoneySub:"dein Taschengeld",
    convertBtn:"🔄 {saoPerKeo} ⭐ → 1 🍬 tauschen",convertBlocked:"Noch nicht genug ⭐ ({saoPerKeo} nötig).",convertOk:"🍬 1 Süßigkeit erhalten!",convertReason:"{saoPerKeo}⭐ → 1🍬 getauscht",
-   convertConfirm:"Möchtest du wirklich 3 Sterne ⭐ gegen 1 Süßigkeit 🍬 tauschen?",
+   convertConfirm:"{saoPerKeo} Sterne ⭐ gegen 1 Süßigkeit 🍬 tauschen?",
    convertMoneyBtn:"🔄 1 🍬 → {keoEuro} € tauschen",
    convertMoneyBlocked:"Keine Süßigkeiten zum Tauschen.",
    convertMoneyConfirm:"Möchtest du wirklich 1 Süßigkeit 🍬 gegen {keoEuro} € Taschengeld tauschen?",
@@ -2556,7 +2591,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   const lastDay=new Date().getDay()===0&&hn>0;   // Chủ nhật: nhắc ✋ sắp hết hạn
   const fm=formState(s);
   $("kidPanel").innerHTML=`
-   <div class="kidtop"><span class="kidav aura${fm.lv}" id="kAv">${s.avatar}</span>
+   <div class="kidtop"><span class="kidav aura${fm.lv}" id="kAv">${esc(s.avatar)}</span>
      <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟       <div class="kform lv${fm.lv}"><div class="kfn">${KL().formLv[fm.lv]}</div><div class="kfbar"><span style="width:${fm.pct}%"></span></div>
        <div class="kfsub">${esc(KL().formSub(fm))}<br>${esc(fx(KL().formNext[fm.lv]))}</div></div></div></div>
    <div class="wallets wallets4">
@@ -2752,7 +2787,8 @@ function resetPoints(){if(!confirm(L().mgResetConfirm))return;
   const s=kidState();
   undoPush("↺ Reset",true);
   try{const a=localStorage.getItem(ARCH_KEY);if(a!==null)localStorage.setItem(ARCH_BAK,a);localStorage.removeItem(ARCH_KEY);}catch(e){}
-  s.sao=0;s.saoLife=0;s.keo=0;s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;s.dragon={base:0,per:dragonPer(s),rounds:0};
+  s.sao=0;s.saoLife=0;s.keo=0;s.keoLog=[];s.checkAward=null;s.eval=null;s.handRaise={date:"",count:0};s.hand={wk:wkMon(),n:0};s.gameDay=null;
+  s.dragon=Object.assign({},s.dragon,{base:0,seen:0,offer:null});   // giữ cờ migrate (khỏi ghi đè điều ước đã sửa), album, điều ước còn nợ
   s.goals.forEach(g=>g.done=false);
   kidSave(s);kidCheer=L().mgResetDone;renderRewardAll();}
 /* --- ⚙️ Menu quản lý cuối trang — CRUD tập trung mọi danh sách --- */
@@ -2869,7 +2905,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
