@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-23·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-10-24·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -526,7 +526,7 @@ const T={
    amounts:["Ít","Vừa","Nhiều"], sides:["Trái","Phải","Cả hai"],
    moods:["😀 Rất vui","🙂 Ổn","😐 Bình thường","😟 Buồn","😣 Khó chịu"],
    addnote:"＋ Thêm ghi chú", save:"Lưu", cancel:"Huỷ", notePh:"Ghi chú (nếu cần)…",
-   h_sao:"⭐ Sao của con (bố mẹ đánh giá)", pSaoUnit:n=>`sao hiện có · tổng đã kiếm: <b>${n}</b> (gom ngọc rồng 🐉)`,
+   h_sao:"⭐ Sao của con (bố mẹ đánh giá)", pSaoUnit:n=>`sao hiện có · tổng ⭐+✋ đã kiếm: <b>${n}</b> (gom ngọc rồng 🐉)`,
    evalRatings:[["cn","Cực ngoan","+2"],["n","Ngoan","+1"],["bt","Bình thường","0"],["h","Chưa ngoan","−1"],["ch","Ngày khó khăn","−2"]],
    evalRemindToday:"⭐ Tối nay chưa đánh giá con - chạm để đánh giá", evalRemindYest:"⏪ Hôm qua quên đánh giá con - chạm để chấm bù (đến 12h trưa)",
    evalYestT:"⏪ Đánh giá bù cho hôm qua", evalYestConfirm:n=>`Chấm bù hôm qua: ${n}?`, evalRemindNight:"⭐ Chưa đánh giá con hôm nay",
@@ -587,7 +587,7 @@ const T={
    snapPre:(d,b)=>`${d} · trước khi cập nhật (bản ${b})`,
    mergeOk:n=>`Đã gộp ✅ (${n} mục mới)`, mergeKidKept:"ℹ️ Sao/kẹo/tiền của con trên máy này giữ nguyên (gộp không chép điểm). Muốn lấy điểm từ file thì chọn \"Ghi đè\".",
    rsDebtClear:"🧽 Tuần mới: xoá nợ sao tuần trước",
-   statsT:"📊 Thống kê", statsSum:"🏆 Tổng kết", statsLife:"tổng sao đã kiếm từ trước tới nay", statsForm:n=>`phong độ 7 ngày · ${n}`,
+   statsT:"📊 Thống kê", statsSum:"🏆 Tổng kết", statsLife:"tổng ⭐ + ✋ đã kiếm từ trước tới nay", statsForm:n=>`phong độ 7 ngày · ${n}`,
    statsDragon:(n,t)=>`lần gọi Rồng thần · album ${n}/${t}`, statsHandAll:"lần giơ tay (đã ghi lại)",
    statsSao:"⭐ Sao theo tuần (8 tuần)", statsStreak:(c,b)=>`🔥 Chuỗi hiện tại: <b>${c}</b> ngày · Kỷ lục: <b>${b}</b> ngày`,
    statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
@@ -655,7 +655,7 @@ const T={
    amounts:["Wenig","Mittel","Viel"], sides:["Links","Rechts","Beide"],
    moods:["😀 Sehr gut","🙂 Gut","😐 Normal","😟 Traurig","😣 Unwohl"],
    addnote:"＋ Notiz hinzufügen", save:"Speichern", cancel:"Abbrechen", notePh:"Notiz (optional)…",
-   h_sao:"⭐ Sterne des Kindes (Elternbewertung)", pSaoUnit:n=>`Sterne aktuell · insgesamt verdient: <b>${n}</b> (für Drachenkugeln 🐉)`,
+   h_sao:"⭐ Sterne des Kindes (Elternbewertung)", pSaoUnit:n=>`Sterne aktuell · ⭐+✋ insgesamt verdient: <b>${n}</b> (für Drachenkugeln 🐉)`,
    evalRatings:[["cn","Sehr brav","+2"],["n","Brav","+1"],["bt","Normal","0"],["h","Nicht so gut","−1"],["ch","Schwieriger Tag","−2"]],
    evalRemindToday:"⭐ Heute noch nicht bewertet - tippen zum Bewerten", evalRemindYest:"⏪ Gestern nicht bewertet - tippen zum Nachholen (bis 12 Uhr)",
    evalYestT:"⏪ Bewertung für gestern nachholen", evalYestConfirm:n=>`Gestern nachträglich: ${n}?`, evalRemindNight:"⭐ Heute noch nicht bewertet",
@@ -716,7 +716,7 @@ const T={
    snapPre:(d,b)=>`${d} · vor dem Update (Version ${b})`,
    mergeOk:n=>`Zusammengeführt ✅ (${n} neue Einträge)`, mergeKidKept:"ℹ️ Sterne/Süßigkeiten/Geld auf diesem Gerät bleiben (Zusammenführen kopiert keine Punkte). Für Punkte aus der Datei \"Überschreiben\" wählen.",
    rsDebtClear:"🧽 Neue Woche: Sterne-Schulden gelöscht",
-   statsT:"📊 Statistik", statsSum:"🏆 Überblick", statsLife:"Sterne insgesamt verdient", statsForm:n=>`Form 7 Tage · ${n}`,
+   statsT:"📊 Statistik", statsSum:"🏆 Überblick", statsLife:"⭐ + ✋ insgesamt verdient", statsForm:n=>`Form 7 Tage · ${n}`,
    statsDragon:(n,t)=>`Drachen gerufen · Album ${n}/${t}`, statsHandAll:"Meldungen (aufgezeichnet)",
    statsSao:"⭐ Sterne pro Woche (8 Wochen)", statsStreak:(c,b)=>`🔥 Aktuelle Serie: <b>${c}</b> Tage · Rekord: <b>${b}</b> Tage`,
    statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
@@ -1999,7 +1999,8 @@ function handManual(sign){
   amountForm((sign>0?L().hPlus:L().hMinus).replace(/^[＋－] /,"")+" ✋",sign>0?L().hPlusDef:L().hMinusDef,null,(n,reason)=>{
     const s=kidState(),have=s.hand.n||0,d=sign>0?n:-Math.min(n,have);if(!d)return;
     undoPush(`${d>0?"+":""}${d}✋ ${reason}`);
-    s.hand.n=have+d;logAdd(s,{delta:d,reason,cur:"hand"});kidSave(s);playSound('click');renderRewardAll();});}
+    s.hand.n=have+d;if(d>0){s.saoLife=(s.saoLife||0)+d;checkDragon(s);}   // bố mẹ cộng ✋ bù cũng tính ngọc rồng; trừ (sửa nhầm) thì không lùi ngọc
+    logAdd(s,{delta:d,reason,cur:"hand"});kidSave(s);playSound('click');renderRewardAll();});}
 function convertHand(){const s=kidState();
   const hpk=iPos("handPerKeo");
   if((s.hand.n||0)<hpk){kidCheer=KL().convertHandBlocked;renderRewardAll();return;}
@@ -2018,9 +2019,11 @@ function raiseHand(){const s=kidState(),today=iso(new Date()),c=todayHandCount(s
   if(!confirm(KL().handConfirm(c+1)))return;
   undoPush("+1✋");
   s.handRaise={date:today,count:c+1};
-  s.hand.n=(s.hand.n||0)+1;   // ô riêng: không cộng vào ⭐ / ngọc rồng
+  s.hand.n=(s.hand.n||0)+1;   // ô ✋ riêng (không cộng vào ⭐ để tiêu) ...
+  s.saoLife=(s.saoLife||0)+1;  // ... nhưng mỗi lần giơ tay được tính vào tiến độ ngọc rồng (cuối tuần ✋ dư → ⭐ thì không tính lần nữa)
   logAdd(s,{delta:1,reason:L().rsHand,k:"hand",cur:"hand"});
-  kidCheer=KL().handCheer(c+1);
+  const dc0=dragonCheer;checkDragon(s);
+  kidCheer=KL().handCheer(c+1)+(dragonCheer&&dragonCheer!==dc0?" · "+dragonCheer:"");
   kidSave(s);
   triggerConfetti();
   playSound('success');
@@ -2594,7 +2597,7 @@ const KX={
    handCheer:n=>`✋ Hoan hô con dũng cảm giơ tay! +1 ✋ (${n}/{handMax} hôm nay)`,
    dragonT:"🐉 7 viên ngọc rồng · gom đủ 7 viên để gọi Rồng thần",
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
-   dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per}⭐ là có thêm 1 viên ngọc`,
+   dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per} ⭐ hoặc ✋ là có thêm 1 viên ngọc`,
    albBtn:(n,t)=>`📖 Album rồng (${n}/${t})`, albT:"📖 Album rồng của con", albNew:"MỚI",
    albSub:(n,t)=>n>=t?`Con đã sưu tập đủ ${t} con rồng! Gọi tiếp để gặp lại các bạn rồng nhé.`:`Mỗi lần gọi Rồng thần sẽ gặp một con rồng màu mới. Còn ${t-n} con chưa gặp!`,
    albSeen:n=>n>1?`đã gặp ${n} lần`:"",
@@ -2648,7 +2651,7 @@ const KX={
    handCheer:n=>`✋ Bravo, du hast dich gemeldet! +1 ✋ (heute ${n}/{handMax})`,
    dragonT:"🐉 Sammle alle 7 Drachenkugeln und ruf den Drachen!",
    dragonNext:(i,rem)=>`📡 Kugel-Radar: noch ${rem} ⭐ bis zur ${i}-Sterne-Kugel`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
-   dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Für je ${per} verdiente ⭐ gibt es 1 Kugel`,
+   dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Für je ${per} verdiente ⭐ oder ✋ gibt es 1 Kugel`,
    albBtn:(n,t)=>`📖 Drachen-Album (${n}/${t})`, albT:"📖 Dein Drachen-Album", albNew:"NEU",
    albSub:(n,t)=>n>=t?`Du hast alle ${t} Drachen gesammelt! Ruf weiter, um sie wiederzusehen.`:`Bei jedem Ruf kommt ein Drache in einer neuen Farbe. Noch ${t-n} fehlen!`,
    albSeen:n=>n>1?`${n}× gesehen`:"",
