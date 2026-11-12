@@ -37,12 +37,14 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE);
       const ctl = typeof AbortController === 'function' ? new AbortController() : null;   // wifi có sóng mà không có mạng: đừng treo mãi
       const tmo = ctl ? setTimeout(() => ctl.abort(), 10000) : 0;
+      let saving = null;   // lưu bản mới vào cache: giữ SW sống tới khi lưu xong (mạng chậm hơn NET_WAIT vẫn lưu được)
       const net = fetch(req.url, { credentials: 'same-origin', cache: 'no-cache', signal: ctl ? ctl.signal : undefined }).then((r) => {
         clearTimeout(tmo);   // đã có phản hồi: đừng huỷ giữa lúc đang tải phần thân
         if (r && r.redirected) return Response.redirect(r.url, 302);   // vd /an -> /an/: trả lệnh chuyển hướng, không lưu
-        if (r && r.ok && r.type === 'basic') cache.put(SHELL, r.clone());
+        if (r && r.ok && r.type === 'basic') saving = cache.put(SHELL, r.clone()).catch(() => {});
         return r;
       }).catch(() => null);
+      event.waitUntil(net.then(() => saving));
       const first = await Promise.race([net, new Promise((res) => setTimeout(res, NET_WAIT, null))]);
       if (first && first.ok) return first;
       const saved = (await cache.match(SHELL)) || (await cache.match(req, { ignoreSearch: true }));
