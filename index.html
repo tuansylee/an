@@ -188,6 +188,12 @@ body.kidmode #evalReminder,body.kidmode #backupReminder,body.kidmode #acariRemin
 .dprog{font-size:14px;color:#ffd98a;margin-top:10px;font-weight:700}
 .drule{font-size:13.5px;color:var(--mut);margin-top:4px}
 .dbar{height:8px;background:#3a2a10;border-radius:6px;margin-top:6px;overflow:hidden}.dbar span{display:block;height:100%;background:linear-gradient(90deg,#ffb340,#ff7a00)}
+.dragon.trip{background:linear-gradient(155deg,#0a1a2c,#0c1118);border-color:#2a5a8a}
+.dragon.trip .dalbbtn{border-color:#2a5a8a;color:#9fd0ff;background:#0e1a28}.dragon.trip .dpend{color:#9fd0ff}
+.dragon.trip .dbar{background:#10283e}.dragon.trip .dbar span{background:linear-gradient(90deg,#4da3ff,#7fe0ff)}
+.tpath{display:flex;align-items:center;justify-content:center;gap:3px;flex-wrap:nowrap}
+.tflag{font-size:32px;line-height:1;margin:0 4px}.tstep{min-width:18px;text-align:center;font-size:15px;color:#3a5a7a}.tstep.got{color:#ffd84d}
+@media(max-width:420px){.tflag{font-size:26px;margin:0 2px}.tstep{min-width:14px;font-size:13px}}
 .dsummon{margin-top:10px;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:800;color:#1a0d00;background:linear-gradient(90deg,#ffd84d,#ff9a1a);cursor:pointer;animation:dglow .9s ease-in-out infinite alternate}
 @keyframes dglow{from{box-shadow:0 0 0 #ffb34000}to{box-shadow:0 0 18px #ffb340cc}}
 /* 💪 Phong độ: hào quang quanh avatar theo cấp (0 hết sức … 5 Siêu Saiyan 3) */
@@ -443,7 +449,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-12·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-12·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -604,7 +610,8 @@ const T={
    h_hand:"✋ Sao giơ tay phát biểu (để chơi game)", pHandUnit:(c,max)=>`✋ tuần này · dư cuối tuần thành ⭐ · hôm nay ${c}/${max} lần`,
    pHandBtn:"✋ Con đã giơ tay phát biểu ở lớp (+1 ✋)", pHandMax:"✋ Hôm nay đã đủ {handMax} lần",
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
-   rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, mgSecDragon:"🐉 Ngọc rồng",
+   rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, rsTrip:(c,n)=>`✈️ Đến ${c} (tem ${n})`,
+   pTrip:(n,per,c,d)=>`✈️ Vòng quanh thế giới: chặng <b>${n}/7</b> tới ${d} · ${per}⭐/chặng · đã đến ${c} nước`, statsTrip:t=>`nước đã đến · hành trình ${t} điểm dừng`, mgSecDragon:"🐉 Ngọc rồng",
    rsHand2Sao:"✋ dư cuối tuần → ⭐", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
    ruleGroups:[["✋ Giơ tay & 🎮 game",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sao",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
      ["🍬 Kẹo & 💶 tiền",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin","undoMin"]]],
@@ -736,7 +743,8 @@ const T={
    h_hand:"✋ Melde-Sterne (für Videospiel)", pHandUnit:(c,max)=>`✋ diese Woche · Rest wird am Wochenende ⭐ · heute ${c}/${max}×`,
    pHandBtn:"✋ Hat sich im Unterricht gemeldet (+1 ✋)", pHandMax:"✋ Heute schon {handMax}× (Maximum)",
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
-   rsSummon:n=>`🐉 Drache gerufen (${n}.)`, mgSecDragon:"🐉 Drachenkugeln",
+   rsSummon:n=>`🐉 Drache gerufen (${n}.)`, rsTrip:(c,n)=>`✈️ Angekommen: ${c} (Stempel ${n})`,
+   pTrip:(n,per,c,d)=>`✈️ Weltreise: Etappe <b>${n}/7</b> nach ${d} · ${per}⭐/Etappe · ${c} Länder besucht`, statsTrip:t=>`Länder besucht · Reise mit ${t} Stationen`, mgSecDragon:"🐉 Drachenkugeln",
    rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
    ruleGroups:[["✋ Melden & 🎮 Videospiel",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sterne",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
      ["🍬 Süßigkeiten & 💶 Geld",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin","undoMin"]]],
@@ -1394,7 +1402,7 @@ function defaultWishes(){
     {id:"x1",e:"🌟",text:"Thưởng 5 sao",de:"5 Sterne extra",sao:5,keo:0,w:4,c:"#d9a520"},
     {id:"x2",e:"🦉",text:"10 phút Duolingo",de:"10 Minuten Duolingo",sao:0,keo:0,w:2,c:"#4caf2a"},
     {id:"x4",e:"🗺️",text:"Chọn địa điểm đi chơi cuối tuần",de:"Den Ausflugsort am Wochenende aussuchen",sao:0,keo:0,w:2,c:"#3f8fd0"},
-    {id:"x5",e:"🎰",text:"Jackpot: 3 kẹo",de:"Jackpot: 3 Süßigkeiten",sao:0,keo:3,w:1,c:"#9b5de5"}];
+    {id:"x5",e:"🎁",text:"Quà 3 kẹo",de:"Geschenk: 3 Süßigkeiten",sao:0,keo:3,w:1,c:"#9b5de5"}].concat(NEW_WISHES.map(w=>Object.assign({},w)));
 }
 const wTag=w=>(w.sao>0?`<span class="tag">+${w.sao}⭐</span>`:"")+(w.keo>0?`<span class="tag">+${w.keo}🍬</span>`:"");
 const wName=(w,de)=>de?(w.de||T_val(w.text)):(w.text||w.de||"");          // tên theo ngôn ngữ
@@ -1411,6 +1419,18 @@ function migrateWishes4(){const s=kidState();if(s.dragon.w4)return;
   const bad=w=>w&&(w.id==="x3"||SWEET_WISH.includes(w.text));
   if(Array.isArray(s.dragon.offer)&&s.dragon.offer.some(id=>bad(s.wishes.find(w=>String(w.id)===id))))s.dragon.offer=null;
   s.wishes=s.wishes.filter(w=>!bad(w));s.dragon.w4=1;kidSave(s);}
+// Điều ước mới (không đồ ngọt, gần như không tốn tiền): thêm 1 lần cho máy đang dùng; lá Jackpot đổi tên (bớt mùi cờ bạc)
+const NEW_WISHES=[
+ {id:"x6",e:"🎲",text:"Bố mẹ chơi cùng con 30 phút (con chọn trò)",de:"30 Min. Spielen mit Mama oder Papa (du wählst das Spiel)",sao:0,keo:0,w:2,c:"#e07a3a"},
+ {id:"x7",e:"🌙",text:"Thức khuya thêm 30 phút (tối thứ 6 hoặc thứ 7)",de:"30 Min. länger aufbleiben (Freitag oder Samstag)",sao:0,keo:0,w:2,c:"#5a6fd0"},
+ {id:"x8",e:"👨‍🍳",text:"Đầu bếp nhí: chọn món và cùng nấu bữa tối",de:"Chefkoch: Abendessen aussuchen und mitkochen",sao:0,keo:0,w:2,c:"#d08a2a"},
+ {id:"x9",e:"📚",text:"Chọn một cuốn sách mới ở thư viện",de:"Ein neues Buch in der Bücherei aussuchen",sao:0,keo:0,w:2,c:"#3fa08f"},
+ {id:"x10",e:"🎬",text:"Chọn phim cho tối xem phim cả nhà",de:"Den Film für den Familien-Filmabend aussuchen",sao:0,keo:0,w:2,c:"#c04a6a"},
+ {id:"x11",e:"🧪",text:"Làm một thí nghiệm khoa học cùng bố mẹ",de:"Ein Forscher-Experiment mit Mama oder Papa",sao:0,keo:0,w:2,c:"#2a8ad0"}];
+function migrateWishes5(){const s=kidState();if(s.dragon.w5)return;
+  const x5=s.wishes.find(w=>w.id==="x5");if(x5&&x5.text==="Jackpot: 3 kẹo"){x5.text="Quà 3 kẹo";x5.de="Geschenk: 3 Süßigkeiten";x5.e="🎁";}
+  NEW_WISHES.forEach(n=>{if(!s.wishes.some(w=>w.id===n.id||w.text===n.text))s.wishes.push(Object.assign({},n));});
+  s.dragon.offer=null;s.dragon.w5=1;kidSave(s);}
 function migrateWishes2(){const s=kidState();if(s.dragon.w2)return;s.wishes=defaultWishes();s.dragon.offer=null;s.dragon.w2=1;kidSave(s);}
 function drawWishes(s){const pool=s.wishes.slice(),out=[];
   while(out.length<3&&pool.length){const tot=pool.reduce((t,w)=>t+Math.max(1,Math.round(w.w||1)),0);let r=Math.random()*tot,i=0;
@@ -1497,7 +1517,7 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.wishes))s.wishes=defaultWishes();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
-  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1,w4:1};
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1,w4:1,w5:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   if(s.formSeen==null)try{s.formSeen=formState(s).lv;}catch(e){}   // lần đầu: không ăn mừng cấp sẵn có
@@ -1541,7 +1561,8 @@ function dragonState(s){const per=dragonPer(s),p=Math.max(0,(s.saoLife||0)-(s.dr
 // Báo khi tìm được viên ngọc mới (gọi sau mỗi lần ⭐ kiếm được tăng). seen = số viên đã báo
 function checkDragon(s){const n=dragonState(s).n,seen=s.dragon.seen||0;
   if(n<seen)s.dragon.seen=n;
-  else if(n>seen){s.dragon.seen=n;kidCheer=dragonCheer=n<7?KL().ballFound(n):KL().ballAll;triggerConfetti();playSound('success');}}
+  else if(n>seen){s.dragon.seen=n;const t=tripOn(s),d=t?tripDest(s):null;
+    kidCheer=dragonCheer=t?(n<7?KL().tripStep(n,d.de):KL().tripAll(d.de)):(n<7?KL().ballFound(n):KL().ballAll);triggerConfetti();playSound('success');}}
 let dragonCheer="";   // giữ lời báo ngọc tới khi con mở tab của con
 // 📖 12 con rồng màu (tô màu emoji 🐉 bằng CSS filter, không dùng hình có bản quyền). Lần gọi thứ n -> rồng thứ (n-1)%12.
 const DRAGONS=[
@@ -1558,6 +1579,34 @@ const DRAGONS=[
  {f:"grayscale(1) brightness(.4)",g:"#8a5cff",vi:"Rồng Bóng Đêm",de:"Schatten-Drache"},
  {f:"rainbow",g:"#ffffff",vi:"Rồng Cầu Vồng",de:"Regenbogen-Drache"}];
 const dragonOf=round=>DRAGONS[((Math.max(1,round)-1)%DRAGONS.length)];
+// ✈️ Vòng quanh thế giới: album đủ 12 rồng -> tự chuyển sang du lịch. Cùng cách tính: 7 chặng × {per}⭐ (như 7 viên ngọc).
+// Đến nơi = 1 con tem trong hộ chiếu + 1 điều ước (cùng bộ lá). 20 điểm dừng, điểm cuối là về nhà; đi hết thì đi vòng mới.
+const TRIP=[
+ {c:"fr",f:"🇫🇷",e:"🗼",de:"Frankreich",vi:"Pháp",fde:"Der Eiffelturm in Paris ist 330 Meter hoch – so hoch wie ein Haus mit 100 Stockwerken!",fvi:"Tháp Eiffel ở Paris cao 330 mét – bằng một toà nhà 100 tầng!"},
+ {c:"es",f:"🇪🇸",e:"💃",de:"Spanien",vi:"Tây Ban Nha",fde:"In Spanien isst man oft erst um 21 oder 22 Uhr zu Abend.",fvi:"Ở Tây Ban Nha, nhiều nhà 9–10 giờ tối mới ăn cơm tối."},
+ {c:"it",f:"🇮🇹",e:"🍕",de:"Italien",vi:"Ý",fde:"Die Pizza Margherita hat die Farben der italienischen Flagge: Tomate rot, Mozzarella weiß, Basilikum grün.",fvi:"Pizza Margherita mang màu cờ Ý: cà chua đỏ, phô mai trắng, lá húng xanh."},
+ {c:"gr",f:"🇬🇷",e:"🏛️",de:"Griechenland",vi:"Hy Lạp",fde:"Die Olympischen Spiele wurden vor fast 2.800 Jahren in Griechenland erfunden.",fvi:"Thế vận hội Olympic ra đời ở Hy Lạp từ gần 2.800 năm trước."},
+ {c:"eg",f:"🇪🇬",e:"🐪",de:"Ägypten",vi:"Ai Cập",fde:"Die große Pyramide von Gizeh ist über 4.500 Jahre alt.",fvi:"Kim tự tháp lớn ở Giza đã hơn 4.500 tuổi."},
+ {c:"ke",f:"🇰🇪",e:"🦒",de:"Kenia",vi:"Kenya",fde:"Giraffen sind die höchsten Tiere der Welt – bis zu 5,5 Meter!",fvi:"Hươu cao cổ là con vật cao nhất thế giới – tới 5,5 mét!"},
+ {c:"in",f:"🇮🇳",e:"🐘",de:"Indien",vi:"Ấn Độ",fde:"In Indien spricht man mehr als 100 verschiedene Sprachen.",fvi:"Ở Ấn Độ người ta nói hơn 100 thứ tiếng khác nhau."},
+ {c:"vn",f:"🇻🇳",e:"🐉",de:"Vietnam",vi:"Việt Nam",fde:"Eine alte Sage erzählt: Die Vietnamesen stammen von einem Drachen und einer Fee ab.",fvi:"Truyền thuyết kể rằng người Việt là con Rồng cháu Tiên."},
+ {c:"cn",f:"🇨🇳",e:"🐼",de:"China",vi:"Trung Quốc",fde:"Ein Panda frisst jeden Tag mehr als 10 Stunden lang Bambus.",fvi:"Gấu trúc mỗi ngày ăn tre hơn 10 tiếng đồng hồ."},
+ {c:"jp",f:"🇯🇵",e:"🚄",de:"Japan",vi:"Nhật Bản",fde:"Der Shinkansen-Zug fährt bis zu 320 km/h schnell.",fvi:"Tàu Shinkansen chạy nhanh tới 320 km/giờ."},
+ {c:"id",f:"🇮🇩",e:"🦎",de:"Indonesien",vi:"Indonesia",fde:"Der Komodowaran ist die größte Echse der Welt – bis zu 3 Meter lang.",fvi:"Rồng Komodo là loài thằn lằn lớn nhất thế giới – dài tới 3 mét."},
+ {c:"au",f:"🇦🇺",e:"🦘",de:"Australien",vi:"Úc",fde:"Ein Känguru-Baby ist bei der Geburt nur so groß wie eine Erdnuss.",fvi:"Kangaroo con lúc mới sinh chỉ to bằng hạt lạc."},
+ {c:"br",f:"🇧🇷",e:"🦜",de:"Brasilien",vi:"Brazil",fde:"Im Amazonas-Regenwald leben über 1.000 verschiedene Vogelarten.",fvi:"Rừng Amazon có hơn 1.000 loài chim khác nhau."},
+ {c:"mx",f:"🇲🇽",e:"🦋",de:"Mexiko",vi:"Mexico",fde:"Monarchfalter fliegen jedes Jahr bis zu 4.000 km bis nach Mexiko, um dort zu überwintern.",fvi:"Bướm vua bay tới 4.000 km mỗi năm để sang Mexico tránh rét."},
+ {c:"us",f:"🇺🇸",e:"🗽",de:"USA",vi:"Mỹ",fde:"Die Freiheitsstatue in New York war ein Geschenk aus Frankreich.",fvi:"Tượng Nữ thần Tự do ở New York là quà tặng của nước Pháp."},
+ {c:"ca",f:"🇨🇦",e:"🍁",de:"Kanada",vi:"Canada",fde:"Kanada hat mehr Seen als jedes andere Land der Welt.",fvi:"Canada là nước có nhiều hồ nhất thế giới."},
+ {c:"is",f:"🇮🇸",e:"🌋",de:"Island",vi:"Iceland",fde:"Auf Island gibt es Vulkane und Geysire – heiße Wasserfontänen, die aus der Erde schießen.",fvi:"Ở Iceland có núi lửa và mạch nước phun – cột nước nóng phụt lên từ lòng đất."},
+ {c:"no",f:"🇳🇴",e:"🌞",de:"Norwegen",vi:"Na Uy",fde:"Im Sommer geht im Norden Norwegens die Sonne wochenlang nicht unter.",fvi:"Mùa hè ở miền bắc Na Uy, mặt trời không lặn suốt nhiều tuần."},
+ {c:"gb",f:"🇬🇧",e:"💂",de:"Großbritannien",vi:"Anh",fde:"„Big Ben“ ist eigentlich der Name der großen Glocke im Turm – nicht des Turms.",fvi:"“Big Ben” thật ra là tên quả chuông lớn trong tháp, không phải tên tháp."},
+ {c:"de",f:"🇩🇪",e:"🏠",de:"Deutschland",vi:"Đức",fde:"Willkommen zu Hause! Du bist einmal um die ganze Welt gereist – du bist ein echter Weltreisender! 🏆",fvi:"Chào mừng về nhà! Con đã đi vòng quanh cả thế giới – con là nhà du hành thực thụ! 🏆"}];
+const tripOn=s=>(s.dragon.rounds||0)>=DRAGONS.length;
+function tripStamps(s){if(!s.trip||typeof s.trip!=="object")s.trip={};if(!Array.isArray(s.trip.stamps))s.trip.stamps=[];return s.trip.stamps;}
+const tripDest=s=>TRIP[tripStamps(s).length%TRIP.length];
+const tripFrom=s=>{const n=tripStamps(s).length;return n?TRIP[(n-1)%TRIP.length]:{f:"🏠",de:"Zuhause",vi:"Nhà"};};
+const tripName=d=>LANG==="de"?d.de:d.vi;
 const dName=d=>d.de;   // tên rồng bằng tiếng Đức như lá điều ước (con tự đọc)
 function dStyle(d,big){return d.f==="rainbow"?"animation:rainbow 2.4s linear infinite"+(big?",drise 1.6s cubic-bezier(.2,.8,.2,1)":""):
   `filter:${d.f==="none"?"":d.f+" "}drop-shadow(0 0 ${big?28:10}px ${d.g})${big?` drop-shadow(0 0 60px ${d.g}88)`:""}`;}
@@ -1572,6 +1621,16 @@ function openAlbum(){const s=kidState(),a=dragonAlbum(s),N=DRAGONS.length,got=Ma
   openSheet(`<h3>${KL().albT} (${got}/${N})</h3><div style="font-size:13px;color:#c7ccd6;margin-bottom:10px">${esc(KL().albSub(got,N))}</div>
     <div class="dalb">${tiles}</div><div class="acts"><button class="cancel" id="albClose">✓</button></div>`);
   $("albClose").onclick=close;}
+function openPassport(){const s=kidState(),st=tripStamps(s),N=TRIP.length,got=Math.min(st.length,N);
+  const tiles=TRIP.map((d,i)=>{const seen=st.filter((x,j)=>j%N===i);
+    if(!seen.length)return `<div class="dc lock"><span class="e">❔</span><span class="nm">???</span></div>`;
+    return `<div class="dc" style="border-color:#4da3ff;cursor:pointer" data-tfact="${i}"><span class="e">${d.f}</span><span class="nm" style="color:#9fd0ff">${esc(d.de)}</span><span class="dt">${d.e} ${dmy(seen[0].date)}${seen.length>1?" · "+esc(KL().albSeen(seen.length)):""}</span></div>`;}).join("");
+  openSheet(`<h3>${KL().passT} (${got}/${N})</h3><div style="font-size:13px;color:#c7ccd6;margin-bottom:10px">${esc(KL().passSub(got,N,tripDest(s).de))}</div>
+    <div id="tFact" style="display:none;background:#0e1a28;border:1px solid #2a5a8a;border-radius:12px;padding:10px;margin-bottom:10px;font-size:14px;line-height:1.4"></div>
+    <div class="dalb">${tiles}</div><div class="acts"><button class="cancel" id="passClose">✓</button></div>`);
+  sheet.querySelectorAll("[data-tfact]").forEach(t=>t.onclick=()=>{const d=TRIP[+t.dataset.tfact],f=$("tFact");
+    f.style.display="block";f.innerHTML=`<b>${d.f} ${esc(d.de)}</b> ${d.e}<div lang="de" style="margin-top:4px">${esc(d.fde)}</div>${LANG==="vi"?`<div style="margin-top:4px;color:#c7ccd6">${esc(d.fvi)}</div>`:""}`;});
+  $("passClose").onclick=close;}
 // 💪 Phong độ = trung bình đánh giá của bố mẹ trong 7 ngày gần nhất (ngày chưa đánh giá thì bỏ qua).
 // Chỉ đổi khi bố mẹ đánh giá (nút có khoá bố mẹ) -> con không tự bơm được. Không cho kẹo/sao, chỉ để khoe hào quang.
 const FORM_PT={cn:100,n:75,bt:50,h:25,ch:0};
@@ -1596,9 +1655,11 @@ function pickWish(wid){const s=kidState(),w=s.wishes.find(x=>String(x.id)===Stri
   const today=iso(new Date());
   undoPush("🐉 "+wMain(w));
   s.dragon.base=(s.dragon.base||0)+7*dragonPer(s);   // ⭐ dư giữ sang vòng mới
-  dragonAlbum(s).push({date:today});
-  s.dragon.rounds=(s.dragon.rounds||0)+1;s.dragon.last=today;s.dragon.seen=dragonState(s).n;s.dragon.offer=null;
-  logAdd(s,{delta:1,reason:w.text,k:"summon",n:s.dragon.rounds,cur:"dragon"});
+  if(tripOn(s)){const d=tripDest(s);tripStamps(s).push({c:d.c,date:today});   // ✈️ đến nơi: thêm tem hộ chiếu
+    logAdd(s,{delta:1,reason:w.text,k:"trip",c:d.c,n:tripStamps(s).length,cur:"dragon"});}
+  else{dragonAlbum(s).push({date:today});s.dragon.rounds=(s.dragon.rounds||0)+1;
+    logAdd(s,{delta:1,reason:w.text,k:"summon",n:s.dragon.rounds,cur:"dragon"});}
+  s.dragon.last=today;s.dragon.seen=dragonState(s).n;s.dragon.offer=null;
   const ws=Math.max(0,Math.round(w.sao||0)),wk=Math.max(0,Math.round(w.keo||0));
   if(ws){s.sao=(s.sao||0)+ws;logAdd(s,{delta:ws,reason:w.text,k:"wish",cur:"sao"});}   // ⭐ từ rồng không cộng vào tổng đã kiếm (khỏi tự nuôi ngọc)
   if(wk){s.keo=(s.keo||0)+wk;logAdd(s,{delta:wk,reason:w.text,k:"wish",cur:"keo"});}
@@ -1613,10 +1674,15 @@ function wishDone(id){const s=kidState(),p=(s.dragon.pending||[]).find(x=>String
 function showDragon(round,offer){
   const say=KL().dragonSay,msg=say[Math.floor(Math.random()*say.length)];
   const ov=document.createElement("div");ov.id="dragonOv";ov.lang="de";
+  const s0=kidState(),trip=tripOn(s0),td=trip?tripDest(s0):null,tn=trip?tripStamps(s0).length+1:0;
   const dg=dragonOf(round),isNew=round<=DRAGONS.length;
-  ov.innerHTML=`<div class="dbig" style="${dStyle(dg,true)}">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div>
+  ov.innerHTML=(trip?`<div class="dbig" style="filter:drop-shadow(0 0 28px #4da3ff) drop-shadow(0 0 60px #ffd84d88)">${td.f}</div><div class="dtitle">${esc(KL().tripCome(td.de))}</div>
+    <div class="dname">${tn<=TRIP.length?`<b>${esc(KL().albNew)}</b>`:""}${td.e} ${esc(KL().tripStamp(tn))}</div>
+    <div class="dsay">${esc(td.fde)}${LANG==="vi"?`<div style="font-size:14px;font-weight:400;opacity:.8;margin-top:6px" lang="vi">${esc(td.fvi)}</div>`:""}</div>
+    <div class="dhint">${esc(KL().tripPick)}</div>`
+   :`<div class="dbig" style="${dStyle(dg,true)}">🐉</div><div class="dtitle">${esc(KL().dragonCome(round))}</div>
     <div class="dname">${isNew?`<b>${esc(KL().albNew)}</b>`:""}${esc(dName(dg))}</div><div class="dsay">${esc(msg)}</div>
-    <div class="dhint">${esc(KL().dragonPick)}</div>
+    <div class="dhint">${esc(KL().dragonPick)}</div>`)+`
     <div class="dcards">${offer.map((w,i)=>`<button class="dcard" data-pick="${esc(w.id)}" style="--wc:${esc(w.c||"#ffb340")};animation-delay:${2.5+i*.25}s">${w.e?`<span class="e">${esc(w.e)}</span>`:""}<span class="nm">${esc(wName(w,true))}</span>${wTag(w)}</button>`).join("")}</div>`;
   document.body.appendChild(ov);playSound('dragon');setTimeout(triggerConfetti,1300);
   let gone=false;
@@ -1627,7 +1693,10 @@ function showDragon(round,offer){
     for(let i=0;i<7;i++){const a=i/7*Math.PI*2+Math.random()*.4,b=document.createElement("div");b.className="fly";
       b.style.setProperty("--dx",Math.round(Math.cos(a)*innerWidth*.7)+"px");b.style.setProperty("--dy",Math.round(Math.sin(a)*innerHeight*.7)+"px");ov.appendChild(b);}
     playSound('success');
-    setTimeout(()=>{ov.remove();kidCheer=KL().wishCheer(wName(w,true),(w.keo||0)+(w.sao||0));renderRewardAll();},950);});}
+    setTimeout(()=>{ov.remove();const s1=kidState(),k=(w.keo||0)+(w.sao||0);
+      kidCheer=trip?KL().tripCheer(wName(w,true),k,tripDest(s1).de)
+        :KL().wishCheer(wName(w,true),k)+(tripOn(s1)&&!tripStamps(s1).length?" "+KL().tripStart:"");   // rồng thứ 12 -> bắt đầu du lịch
+      renderRewardAll();},950);});}
 function logAdd(s,o){s.keoLog.unshift(Object.assign({date:iso(new Date()),ts:Date.now()},o));}
 // Chuỗi lý do cũ (đã lưu trong nhật ký trước bản này) — để nhận ra & gộp các cặp "làm / hủy"
 const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nhắc","Checkliste fertig — allein","Checkliste fertig — mit Erinnerung"],
@@ -2198,6 +2267,7 @@ function logReason(e){
   if(e.k==="hand2sao")return L().rsHand2Sao;
   if(e.k==="debtclear")return L().rsDebtClear;
   if(e.k==="weekconv")return L().rsWeekConv;
+  if(e.k==="trip"){const d=TRIP.find(x=>x.c===e.c);return L().rsTrip(d?d.f+" "+tripName(d):"",e.n||1)+(e.reason?": "+wReason(e.reason):"");}
   if(e.k==="summon")return L().rsSummon(e.n||1)+(e.reason?": "+wReason(e.reason):"");
   if(e.k==="wish")return L().rsWish(wReason(e.reason));
   if(e.k==="wishdone")return L().rsWishDone(wReason(e.reason));
@@ -2333,7 +2403,7 @@ function openStats(){
   const tile=(v,l)=>`<div style="flex:1 1 110px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800">${v}</div><div style="font-size:11.5px;color:var(--mut);margin-top:2px">${l}</div></div>`;
   const sumBox=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px">${
     tile("⭐ "+(s.saoLife||0),L().statsLife)+tile(fl.split(" ")[0]+" "+fm.pct+"%",L().statsForm(fl.slice(fl.indexOf(" ")+1)))+
-    tile("🐉 "+(s.dragon.rounds||0),L().statsDragon(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length))+tile("✋ "+handAll,L().statsHandAll)}</div>`;
+    tile("🐉 "+(s.dragon.rounds||0),L().statsDragon(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length))+(tripOn(s)?tile("✈️ "+tripStamps(s).length,L().statsTrip(TRIP.length)):"")+tile("✋ "+handAll,L().statsHandAll)}</div>`;
   openSheet(`<h3>${L().statsT}</h3>
     <div class="lbl">${L().statsSum}</div>${sumBox}
     <div class="lbl">${L().statsSao}</div>${saoChart}
@@ -2646,8 +2716,17 @@ const KX={
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
    dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per} ⭐ hoặc ✋ là có thêm 1 viên ngọc`,
    albBtn:(n,t)=>`📖 Album rồng (${n}/${t})`, albT:"📖 Album rồng của con", albNew:"MỚI",
-   albSub:(n,t)=>n>=t?`Con đã sưu tập đủ ${t} con rồng! Gọi tiếp để gặp lại các bạn rồng nhé.`:`Mỗi lần gọi Rồng thần sẽ gặp một con rồng màu mới. Còn ${t-n} con chưa gặp!`,
+   albSub:(n,t)=>n>=t?`Con đã sưu tập đủ ${t} con rồng! Rồng thần tặng con chuyến bay ✈️ vòng quanh thế giới.`:`Mỗi lần gọi Rồng thần sẽ gặp một con rồng màu mới. Còn ${t-n} con chưa gặp!`,
    albSeen:n=>n>1?`đã gặp ${n} lần`:"",
+   tripT:"✈️ Vòng quanh thế giới · 7 chặng bay đến nước tiếp theo",
+   tripNext:(d,i,rem)=>`✈️ Bay tới ${d}: còn ${rem}⭐ nữa xong chặng ${i}/7`, tripReady:d=>`🛬 Sắp tới ${d} rồi! Hạ cánh thôi ✨`,
+   tripBtn:d=>`🛬 Hạ cánh ở ${d}!`, tripRule:per=>`Cứ kiếm được ${per} ⭐ hoặc ✋ là bay thêm 1 chặng`,
+   passBtn:(n,t)=>`🛂 Hộ chiếu (${n}/${t} tem)`, passT:"🛂 Hộ chiếu của con",
+   passSub:(n,t,d)=>n>=t?`Con đã đi vòng quanh thế giới! Bay tiếp vòng mới nhé.`:`Mỗi nước con đến là 1 con tem. Chạm vào tem để đọc điều thú vị. Điểm đến tiếp theo: ${d}`,
+   tripCome:d=>`Willkommen in ${d}!`, tripStamp:n=>`Tem số ${n}`, tripPick:"Chọn 1 món quà du lịch:",
+   tripStep:(n,d)=>`✈️ Xong chặng ${n}/7 trên đường tới ${d}!`, tripAll:d=>`🛬 Đủ 7 chặng! Hạ cánh ở ${d} thôi con!`,
+   tripCheer:(t,k,d)=>`✈️ "${t}" là của con!`+(k?"":" Nhớ nhắc bố mẹ nhé.")+` Điểm đến tiếp theo: ${d}`,
+   tripStart:"📖 Đủ 12 con rồng rồi! Rồng thần tặng con chiếc máy bay ✈️ - chuyến vòng quanh thế giới bắt đầu!",
    formLv:["😵 Hết sức","🙂 Bình thường","💪 Chiến binh","⚡ Siêu Saiyan","⚡⚡ Siêu Saiyan 2","🌟 Siêu Saiyan 3"],
    formSub:f=>`Phong độ 7 ngày: ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run} lần cực ngoan liền`:""),
    formNext:["Ngoan lại vài ngày là hồi sức ngay!","Ngoan đều để thành Chiến binh 💪","Cực ngoan nhiều ngày để biến Siêu Saiyan ⚡",
@@ -2700,8 +2779,17 @@ const KX={
    dragonNext:(i,rem)=>`📡 Kugel-Radar: noch ${rem} ⭐ bis zur ${i}-Sterne-Kugel`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
    dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Für je ${per} verdiente ⭐ oder ✋ gibt es 1 Kugel`,
    albBtn:(n,t)=>`📖 Drachen-Album (${n}/${t})`, albT:"📖 Dein Drachen-Album", albNew:"NEU",
-   albSub:(n,t)=>n>=t?`Du hast alle ${t} Drachen gesammelt! Ruf weiter, um sie wiederzusehen.`:`Bei jedem Ruf kommt ein Drache in einer neuen Farbe. Noch ${t-n} fehlen!`,
+   albSub:(n,t)=>n>=t?`Du hast alle ${t} Drachen gesammelt! Der Drache schenkt dir eine ✈️ Weltreise.`:`Bei jedem Ruf kommt ein Drache in einer neuen Farbe. Noch ${t-n} fehlen!`,
    albSeen:n=>n>1?`${n}× gesehen`:"",
+   tripT:"✈️ Weltreise · 7 Etappen bis zum nächsten Land",
+   tripNext:(d,i,rem)=>`✈️ Flug nach ${d}: noch ${rem}⭐ bis Etappe ${i}/7`, tripReady:d=>`🛬 Gleich in ${d}! Zeit zum Landen ✨`,
+   tripBtn:d=>`🛬 Landen in ${d}!`, tripRule:per=>`Für je ${per} verdiente ⭐ oder ✋ fliegst du 1 Etappe weiter`,
+   passBtn:(n,t)=>`🛂 Reisepass (${n}/${t} Stempel)`, passT:"🛂 Dein Reisepass",
+   passSub:(n,t,d)=>n>=t?`Du bist einmal um die Welt gereist! Weiter geht's mit der nächsten Runde.`:`Jedes Land gibt einen Stempel. Tippe auf einen Stempel für ein spannendes Wissen. Nächstes Ziel: ${d}`,
+   tripCome:d=>`Willkommen in ${d}!`, tripStamp:n=>`Stempel Nr. ${n}`, tripPick:"Wähle ein Reise-Geschenk:",
+   tripStep:(n,d)=>`✈️ Etappe ${n}/7 auf dem Weg nach ${d} geschafft!`, tripAll:d=>`🛬 Alle 7 Etappen! Landen in ${d}!`,
+   tripCheer:(t,k,d)=>`✈️ "${t}" gehört dir!`+(k?"":" Sag Mama oder Papa Bescheid.")+` Nächstes Ziel: ${d}`,
+   tripStart:"📖 Alle 12 Drachen gesammelt! Der Drache schenkt dir ein Flugzeug ✈️ - deine Weltreise beginnt!",
    formLv:["😵 Erschöpft","🙂 Normal","💪 Krieger","⚡ Super-Saiyajin","⚡⚡ Super-Saiyajin 2","🌟 Super-Saiyajin 3"],
    formSub:f=>`Form (7 Tage): ${f.pct}%`+(f.run>=2?` · 🔥 ${f.run}× in Folge sehr brav`:""),
    formNext:["Ein paar brave Tage und du bist wieder fit!","Bleib brav und werde ein Krieger 💪","Viele sehr brave Tage machen dich zum Super-Saiyajin ⚡",
@@ -2773,12 +2861,12 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
       <button class="handbtn" id="kHand" ${hc>=handMax()?'disabled style="background:var(--bd);color:var(--mut);cursor:default"':''}>${hc>=handMax()?KL().handDone:KL().handBtn}</button></div>
    <button class="tauschbtn" id="kTausch">${KL().tauschBtn}</button>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:8px 0 4px">${KL().streak(s.streak||0)}</div>
-   <div class="kidsec">${KL().dragonT}</div>
+   ${tripOn(s)?tripHtml(s,dg):`<div class="kidsec">${KL().dragonT}</div>
    <div class="dragon"><div class="dballs">${[1,2,3,4,5,6,7].map(i=>`<div class="dball${i<=dg.n?' got':''}">${"<i>★</i>".repeat(i)}</div>`).join("")}</div>
      <div class="dprog">${dg.n<7?KL().dragonNext(dg.n+1,dg.rem):KL().dragonReady}</div>
      ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().dragonRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().dragonBtn}</button>`}
      <button class="dalbbtn" id="kAlbum">${KL().albBtn(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length)}</button>
-     ${(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wName(p,true))}`).join("<br>")}</div>`:""}</div>
+     ${pendKid(s)}</div>`}
    <div class="kidavpick" id="kAvPick" hidden>
      ${AVATARS.map(a=>`<span class="${a===s.avatar?'sel':''}" data-av="${a}">${a}</span>`).join("")}
      <div style="width:100%;height:1px;background:var(--bd);margin:6px 0"></div>
@@ -2802,6 +2890,7 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
     el.onclick=hide;setTimeout(hide,7000);}
   if($("kSummon"))$("kSummon").onclick=summonDragon;
   if($("kAlbum"))$("kAlbum").onclick=openAlbum;
+  if($("kPass"))$("kPass").onclick=openPassport;
   $("kHand").onclick=raiseHand;
   P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=needParent(()=>toggleGoal(g.dataset.gk)));
   P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{if(!confirm(LANG==="vi"?"Lưu cảm xúc này?":"Diese Stimmung speichern?"))return;addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;playSound('click');renderKid();});
@@ -2816,6 +2905,16 @@ function openTausch(){const s=kidState(),hn=s.hand.n||0;
     <div class="acts"><button class="cancel" id="tNo">${KL().close}</button></div>`);
   const run=f=>()=>{close();f();};
   $("tSao").onclick=run(convertStars);$("tHand").onclick=run(convertHand);$("tMoney").onclick=run(convertCandyToMoney);$("tNo").onclick=close;}
+const pendKid=s=>(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wName(p,true))}`).join("<br>")}</div>`:"";
+function tripHtml(s,dg){const d=tripDest(s),fr=tripFrom(s),n=tripStamps(s).length;
+  const steps=[1,2,3,4,5,6,7].map(i=>`<span class="tstep${i<=dg.n?" got":""}">${i===dg.n&&dg.n<7?"✈️":i<=dg.n?"●":"○"}</span>`).join("");
+  return `<div class="kidsec">${KL().tripT}</div>
+   <div class="dragon trip"><div class="tpath"><span class="tflag">${fr.f}</span>${dg.n===0?`<span class="tstep got">✈️</span>`:""}${steps}<span class="tflag">${d.f}</span></div>
+     <div class="dprog">${dg.n<7?KL().tripNext(d.de,dg.n+1,dg.rem):KL().tripReady(d.de)}</div>
+     ${dg.n<7?`<div class="dbar"><span style="width:${dg.pct}%"></span></div><div class="drule">${KL().tripRule(dg.per)}</div>`:`<button class="dsummon" id="kSummon">${KL().tripBtn(d.de)}</button>`}
+     <button class="dalbbtn" id="kPass">${KL().passBtn(Math.min(n,TRIP.length),TRIP.length)}</button>
+     <button class="dalbbtn" id="kAlbum" style="min-height:38px;font-size:12.5px;opacity:.85">${KL().albBtn(Math.min(s.dragon.rounds||0,DRAGONS.length),DRAGONS.length)}</button>
+     ${pendKid(s)}</div>`;}
 function enterKidTab(){kidCheer=dragonCheer||"";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
@@ -2862,7 +2961,8 @@ function renderParentReward(){const s=kidState();
   $("evalBtns").innerHTML=L().evalRatings.map(r=>`<button class="gbtn g_${r[0]}${ev&&ev.key===r[0]?' sel':''}" data-eval="${r[0]}">${r[1]}<br>${sgnN(evalDelta(r[0]))}</button>`).join("");
   $("evalStatus").textContent=L().evalStatus(ev?L().evalRatings.find(r=>r[0]===ev.key)[1]:null);
   const dgp=dragonState(s);
-  $("pDragon").innerHTML=`<div class="row">${L().pDragon(dgp.n,dgp.per,s.dragon.rounds||0)}</div>`
+  $("pDragon").innerHTML=(tripOn(s)?`<div class="row">${L().pTrip(dgp.n,dgp.per,tripStamps(s).length,tripName(tripDest(s)))}</div>`
+    :`<div class="row">${L().pDragon(dgp.n,dgp.per,s.dragon.rounds||0)}</div>`)
     +(typeof s.dragon.last==="string"?`<div class="row">${L().pDragonLast(dmy(s.dragon.last))}</div>`:"")
     +((s.dragon.pending||[]).length?`<div class="row" style="color:#ffd98a"><b>${L().pWishPending}</b></div>`+s.dragon.pending.map(p=>`<div class="row" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${p.e?esc(p.e)+" ":""}${esc(wMain(p))} <span style="color:var(--mut)">· ${dmy(p.date)}</span></span><button class="chip" data-wdone="${esc(p.id)}">✓</button></div>`).join(""):"")
     +`<div class="row" style="color:var(--mut);font-size:12.5px">${L().dragonHint}</div>`;
@@ -3082,7 +3182,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateWishes4,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateWishes4,migrateWishes5,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
