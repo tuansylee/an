@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-12·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-12·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -536,6 +536,7 @@ const T={
    h_keo:"🍬 Kẹo (điểm xịn — tiêu ở cửa hàng)", keoUnit:"kẹo đang có",
    gTest:"📝 Đúng hết bài kiểm tra (+{testKeo})", gKonig:"👑 König / nhất lớp (+{konigKeo})", gPay:"🍬 Đã đưa kẹo thật (trừ)",
    gPlus:"＋ Cộng kẹo", gMinus:"－ Trừ kẹo", gReasonTest:"Đúng hết bài kiểm tra", gReasonKonig:"König / nhất lớp",
+   gTestConfirm:"📝 Xác nhận con làm ĐÚNG HẾT bài kiểm tra (không sai lỗi nào)?\n+{testKeo}🍬", gKonigConfirm:"👑 Xác nhận con được làm König / nhất lớp hôm nay?\n+{konigKeo}🍬",
    gReasonPay:"Đã đưa kẹo cho con", gPlusDef:"Cộng tay", gMinusDef:"Trừ tay",
    gAmtAsk:"Số kẹo?", gWhyAsk:"Lý do?",
    sPlus:"＋ Cộng sao", sMinus:"－ Trừ sao", sPlusDef:"Cộng sao tay", sMinusDef:"Trừ sao tay",
@@ -667,6 +668,7 @@ const T={
    h_keo:"🍬 Süßigkeiten (echte Punkte — im Shop ausgeben)", keoUnit:"Süßigkeiten aktuell",
    gTest:"📝 Test fehlerfrei (+{testKeo})", gKonig:"👑 König (+{konigKeo})", gPay:"🍬 Süßigkeit gegeben (−)",
    gPlus:"＋ Plus", gMinus:"－ Minus", gReasonTest:"Test fehlerfrei", gReasonKonig:"König",
+   gTestConfirm:"📝 Test wirklich FEHLERFREI (kein einziger Fehler)?\n+{testKeo}🍬", gKonigConfirm:"👑 Heute wirklich König / Klassenbester?\n+{konigKeo}🍬",
    gReasonPay:"Süßigkeit gegeben", gPlusDef:"Manuell +", gMinusDef:"Manuell −",
    gAmtAsk:"Anzahl?", gWhyAsk:"Grund?",
    sPlus:"＋ Sterne", sMinus:"－ Sterne", sPlusDef:"Manuell Sterne +", sMinusDef:"Manuell Sterne −",
@@ -2170,7 +2172,8 @@ document.addEventListener("click",e=>{
   const ma=e.target.closest("[data-mgadd]");if(ma){mgAdd(ma.dataset.mgadd);return;}
   const me=e.target.closest("[data-mgedit]");if(me){mgEdit(me.dataset.mgedit);return;}
   const md=e.target.closest("[data-mgdel]");if(md){mgDel(md.dataset.mgdel);return;}});
-$("gTest").onclick=needParent(()=>addKeo(Math.round(NUM("testKeo")),L().gReasonTest));$("gKonig").onclick=needParent(()=>addKeo(Math.round(NUM("konigKeo")),L().gReasonKonig));$("gPay").onclick=needParent(payKeo);
+$("gTest").onclick=needParent(()=>{if(confirm(L().gTestConfirm))addKeo(Math.round(NUM("testKeo")),L().gReasonTest);});
+$("gKonig").onclick=needParent(()=>{if(confirm(L().gKonigConfirm))addKeo(Math.round(NUM("konigKeo")),L().gReasonKonig);});$("gPay").onclick=needParent(payKeo);
 $("gPlus").onclick=needParent(()=>keoManual(1));$("gMinus").onclick=needParent(()=>keoManual(-1));$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
 
