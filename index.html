@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-12·3";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-12·4";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1393,7 +1393,6 @@ function defaultWishes(){
   return [
     {id:"x1",e:"🌟",text:"Thưởng 5 sao",de:"5 Sterne extra",sao:5,keo:0,w:4,c:"#d9a520"},
     {id:"x2",e:"🦉",text:"10 phút Duolingo",de:"10 Minuten Duolingo",sao:0,keo:0,w:2,c:"#4caf2a"},
-    {id:"x3",e:"🍨",text:"Đi siêu thị chọn mua món tráng miệng",de:"Im Supermarkt einen Nachtisch aussuchen",sao:0,keo:0,w:2,c:"#e05a9a"},
     {id:"x4",e:"🗺️",text:"Chọn địa điểm đi chơi cuối tuần",de:"Den Ausflugsort am Wochenende aussuchen",sao:0,keo:0,w:2,c:"#3f8fd0"},
     {id:"x5",e:"🎰",text:"Jackpot: 3 kẹo",de:"Jackpot: 3 Süßigkeiten",sao:0,keo:3,w:1,c:"#9b5de5"}];
 }
@@ -1404,8 +1403,14 @@ const wMain=w=>wName(w,LANG==="de"),wSub=w=>wName(w,LANG!=="de");
 // Lần 2: đổi chữ 2 lá tráng miệng / đi chơi (nếu chưa sửa tay)
 function migrateWishes3(){const s=kidState();if(s.dragon.w3)return;
   const d=defaultWishes();["x3","x4"].forEach(id=>{const w=s.wishes.find(x=>x.id===id),n=d.find(x=>x.id===id);
-    if(w&&(w.text==="Con được tự chọn món tráng miệng"||w.text==="Con chọn chỗ đi chơi cuối tuần")){w.text=n.text;w.de=n.de;}});
+    if(w&&n&&(w.text==="Con được tự chọn món tráng miệng"||w.text==="Con chọn chỗ đi chơi cuối tuần")){w.text=n.text;w.de=n.de;}});
   s.dragon.w3=1;kidSave(s);}
+// Lần 3: bỏ lá "đi siêu thị chọn món tráng miệng" (con chọn đồ quá ngọt, vừa nhổ răng). Điều ước đã rút mà chưa thực hiện thì để bố mẹ quyết
+const SWEET_WISH=["Đi siêu thị chọn mua món tráng miệng","Con được tự chọn món tráng miệng"];
+function migrateWishes4(){const s=kidState();if(s.dragon.w4)return;
+  const bad=w=>w&&(w.id==="x3"||SWEET_WISH.includes(w.text));
+  if(Array.isArray(s.dragon.offer)&&s.dragon.offer.some(id=>bad(s.wishes.find(w=>String(w.id)===id))))s.dragon.offer=null;
+  s.wishes=s.wishes.filter(w=>!bad(w));s.dragon.w4=1;kidSave(s);}
 function migrateWishes2(){const s=kidState();if(s.dragon.w2)return;s.wishes=defaultWishes();s.dragon.offer=null;s.dragon.w2=1;kidSave(s);}
 function drawWishes(s){const pool=s.wishes.slice(),out=[];
   while(out.length<3&&pool.length){const tot=pool.reduce((t,w)=>t+Math.max(1,Math.round(w.w||1)),0);let r=Math.random()*tot,i=0;
@@ -1492,7 +1497,7 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.wishes))s.wishes=defaultWishes();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
-  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1};
+  if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1,w4:1};
   s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   if(s.formSeen==null)try{s.formSeen=formState(s).lv;}catch(e){}   // lần đầu: không ăn mừng cấp sẵn có
@@ -3077,7 +3082,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateWishes4,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
