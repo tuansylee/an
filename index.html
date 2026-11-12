@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-12·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-12·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -579,7 +579,9 @@ const T={
    acariBreak:(rem,pd)=>`Còn ~${rem} viên · ${pd} viên/ngày`, acariSetup:"Chưa thiết lập kho — bấm bên dưới để nhập số viên.",
    acariAsk:"Mua thêm mấy hộp?", acariPpb:"Mỗi hộp mấy viên?", acariPerDay:"Dùng mấy viên/ngày? (vd 2 = bố + con)",
    acariRemind:d=>`💊 Acarizax sắp hết — còn ~${d} ngày, nên đặt mua thêm.`,
-   undoBtn:l=>`↩ Hoàn tác: ${l}`, undoConfirm:l=>`Hoàn tác thao tác gần nhất (${l})?\nSao/kẹo/tiền sẽ trở về trạng thái trước đó.`, undoDone:"↺ Đã hoàn tác.",
+   undoBtn:l=>`↩ Hoàn tác: ${l}`, undoConfirm:l=>`Hoàn tác thao tác gần nhất (${l})?\nSao/kẹo/tiền sẽ trở về trạng thái trước đó.`, undoDone:"↺ Đã hoàn tác.", undoExpired:"↩ Đã quá {undoMin} phút - không hoàn tác được nữa. Bố mẹ sửa bằng nút +/− nhé.",
+   undoGateT:"🔒 Câu hỏi cho bố mẹ", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"Đặt 🔒 mã bố mẹ trong ⚙️ để khoá hẳn nút ↩.", undoGateWrong:"Sai rồi - thử câu khác", undoGateOk:"OK",
+   rsUndo:l=>`↺ Đã hoàn tác: ${l}`,
    rsCheckSelf:"Checklist xong — tự làm", rsCheckHelp:"Checklist xong — có nhắc", rsCheckUndo:"Bỏ tick checklist",
    rsEval:n=>`Đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
    importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
@@ -604,16 +606,16 @@ const T={
    rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, mgSecDragon:"🐉 Ngọc rồng",
    rsHand2Sao:"✋ dư cuối tuần → ⭐", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
    ruleGroups:[["✋ Giơ tay & 🎮 game",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sao",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
-     ["🍬 Kẹo & 💶 tiền",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin"]]],
+     ["🍬 Kẹo & 💶 tiền",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin","undoMin"]]],
    mgSecRules:"🔧 Luật & con số (chạm ✏️ để chỉnh)", ruleEval:n=>`⭐ Đánh giá "${n}"`,
    rules:{handMax:"✋ Số lần giơ tay được thưởng mỗi ngày",gameMin:"🎮 Phút game tối đa mỗi ngày",gameExtra:"🎮 Nút \"bố mẹ cho thêm\" (phút mỗi lần)",
      chkSelf:"📝 Checklist tự làm hết (+⭐)",chkHelp:"📝 Checklist có nhắc (+⭐)",goalStars:"🎯 Mỗi mục tiêu tuần (+⭐)",
      testKeo:"📝 Đúng hết bài kiểm tra (+🍬)",konigKeo:"👑 König / nhất lớp (+🍬)",saoPerKeo:"🔄 Số ⭐ đổi được 1🍬",handPerKeo:"🔄 Số ✋ đổi được 1🍬",
      keoEuro:"💶 1🍬 đổi được bao nhiêu €",allowance:"💶 Tiền tiêu vặt mỗi thứ Hai (€)",interest:"💶 Lãi tiết kiệm (%/năm)",
-     pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",
+     pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",undoMin:"↩ Chỉ hoàn tác được trong (phút) sau thao tác",
      formTired:"😵 Phong độ dưới % là Hết sức",formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
    rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Thứ Hai tự đổi ⭐ → 🍬 ({saoPerKeo}:1, ✋ dư luôn thành ⭐): <b>${on?"BẬT":"TẮT"}</b>`,
    mgHoliday:on=>`🏖️ Chế độ nghỉ lễ (chơi game không cần ✋): <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
@@ -708,7 +710,9 @@ const T={
    acariBreak:(rem,pd)=>`~${rem} Tabletten · ${pd}/Tag`, acariSetup:"Noch nicht eingerichtet — unten Tablettenzahl eingeben.",
    acariAsk:"Wie viele Packungen?", acariPpb:"Tabletten pro Packung?", acariPerDay:"Tabletten pro Tag? (z.B. 2 = Papa + Kind)",
    acariRemind:d=>`💊 Acarizax fast leer — noch ~${d} Tage, bitte nachbestellen.`,
-   undoBtn:l=>`↩ Rückgängig: ${l}`, undoConfirm:l=>`Letzte Aktion rückgängig machen (${l})?\nSterne/Süßigkeiten/Geld werden zurückgesetzt.`, undoDone:"↺ Rückgängig gemacht.",
+   undoBtn:l=>`↩ Rückgängig: ${l}`, undoConfirm:l=>`Letzte Aktion rückgängig machen (${l})?\nSterne/Süßigkeiten/Geld werden zurückgesetzt.`, undoDone:"↺ Rückgängig gemacht.", undoExpired:"↩ Mehr als {undoMin} Min. her - nicht mehr rückgängig. Bitte mit +/− korrigieren.",
+   undoGateT:"🔒 Frage für Eltern", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"In ⚙️ einen 🔒 Eltern-Code setzen, um ↩ ganz zu sperren.", undoGateWrong:"Falsch - neue Frage", undoGateOk:"OK",
+   rsUndo:l=>`↺ Rückgängig: ${l}`,
    rsCheckSelf:"Checkliste fertig — allein", rsCheckHelp:"Checkliste fertig — mit Erinnerung", rsCheckUndo:"Checkliste zurückgenommen",
    rsEval:n=>`Bewertung: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
    importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
@@ -733,16 +737,16 @@ const T={
    rsSummon:n=>`🐉 Drache gerufen (${n}.)`, mgSecDragon:"🐉 Drachenkugeln",
    rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
    ruleGroups:[["✋ Melden & 🎮 Videospiel",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sterne",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
-     ["🍬 Süßigkeiten & 💶 Geld",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin"]]],
+     ["🍬 Süßigkeiten & 💶 Geld",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin","undoMin"]]],
    mgSecRules:"🔧 Regeln & Zahlen (✏️ zum Ändern)", ruleEval:n=>`⭐ Bewertung "${n}"`,
    rules:{handMax:"✋ Belohnte Meldungen pro Tag",gameMin:"🎮 Max. Spielminuten pro Tag",gameExtra:"🎮 Button \"Eltern erlauben extra\" (Min. pro Tippen)",
      chkSelf:"📝 Checkliste ganz allein (+⭐)",chkHelp:"📝 Checkliste mit Erinnerung (+⭐)",goalStars:"🎯 Pro Wochenziel (+⭐)",
      testKeo:"📝 Test fehlerfrei (+🍬)",konigKeo:"👑 König (+🍬)",saoPerKeo:"🔄 ⭐ für 1🍬",handPerKeo:"🔄 ✋ für 1🍬",
      keoEuro:"💶 1🍬 ist wie viel €",allowance:"💶 Taschengeld jeden Montag (€)",interest:"💶 Sparzins (%/Jahr)",
-     pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",
+     pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",undoMin:"↩ Rückgängig nur innerhalb (Min.) nach der Aktion",
      formTired:"😵 Form unter % = Erschöpft",formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
    rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
    mgAutoConv:on=>`🔄 Montags ⭐ → 🍬 ({saoPerKeo}:1, ✋-Rest wird immer ⭐): <b>${on?"AN":"AUS"}</b>`,
    mgHoliday:on=>`🏖️ Ferienmodus (Videospiel ohne ✋): <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
@@ -774,7 +778,7 @@ const T={
 /* ============ 🔧 Luật & con số: chỉnh ở ⚙️ → "🔧 Luật & con số" (lưu fam.cfg, có trong backup) ============ */
 const CFG_KEY="fam.cfg";
 const CFG_DEF={handMax:3,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
-  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,
+  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,undoMin:10,
   formTired:35,formWarrior:70,formSS:87,formSS2:95,formSS3:10};
 const CFG_EURO=["keoEuro","allowance","pfandSelf","pfandDad"];   // hiện 2 số lẻ
 let _cfg=null;
@@ -1685,9 +1689,27 @@ function undoPush(label,arch){
   a.push({ts:Date.now(),label:String(label||"").slice(0,60),data:localStorage.getItem(KIDKEY)||"{}",arch:arch?1:0});
   while(a.length>5)a.shift();
   sv(UNDO_KEY,a);}
+// Chống lạm dụng ↩ (con mua game rồi bấm ↩ lấy lại kẹo): chỉ hoàn tác thao tác trong {undoMin} phút gần nhất,
+// và LẦN NÀO cũng phải nhập mã bố mẹ (kể cả đang mở khoá). Chưa đặt mã -> câu hỏi nhân khó cho trẻ. Mỗi lần ↩ ghi vào Lịch sử.
+const undoMs=()=>Math.max(1,NUM("undoMin"))*60e3;
+function undoLast(){const a=ld(UNDO_KEY),l=a[a.length-1];if(!l)return null;const age=Date.now()-(l.ts||0);return age>=0&&age<=undoMs()?l:null;}
+function parentGate(onOk){if(pinCfg()){askPin(onOk);return;}
+  const q=()=>[12+Math.floor(Math.random()*8),12+Math.floor(Math.random()*8)];   // 12–19 × 12–19: vượt bảng cửu chương
+  let [x,y]=q();
+  openSheet(`<h3>${L().undoGateT}</h3><div id="gQ" style="font-size:26px;font-weight:700;text-align:center;margin:6px 0">${L().undoGateQ(x,y)}</div>
+    <input id="gIn" type="text" inputmode="numeric" autocomplete="off" style="font-size:22px;text-align:center">
+    <div class="lbl" id="gErr" style="color:var(--r);min-height:1.2em;text-transform:none"></div>
+    <div style="font-size:12px;color:var(--mut);margin:4px 0 8px">${L().undoGateHint}</div>
+    <div class="acts"><button class="cancel" id="gNo">${L().cancel}</button><button class="save" id="gOk">${L().undoGateOk}</button></div>`);
+  const go=()=>{if(Number(($("gIn").value||"").trim())===x*y){close();onOk();return;}
+    [x,y]=q();$("gQ").textContent=L().undoGateQ(x,y);$("gErr").textContent=L().undoGateWrong;$("gIn").value="";$("gIn").focus();};
+  $("gOk").onclick=go;$("gIn").onkeydown=e=>{if(e.key==="Enter")go();};$("gNo").onclick=close;
+  setTimeout(()=>$("gIn")&&$("gIn").focus(),50);}
+function undoTap(){if(!undoLast()){alert(L().undoExpired);renderParentReward();return;}parentGate(undoPop);}
 function undoPop(){
   const a=ld(UNDO_KEY);if(!a.length)return;
   const last=a[a.length-1];
+  if(!undoLast()){alert(L().undoExpired);renderParentReward();return;}   // hết hạn trong lúc đang nhập mã
   const m=Math.round((Date.now()-(last.ts||Date.now()))/6e4),age=m<60?m+"′":m<1440?Math.round(m/60)+"h":Math.round(m/1440)+(LANG==="vi"?" ngày":" Tg.");
   if(!confirm(L().undoConfirm(last.label+" · "+age)))return;
   a.pop();sv(UNDO_KEY,a);
@@ -1699,6 +1721,10 @@ function undoPop(){
     if(cur.dragon&&old.dragon&&cur.dragon.per&&cur.dragon.per!==old.dragon.per){   // số ⭐/viên đã đổi sau đó: giữ số mới, tính lại mốc như khi đổi trong ⚙️
       const st=dragonState(old),n=Math.max(1,Math.round(cur.dragon.per)),left=Math.max(0,(old.saoLife||0)-(old.dragon.base||0)-st.n*st.per);
       old.dragon.per=n;old.dragon.base=(old.saoLife||0)-st.n*n-Math.min(left,n-1);old.dragon.seen=st.n;}
+    // Ghi lại lần ↩ này vào Lịch sử, giữ cả các dòng ↩ trước đó (bản cũ không có chúng)
+    const oldLog=Array.isArray(old.keoLog)?old.keoLog:[],had=new Set(oldLog.filter(e=>e&&e.k==="undo").map(e=>e.ts));
+    const prevU=(Array.isArray(cur.keoLog)?cur.keoLog:[]).filter(e=>e&&e.k==="undo"&&!had.has(e.ts));
+    old.keoLog=[{date:iso(new Date()),ts:Date.now(),delta:0,reason:last.label,k:"undo",cur:"undo"}].concat(prevU,oldLog);
     data=JSON.stringify(old);}catch(e){}
   try{localStorage.setItem(KIDKEY,data);
     if(last.arch){const b=localStorage.getItem(ARCH_BAK);if(b!==null){localStorage.setItem(ARCH_KEY,b);localStorage.removeItem(ARCH_BAK);}}}catch(e){storageFull(e);}
@@ -2156,6 +2182,7 @@ const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬",dragon:"🐉"};
 // Lý do lưu bằng tên tiếng Việt của điều ước -> hiện theo ngôn ngữ đang xem nếu còn trong danh sách
 function wReason(r){r=r||"";if(LANG==="de"){const w=(kidState().wishes||[]).find(x=>x.text===r);if(w&&w.de)return w.de;}return T_val(r);}
 function logReason(e){
+  if(e.k==="undo")return L().rsUndo(e.reason||"");
   if(e.k==="eval"&&e.key){const r=L().evalRatings.find(x=>x[0]===e.key);if(r)return L().rsEval(r[1]);}
   if(e.k==="check")return e.self?L().rsCheckSelf:L().rsCheckHelp;
   if(e.k==="hand")return L().rsHand;
@@ -2184,6 +2211,7 @@ function histEntries(){
     if(prev&&e.ts&&prev.ts&&Math.abs(prev.ts-e.ts)<2000&&prev.reason===e.reason&&prev.k===e.k&&prev.date===e.date&&!prev.deltas.some(x=>x.cur===cur)){
       prev.deltas.push({cur,delta:v});prev.parts.unshift(dHtml(e));
       prev.html=prev.parts.join(" ")+" "+esc(logReason(e));return;}
+    if(e.k==="undo"){prev=null;out.push({date:e.date,tm:tmOf(e),cat:"diem",rec:-i,deltas:[],html:`<span style="color:#ffd98a">${esc(logReason(e))}</span>`});return;}
     if(cur==="dragon"){prev=null;out.push({date:e.date,tm:tmOf(e),cat:"diem",rec:-i,deltas:[],html:esc(logReason(e))});return;}
     prev={date:e.date,tm:tmOf(e),cat:"diem",rec:-i,ts:e.ts,reason:e.reason,k:e.k,deltas:[{cur,delta:v}],parts:[dHtml(e)],
       html:dHtml(e)+" "+esc(logReason(e))};
@@ -2783,9 +2811,10 @@ function openTausch(){const s=kidState(),hn=s.hand.n||0;
 function enterKidTab(){kidCheer=dragonCheer||"";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
-  const undoA=ld(UNDO_KEY),lastU=undoA[undoA.length-1];
+  const lastU=undoLast();   // quá {undoMin} phút -> nút ↩ biến mất
+  clearTimeout(renderParentReward.t);if(lastU)renderParentReward.t=setTimeout(renderParentReward,Math.max(1e3,undoMs()-(Date.now()-lastU.ts)+500));
   $("undoBar").innerHTML=lastU?`<button class="critbtn" id="undoBtn" style="margin:6px 0 0;color:#ffd98a;border-color:#6a5520">${esc(L().undoBtn(lastU.label))}</button>`:"";
-  if($("undoBtn"))$("undoBtn").onclick=needParent(undoPop);
+  if($("undoBtn"))$("undoBtn").onclick=undoTap;
   renderPinBar();
   $("histGoPts").textContent=L().histGoPts;
   $("h_sao").textContent=L().h_sao;$("h_dragon").textContent=L().h_dragon;$("h_keo").textContent=L().h_keo;
@@ -2989,7 +3018,7 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   if($("mgBody"))renderManageBody();}
 // Các con số luật chơi (fam.cfg) — 1 form, không cần sửa code
 const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
-  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],
+  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],["undoMin",1],
   ["formTired",1],["formWarrior",1],["formSS",1],["formSS2",1],["formSS3",1]];
 function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
 function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
@@ -3000,7 +3029,7 @@ function openRules(){
   RULE_FIELDS.filter(x=>!used.has(x[0])).forEach(f=>fields.push(fld(f)));
   openForm({title:L().mgSecRules,plain:true,fields,
     onSave:v=>{const o={};RULE_FIELDS.forEach(([k])=>{const n=v[k];if(n==null||!isFinite(n))return;
-        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
+        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin","undoMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
         if(!CFG_EURO.includes(k)&&k!=="interest")x=Math.round(x);if(x!==CFG_DEF[k])o[k]=x;});
       try{localStorage.setItem(CFG_KEY,JSON.stringify(o));}catch(e){storageFull(e);}
       _cfg=null;renderAll();}});}
