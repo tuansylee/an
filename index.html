@@ -443,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-10-24·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-12·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1664,8 +1664,12 @@ function renderPinBar(){const el=$("pinBar");if(!el)return;
   if($("pinUnlock"))$("pinUnlock").onclick=()=>askPin(()=>{});}
 setInterval(()=>{if(pinCfg()&&unlockUntil&&Date.now()>=unlockUntil){unlockUntil=0;renderPinBar();}},20000);
 // 🍬 Trần kẹo: kẹo vượt trần tự đổi sang tiền tiết kiệm (1🍬 = 0.20€) -> không tích quá nhiều giờ màn hình
-const KEO_CAP_DEF=15;
+const KEO_CAP_DEF=20;
 const keoCap=s=>s.keoCap==null?KEO_CAP_DEF:Math.max(0,Math.round(Number(s.keoCap))||0);
+// Một lần: trần cũ 15🍬 (mặc định trước đây, có thể đã lưu khi bấm ✏️) -> nới lên 20🍬. Trần khác bố mẹ tự đặt thì giữ nguyên
+function migrateKeoCap20(){const s=kidState();if(s.cap20)return;
+  if(s.keoCap!=null&&Math.round(Number(s.keoCap))===15)s.keoCap=KEO_CAP_DEF;
+  s.cap20=1;kidSave(s);}
 function applyKeoCap(s){const cap=keoCap(s);if(!cap||!((s.keo||0)>cap)||!Array.isArray(s.keoLog))return;
   const x=s.keo-cap,eur=Number((x*NUM("keoEuro")).toFixed(2));
   s.keo=cap;s.pocketMoney=Number(((s.pocketMoney||0)+eur).toFixed(4));
@@ -3034,7 +3038,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);
