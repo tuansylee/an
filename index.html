@@ -135,6 +135,8 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .gumbtn:disabled{opacity:.45;cursor:default}
 .hday{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:800;color:var(--fg);letter-spacing:.03em;margin:14px 2px 4px}
 .hday .sum{font-weight:700;color:var(--mut)}
+.hist .row.hurow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hundo{margin-left:auto;border:1px solid #6a5520;background:#1e170a;color:#ffd98a;border-radius:10px;padding:5px 10px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
 .hist .row .tm{color:var(--mut);font-size:12px;margin-right:4px}
 .histtools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px}
 .histtools input{flex:1 1 160px;background:#0c0e12;border:1px solid var(--bd);color:var(--fg);border-radius:10px;padding:10px;font-size:14px;min-width:0}
@@ -351,7 +353,6 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
   <div class="col">
    <button class="critbtn" data-gohist="diem" id="histGoPts" style="margin:0 0 6px;color:#cfe0ff;border-color:#3f6fd0"></button>
    <div id="pinBar"></div>
-   <div id="undoBar"></div>
    <h2 id="h_sao"></h2>
     <div class="gamebox">
       <div class="bignum gold" id="pSao">–</div><div class="gunit" id="pSaoUnit"></div>
@@ -449,7 +450,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-12·5";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-13·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -587,8 +588,7 @@ const T={
    acariAsk:"Mua thêm mấy hộp?", acariPpb:"Mỗi hộp mấy viên?", acariPerDay:"Dùng mấy viên/ngày? (vd 2 = bố + con)",
    acariRemind:d=>`💊 Acarizax sắp hết — còn ~${d} ngày, nên đặt mua thêm.`,
    undoBtn:l=>`↩ Hoàn tác: ${l}`, undoConfirm:l=>`Hoàn tác thao tác gần nhất (${l})?\nSao/kẹo/tiền sẽ trở về trạng thái trước đó.`, undoDone:"↺ Đã hoàn tác.", undoExpired:"↩ Đã quá {undoMin} phút - không hoàn tác được nữa. Bố mẹ sửa bằng nút +/− nhé.",
-   undoGateT:"🔒 Câu hỏi cho bố mẹ", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"Đặt 🔒 mã bố mẹ trong ⚙️ để khoá hẳn nút ↩.", undoGateWrong:"Sai rồi - thử câu khác", undoGateOk:"OK",
-   rsUndo:l=>`↺ Đã hoàn tác: ${l}`,
+   undoGateT:"🔒 Câu hỏi cho bố mẹ", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"Đặt 🔒 mã bố mẹ trong ⚙️ để khoá hẳn nút ↩.", undoGateWrong:"Sai rồi - thử câu khác", undoGateOk:"OK", undoShort:"↩ Hoàn tác",
    rsCheckSelf:"Checklist xong — tự làm", rsCheckHelp:"Checklist xong — có nhắc", rsCheckUndo:"Bỏ tick checklist",
    rsEval:n=>`Đánh giá: ${n}`, rsGoal:t=>`Mục tiêu tuần: ${t}`, rsGoalUndo:t=>`Hủy mục tiêu tuần: ${t}`,
    importOver:"⬇️ Ghi đè toàn bộ", importMerge:"🧩 Gộp — chỉ thêm mục còn thiếu",
@@ -602,7 +602,7 @@ const T={
    statsEval:"🗓️ Lịch đánh giá (10 tuần)", statsEvalNone:"Chưa có dữ liệu đánh giá.",
    histMore:"Xem thêm ▾",
    statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
-   tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử - mọi bản ghi (chỉ xem)",
+   tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử - mọi bản ghi",
    histGoPts:"🕘 Xem toàn bộ lịch sử ⭐✋🍬€", histGoSk:"🕘 Xem toàn bộ lịch sử sức khỏe",
    histAll:"Tất cả", histDiem:"⭐✋🍬€ Điểm", histSk:"🩺 Sức khỏe", histDo:"😴🌡️📈 Đo đạc", histNk:"✨ Nhật ký",
    statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
@@ -720,8 +720,7 @@ const T={
    acariAsk:"Wie viele Packungen?", acariPpb:"Tabletten pro Packung?", acariPerDay:"Tabletten pro Tag? (z.B. 2 = Papa + Kind)",
    acariRemind:d=>`💊 Acarizax fast leer — noch ~${d} Tage, bitte nachbestellen.`,
    undoBtn:l=>`↩ Rückgängig: ${l}`, undoConfirm:l=>`Letzte Aktion rückgängig machen (${l})?\nSterne/Süßigkeiten/Geld werden zurückgesetzt.`, undoDone:"↺ Rückgängig gemacht.", undoExpired:"↩ Mehr als {undoMin} Min. her - nicht mehr rückgängig. Bitte mit +/− korrigieren.",
-   undoGateT:"🔒 Frage für Eltern", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"In ⚙️ einen 🔒 Eltern-Code setzen, um ↩ ganz zu sperren.", undoGateWrong:"Falsch - neue Frage", undoGateOk:"OK",
-   rsUndo:l=>`↺ Rückgängig: ${l}`,
+   undoGateT:"🔒 Frage für Eltern", undoGateQ:(a,b)=>`${a} × ${b} = ?`, undoGateHint:"In ⚙️ einen 🔒 Eltern-Code setzen, um ↩ ganz zu sperren.", undoGateWrong:"Falsch - neue Frage", undoGateOk:"OK", undoShort:"↩ Rückgängig",
    rsCheckSelf:"Checkliste fertig — allein", rsCheckHelp:"Checkliste fertig — mit Erinnerung", rsCheckUndo:"Checkliste zurückgenommen",
    rsEval:n=>`Bewertung: ${n}`, rsGoal:t=>`Wochenziel: ${t}`, rsGoalUndo:t=>`Wochenziel zurückgenommen: ${t}`,
    importOver:"⬇️ Alles überschreiben", importMerge:"🧩 Zusammenführen — nur Fehlendes ergänzen",
@@ -735,7 +734,7 @@ const T={
    statsEval:"🗓️ Bewertungskalender (10 Wochen)", statsEvalNone:"Noch keine Bewertungsdaten.",
    histMore:"Mehr anzeigen ▾",
    statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
-   tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf - alle Einträge (nur Ansicht)",
+   tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf - alle Einträge",
    histGoPts:"🕘 Ganzer Verlauf ⭐✋🍬€", histGoSk:"🕘 Ganzer Gesundheitsverlauf",
    histAll:"Alle", histDiem:"⭐✋🍬€ Punkte", histSk:"🩺 Gesundheit", histDo:"😴🌡️📈 Messungen", histNk:"✨ Tagebuch",
    statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
@@ -1518,7 +1517,7 @@ function kidState(){const s=kidRaw();
   if(!Array.isArray(s.dragon&&s.dragon.pending)&&s.dragon)s.dragon.pending=[];
   // 🐉 tiến độ ngọc rồng = số ⭐ kiếm được (saoLife) kể từ base; bắt đầu từ 0 viên khi mới có tính năng
   if(!s.dragon||typeof s.dragon!=="object")s.dragon={base:s.saoLife||0,per:4,rounds:0,v4:1,w2:1,w3:1,w4:1,w5:1};
-  s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object");
+  s.keoLog=(Array.isArray(s.keoLog)?s.keoLog:[]).filter(e=>e&&typeof e==="object"&&e.k!=="undo");   // dòng "↺ đã hoàn tác" (bản 12/11) không còn dùng
   s.evalHist=s.evalHist||{};s.bestStreak=s.bestStreak||0;
   if(s.formSeen==null)try{s.formSeen=formState(s).lv;}catch(e){}   // lần đầu: không ăn mừng cấp sẵn có
   ensureHandWeek(s);
@@ -1781,11 +1780,11 @@ function parentGate(onOk){if(pinCfg()){askPin(onOk);return;}
     [x,y]=q();$("gQ").textContent=L().undoGateQ(x,y);$("gErr").textContent=L().undoGateWrong;$("gIn").value="";$("gIn").focus();};
   $("gOk").onclick=go;$("gIn").onkeydown=e=>{if(e.key==="Enter")go();};$("gNo").onclick=close;
   setTimeout(()=>$("gIn")&&$("gIn").focus(),50);}
-function undoTap(){if(!undoLast()){alert(L().undoExpired);renderParentReward();return;}parentGate(undoPop);}
+function undoTap(){if(!undoLast()){alert(L().undoExpired);if(TAB==="hist")renderHistList();return;}parentGate(undoPop);}
 function undoPop(){
   const a=ld(UNDO_KEY);if(!a.length)return;
   const last=a[a.length-1];
-  if(!undoLast()){alert(L().undoExpired);renderParentReward();return;}   // hết hạn trong lúc đang nhập mã
+  if(!undoLast()){alert(L().undoExpired);if(TAB==="hist")renderHistList();return;}   // hết hạn trong lúc đang nhập mã
   const m=Math.round((Date.now()-(last.ts||Date.now()))/6e4),age=m<60?m+"′":m<1440?Math.round(m/60)+"h":Math.round(m/1440)+(LANG==="vi"?" ngày":" Tg.");
   if(!confirm(L().undoConfirm(last.label+" · "+age)))return;
   a.pop();sv(UNDO_KEY,a);
@@ -1797,16 +1796,12 @@ function undoPop(){
     if(cur.dragon&&old.dragon&&cur.dragon.per&&cur.dragon.per!==old.dragon.per){   // số ⭐/viên đã đổi sau đó: giữ số mới, tính lại mốc như khi đổi trong ⚙️
       const st=dragonState(old),n=Math.max(1,Math.round(cur.dragon.per)),left=Math.max(0,(old.saoLife||0)-(old.dragon.base||0)-st.n*st.per);
       old.dragon.per=n;old.dragon.base=(old.saoLife||0)-st.n*n-Math.min(left,n-1);old.dragon.seen=st.n;}
-    // Ghi lại lần ↩ này vào Lịch sử, giữ cả các dòng ↩ trước đó (bản cũ không có chúng)
-    const oldLog=Array.isArray(old.keoLog)?old.keoLog:[],had=new Set(oldLog.filter(e=>e&&e.k==="undo").map(e=>e.ts));
-    const prevU=(Array.isArray(cur.keoLog)?cur.keoLog:[]).filter(e=>e&&e.k==="undo"&&!had.has(e.ts));
-    old.keoLog=[{date:iso(new Date()),ts:Date.now(),delta:0,reason:last.label,k:"undo",cur:"undo"}].concat(prevU,oldLog);
     data=JSON.stringify(old);}catch(e){}
   try{localStorage.setItem(KIDKEY,data);
     if(last.arch){const b=localStorage.getItem(ARCH_BAK);if(b!==null){localStorage.setItem(ARCH_KEY,b);localStorage.removeItem(ARCH_BAK);}}}catch(e){storageFull(e);}
   archiveOldLog();   // bản undo cũ có thể còn dòng đã chuyển sang lưu trữ
   try{checkPocketMoneyAllowance();checkPocketMoneyInterest();}catch(e){}   // undo lùi qua thứ Hai/đầu tháng: trả lại tiền tuần/lãi ngay
-  kidCheer=L().undoDone;playSound('click');renderRewardAll();}
+  kidCheer=L().undoDone;playSound('click');renderRewardAll();if(TAB==="hist")renderHistList();}
 function checkPocketMoneyAllowance() {
   const s = kidState();
   const today = new Date();
@@ -2259,7 +2254,6 @@ const CUR_IC={sao:"⭐",hand:"✋",euro:"💶",keo:"🍬",dragon:"🐉"};
 // Lý do lưu bằng tên tiếng Việt của điều ước -> hiện theo ngôn ngữ đang xem nếu còn trong danh sách
 function wReason(r){r=r||"";if(LANG==="de"){const w=(kidState().wishes||[]).find(x=>x.text===r);if(w&&w.de)return w.de;}return T_val(r);}
 function logReason(e){
-  if(e.k==="undo")return L().rsUndo(e.reason||"");
   if(e.k==="eval"&&e.key){const r=L().evalRatings.find(x=>x[0]===e.key);if(r)return L().rsEval(r[1]);}
   if(e.k==="check")return e.self?L().rsCheckSelf:L().rsCheckHelp;
   if(e.k==="hand")return L().rsHand;
@@ -2289,7 +2283,6 @@ function histEntries(){
     if(prev&&e.ts&&prev.ts&&Math.abs(prev.ts-e.ts)<2000&&prev.reason===e.reason&&prev.k===e.k&&prev.date===e.date&&!prev.deltas.some(x=>x.cur===cur)){
       prev.deltas.push({cur,delta:v});prev.parts.unshift(dHtml(e));
       prev.html=prev.parts.join(" ")+" "+esc(logReason(e));return;}
-    if(e.k==="undo"){prev=null;out.push({date:e.date,tm:tmOf(e),cat:"diem",rec:-i,deltas:[],html:`<span style="color:#ffd98a">${esc(logReason(e))}</span>`});return;}
     if(cur==="dragon"){prev=null;out.push({date:e.date,tm:tmOf(e),cat:"diem",rec:-i,deltas:[],html:esc(logReason(e))});return;}
     prev={date:e.date,tm:tmOf(e),cat:"diem",rec:-i,ts:e.ts,reason:e.reason,k:e.k,deltas:[{cur,delta:v}],parts:[dHtml(e)],
       html:dHtml(e)+" "+esc(logReason(e))};
@@ -2328,15 +2321,21 @@ function renderHistList(){
   const sumHtml=d=>{const m=sums[d];if(!m)return "";
     return ["sao","hand","keo","euro"].filter(c=>m[c]).map(c=>{const v=c==="euro"?Number(m[c].toFixed(2)):m[c];
       return `<span style="color:${v>0?'var(--g)':'var(--r)'}">${v>0?"+":""}${v}${c==="euro"?"€":CUR_IC[c]}</span>`;}).join(" · ");};
+  // ↩ Hoàn tác chỉ ở tab Lịch sử: nút nằm ngay trên dòng của thao tác vừa làm (trong {undoMin} phút); không tìm thấy dòng -> 1 dòng ↩ ở đầu
+  const lastU=undoLast(),uRow=lastU?logs.find(e=>e.cat==="diem"&&e.ts&&e.ts>=lastU.ts&&e.ts-lastU.ts<5000):null;
+  clearTimeout(renderHistList.t);if(lastU)renderHistList.t=setTimeout(()=>{if(TAB==="hist")renderHistList();},Math.max(1e3,undoMs()-(Date.now()-lastU.ts)+500));
+  const uBtn=`<button class="hundo" data-hundo="1">${L().undoShort}</button>`;
   let body="",day=null;
   logs.slice(0,histShow).forEach(e=>{
     if(e.date!==day){if(day!==null)body+="</div>";day=e.date;
       body+=`<div class="hday"><span>${esc(histDayLabel(day))}</span><span class="sum">${sumHtml(day)}</span></div><div class="hist">`;}
-    body+=`<div class="row">${e.tm?`<span class="tm">${e.tm}</span>`:""}${e.html}</div>`;});
+    body+=`<div class="row${e===uRow?" hurow":""}">${e.tm?`<span class="tm">${e.tm}</span>`:""}${e.html}${e===uRow?uBtn:""}</div>`;});
   if(day!==null)body+="</div>";
   $("histList").innerHTML=`<div class="legend">${L().histCount(logs.length)}</div>`
+    +(lastU&&!uRow?`<div class="hist"><div class="row hurow">${esc(lastU.label)}${uBtn}</div></div>`:"")
     +(body||`<div class="hist"><div class="row" style="color:var(--mut)">${L().statsNoData}</div></div>`)
     +(logs.length>histShow?`<button class="notebtn" id="histMore">${L().histMore}</button>`:(logs.length?`<div class="empty">${L().histEnd}</div>`:""));
+  $("histList").querySelectorAll("[data-hundo]").forEach(b=>b.onclick=undoTap);
   const more=$("histMore");if(!more)return;
   const next=()=>{histShow+=HIST_PAGE;renderHistList();};
   more.onclick=next;
@@ -2918,10 +2917,6 @@ function tripHtml(s,dg){const d=tripDest(s),fr=tripFrom(s),n=tripStamps(s).lengt
 function enterKidTab(){kidCheer=dragonCheer||"";renderKid();}
 function renderParentReward(){const s=kidState();
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
-  const lastU=undoLast();   // quá {undoMin} phút -> nút ↩ biến mất
-  clearTimeout(renderParentReward.t);if(lastU)renderParentReward.t=setTimeout(renderParentReward,Math.max(1e3,undoMs()-(Date.now()-lastU.ts)+500));
-  $("undoBar").innerHTML=lastU?`<button class="critbtn" id="undoBtn" style="margin:6px 0 0;color:#ffd98a;border-color:#6a5520">${esc(L().undoBtn(lastU.label))}</button>`:"";
-  if($("undoBtn"))$("undoBtn").onclick=undoTap;
   renderPinBar();
   $("histGoPts").textContent=L().histGoPts;
   $("h_sao").textContent=L().h_sao;$("h_dragon").textContent=L().h_dragon;$("h_keo").textContent=L().h_keo;
