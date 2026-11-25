@@ -120,6 +120,7 @@ td.now{outline:2px solid #7da7ff77}.lab{font-size:11px;color:var(--mut);text-ali
 .handbtn{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;width:100%}
 .shopbuy{opacity:.55}
 .wallets4{grid-template-columns:repeat(2,1fr)}
+.wallets3{grid-template-columns:repeat(3,1fr)}
 @media(min-width:700px){.wallets4{grid-template-columns:repeat(4,1fr)}}
 .wallet.whand{background:linear-gradient(155deg,#1b2740,#12182a);border:1px solid var(--blue)}.wallet.whand .n{color:#9cc0ff}
 .wallet.money{background:linear-gradient(155deg,#102a1e,#102216);border:1px solid #3a5a40}.wallet.money .n{color:#5fd08a}
@@ -365,15 +366,9 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
       </div>
       <div id="saoAdjustsContainer" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;width:100%"></div>
     </div>
-   <h2 id="h_hand"></h2>
+   <h2 id="h_game"></h2>
     <div class="gamebox" style="background:linear-gradient(155deg,#1b2740,#12182a);border-color:var(--blue)">
-      <div class="bignum" id="pHand" style="color:#9cc0ff">–</div><div class="gunit" id="pHandUnit"></div>
-      <button class="gumbtn" id="pHandBtn" style="background:var(--blue);color:#fff"></button>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="gumbtn ghost" id="hPlus" style="margin:0;flex:1"></button>
-        <button class="gumbtn ghost" id="hMinus" style="margin:0;flex:1"></button>
-      </div>
-      <div class="gstatus" id="pGameT" style="margin-top:12px"></div>
+      <div class="gstatus" id="pGameT"></div>
       <button class="gumbtn ghost" id="pGameExtra" style="margin-top:6px"></button>
     </div>
    <h2 id="h_dragon"></h2>
@@ -383,8 +378,6 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
    <h2 id="h_keo"></h2>
    <div class="gamebox">
      <div class="bignum gold" id="pKeo">–</div><div class="gunit" id="keoUnit"></div>
-     <button class="gumbtn indigo" id="gTest"></button>
-     <button class="gumbtn gold2" id="gKonig"></button>
      <div style="display:flex;gap:8px;margin-top:8px">
        <button class="gumbtn ghost" id="gPlus" style="margin:0;flex:1"></button>
        <button class="gumbtn ghost" id="gMinus" style="margin:0;flex:1"></button>
@@ -450,7 +443,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-13·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-25·2";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -603,7 +596,7 @@ const T={
    histMore:"Xem thêm ▾",
    statsHealth:"🩺 Sức khỏe dài hạn", statsNose:"🩸 Chảy máu mũi / tuần", statsPain:"🤕 Cơn đau / tuần", statsMood:"🙂 Phân bố cảm xúc", statsTemp:"🌡️ Nhiệt độ 30 ngày", statsGrowth:"📈 Tăng trưởng (cân nặng)",
    tab_hist:"🕘 Lịch sử", histT:"🕘 Lịch sử - mọi bản ghi",
-   histGoPts:"🕘 Xem toàn bộ lịch sử ⭐✋🍬€", histGoSk:"🕘 Xem toàn bộ lịch sử sức khỏe",
+   histGoPts:"🕘 Xem toàn bộ lịch sử ⭐🍬€", histGoSk:"🕘 Xem toàn bộ lịch sử sức khỏe",
    histAll:"Tất cả", histDiem:"⭐✋🍬€ Điểm", histSk:"🩺 Sức khỏe", histDo:"😴🌡️📈 Đo đạc", histNk:"✨ Nhật ký",
    statsMoney:"💶 Tiền tiêu vặt theo thời gian", statsDuty:"🗓️ Ca trực 4 tuần qua", statsNoData:"— chưa có dữ liệu —",
    statsHand:"✋ Giơ tay phát biểu / tuần (8 tuần)",
@@ -612,9 +605,9 @@ const T={
    rsHand:"Giơ tay phát biểu ở lớp", rsHandExp:"✋ hết hạn (hết tuần chưa dùng)",
    rsSummon:n=>`🐉 Gọi Rồng thần (lần ${n})`, rsTrip:(c,n)=>`✈️ Đến ${c} (tem ${n})`,
    pTrip:(n,per,c,d)=>`✈️ Vòng quanh thế giới: chặng <b>${n}/7</b> tới ${d} · ${per}⭐/chặng · đã đến ${c} nước`, statsTrip:t=>`nước đã đến · hành trình ${t} điểm dừng`, mgSecDragon:"🐉 Ngọc rồng",
-   rsHand2Sao:"✋ dư cuối tuần → ⭐", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
-   ruleGroups:[["✋ Giơ tay & 🎮 game",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sao",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
-     ["🍬 Kẹo & 💶 tiền",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin","undoMin"]]],
+   rsHand2Sao:"✋ dư cuối tuần → ⭐", rsHandMig:"🔄 Luật mới: điểm cũ chuyển sang ⭐", h_game:"🎮 Chơi game", rsWeekConv:"🔄 Thứ Hai tự đổi ⭐ → 🍬",
+   ruleGroups:[["🎮 Game",["gameMin","gameExtra"]],["⭐ Sao",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
+     ["🍬 Kẹo & 💶 tiền",["keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Phong độ",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Khoá bố mẹ",["unlockMin","undoMin"]]],
    mgSecRules:"🔧 Luật & con số (chạm ✏️ để chỉnh)", ruleEval:n=>`⭐ Đánh giá "${n}"`,
    rules:{handMax:"✋ Số lần giơ tay được thưởng mỗi ngày",gameMin:"🎮 Phút game tối đa mỗi ngày",gameExtra:"🎮 Nút \"bố mẹ cho thêm\" (phút mỗi lần)",
      chkSelf:"📝 Checklist tự làm hết (+⭐)",chkHelp:"📝 Checklist có nhắc (+⭐)",goalStars:"🎯 Mỗi mục tiêu tuần (+⭐)",
@@ -622,10 +615,10 @@ const T={
      keoEuro:"💶 1🍬 đổi được bao nhiêu €",allowance:"💶 Tiền tiêu vặt mỗi thứ Hai (€)",interest:"💶 Lãi tiết kiệm (%/năm)",
      pfandSelf:"🍾 Tự trả chai Pfand (€)",pfandDad:"🍾 Nhờ bố trả chai (€)",unlockMin:"🔒 Mở khoá bố mẹ trong (phút)",undoMin:"↩ Chỉ hoàn tác được trong (phút) sau thao tác",
      formTired:"😵 Phong độ dưới % là Hết sức",formWarrior:"💪 Phong độ ≥ % thành Chiến binh",formSS:"⚡ Phong độ ≥ % thành Siêu Saiyan",formSS2:"⚡⚡ Phong độ ≥ % thành Siêu Saiyan 2",formSS3:"🌟 Số lần Cực ngoan liền để thành Siêu Saiyan 3"},
-   rulesShort:["✋ tối đa {handMax}/ngày","🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 bài KT +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
-   mgAutoConv:on=>`🔄 Thứ Hai tự đổi ⭐ → 🍬 ({saoPerKeo}:1, ✋ dư luôn thành ⭐): <b>${on?"BẬT":"TẮT"}</b>`,
-   mgHoliday:on=>`🏖️ Chế độ nghỉ lễ (chơi game không cần ✋): <b>${on?"BẬT":"TẮT"}</b>`,
+   rulesShort:["🎮 {gameMin}′/ngày (+{gameExtra}′)","📝 checklist +{chkSelf}/+{chkHelp}⭐","⭐ đánh giá +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
+     "🔄 {saoPerKeo}⭐ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/tuần, lãi {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+   mgAutoConv:on=>`🔄 Thứ Hai tự đổi ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"BẬT":"TẮT"}</b>`,
+   mgHoliday:on=>`🏖️ Chế độ nghỉ lễ: <b>${on?"BẬT":"TẮT"}</b>`,
    pinAskT:"🔒 Nhập mã bố mẹ", pinOpen:"Mở khoá", pinWrong:"Sai mã", pinForgot:"Quên mã?",
    pinForgotHint:"Nhập MÃ KHÔI PHỤC 8 ký tự (được cho lúc đặt mã) thay cho mã.", pinRecovered:"Đã mở bằng mã khôi phục - hãy đặt mã mới.",
    pinSetT:"🔒 Đặt mã bố mẹ", pinNew:"Mã mới (ít nhất 4 ký tự)", pinNew2:"Nhập lại mã", pinBad:"Mã quá ngắn hoặc 2 lần nhập không giống nhau.",
@@ -735,7 +728,7 @@ const T={
    histMore:"Mehr anzeigen ▾",
    statsHealth:"🩺 Gesundheit langfristig", statsNose:"🩸 Nasenbluten / Woche", statsPain:"🤕 Schmerzen / Woche", statsMood:"🙂 Stimmungsverteilung", statsTemp:"🌡️ Temperatur 30 Tage", statsGrowth:"📈 Wachstum (Gewicht)",
    tab_hist:"🕘 Verlauf", histT:"🕘 Verlauf - alle Einträge",
-   histGoPts:"🕘 Ganzer Verlauf ⭐✋🍬€", histGoSk:"🕘 Ganzer Gesundheitsverlauf",
+   histGoPts:"🕘 Ganzer Verlauf ⭐🍬€", histGoSk:"🕘 Ganzer Gesundheitsverlauf",
    histAll:"Alle", histDiem:"⭐✋🍬€ Punkte", histSk:"🩺 Gesundheit", histDo:"😴🌡️📈 Messungen", histNk:"✨ Tagebuch",
    statsMoney:"💶 Taschengeld im Zeitverlauf", statsDuty:"🗓️ Dienste letzte 4 Wochen", statsNoData:"— keine Daten —",
    statsHand:"✋ Meldungen im Unterricht / Woche (8 Wochen)",
@@ -744,9 +737,9 @@ const T={
    rsHand:"Im Unterricht gemeldet", rsHandExp:"✋ verfallen (Woche vorbei, nicht genutzt)",
    rsSummon:n=>`🐉 Drache gerufen (${n}.)`, rsTrip:(c,n)=>`✈️ Angekommen: ${c} (Stempel ${n})`,
    pTrip:(n,per,c,d)=>`✈️ Weltreise: Etappe <b>${n}/7</b> nach ${d} · ${per}⭐/Etappe · ${c} Länder besucht`, statsTrip:t=>`Länder besucht · Reise mit ${t} Stationen`, mgSecDragon:"🐉 Drachenkugeln",
-   rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
-   ruleGroups:[["✋ Melden & 🎮 Videospiel",["handMax","gameMin","gameExtra","handPerKeo"]],["⭐ Sterne",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
-     ["🍬 Süßigkeiten & 💶 Geld",["testKeo","konigKeo","keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin","undoMin"]]],
+   rsHand2Sao:"✋ Rest am Wochenende → ⭐", rsHandMig:"🔄 Neue Regeln: alte Punkte in ⭐ umgewandelt", h_game:"🎮 Videospiel", rsWeekConv:"🔄 Montag: ⭐ → 🍬 getauscht",
+   ruleGroups:[["🎮 Videospiel",["gameMin","gameExtra"]],["⭐ Sterne",["chkSelf","chkHelp","ev_cn","ev_n","ev_bt","ev_h","ev_ch","goalStars","saoPerKeo"]],
+     ["🍬 Süßigkeiten & 💶 Geld",["keoEuro","allowance","interest","pfandSelf","pfandDad"]],["💪 Form",["formTired","formWarrior","formSS","formSS2","formSS3"]],["🔒 Elternsperre",["unlockMin","undoMin"]]],
    mgSecRules:"🔧 Regeln & Zahlen (✏️ zum Ändern)", ruleEval:n=>`⭐ Bewertung "${n}"`,
    rules:{handMax:"✋ Belohnte Meldungen pro Tag",gameMin:"🎮 Max. Spielminuten pro Tag",gameExtra:"🎮 Button \"Eltern erlauben extra\" (Min. pro Tippen)",
      chkSelf:"📝 Checkliste ganz allein (+⭐)",chkHelp:"📝 Checkliste mit Erinnerung (+⭐)",goalStars:"🎯 Pro Wochenziel (+⭐)",
@@ -754,10 +747,10 @@ const T={
      keoEuro:"💶 1🍬 ist wie viel €",allowance:"💶 Taschengeld jeden Montag (€)",interest:"💶 Sparzins (%/Jahr)",
      pfandSelf:"🍾 Pfand selbst abgegeben (€)",pfandDad:"🍾 Pfand durch Papa (€)",unlockMin:"🔒 Eltern-Entsperrung (Min.)",undoMin:"↩ Rückgängig nur innerhalb (Min.) nach der Aktion",
      formTired:"😵 Form unter % = Erschöpft",formWarrior:"💪 Form ≥ % für Krieger",formSS:"⚡ Form ≥ % für Super-Saiyajin",formSS2:"⚡⚡ Form ≥ % für Super-Saiyajin 2",formSS3:"🌟 \"Sehr brav\" in Folge für Super-Saiyajin 3"},
-   rulesShort:["✋ max. {handMax}/Tag","🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
-     "📝 Test +{testKeo}🍬","👑 +{konigKeo}🍬","🔄 {saoPerKeo}⭐/{handPerKeo}✋ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
-   mgAutoConv:on=>`🔄 Montags ⭐ → 🍬 ({saoPerKeo}:1, ✋-Rest wird immer ⭐): <b>${on?"AN":"AUS"}</b>`,
-   mgHoliday:on=>`🏖️ Ferienmodus (Videospiel ohne ✋): <b>${on?"AN":"AUS"}</b>`,
+   rulesShort:["🎮 {gameMin}′/Tag (+{gameExtra}′)","📝 Checkliste +{chkSelf}/+{chkHelp}⭐","⭐ Bewertung +{ev_cn}…{ev_ch}","🎯 +{goalStars}⭐",
+     "🔄 {saoPerKeo}⭐ = 1🍬","💶 1🍬 = {keoEuro}€","💶 +{allowance}€/Woche, Zins {interest}%","🍾 {pfandSelf}/{pfandDad}€","🔒 {unlockMin}′ · ↩ {undoMin}′","💪 {formTired}/{formWarrior}/{formSS}/{formSS2}% · 🌟 {formSS3}×"],
+   mgAutoConv:on=>`🔄 Montags ⭐ → 🍬 ({saoPerKeo}:1): <b>${on?"AN":"AUS"}</b>`,
+   mgHoliday:on=>`🏖️ Ferienmodus: <b>${on?"AN":"AUS"}</b>`,
    pinAskT:"🔒 Eltern-Code eingeben", pinOpen:"Entsperren", pinWrong:"Falscher Code", pinForgot:"Code vergessen?",
    pinForgotHint:"Statt des Codes den 8-stelligen WIEDERHERSTELLUNGSCODE eingeben.", pinRecovered:"Mit Wiederherstellungscode entsperrt - bitte neuen Code setzen.",
    pinSetT:"🔒 Eltern-Code setzen", pinNew:"Neuer Code (mind. 4 Zeichen)", pinNew2:"Code wiederholen", pinBad:"Code zu kurz oder nicht gleich.",
@@ -786,8 +779,9 @@ const T={
 };
 /* ============ 🔧 Luật & con số: chỉnh ở ⚙️ → "🔧 Luật & con số" (lưu fam.cfg, có trong backup) ============ */
 const CFG_KEY="fam.cfg";
-const CFG_DEF={handMax:3,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
-  testKeo:2,konigKeo:10,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,undoMin:10,
+// ✋ giơ tay, thưởng bài KT và König đã bỏ (= 0)
+const CFG_DEF={handMax:0,gameMin:30,gameExtra:15,chkSelf:2,chkHelp:1,ev_cn:2,ev_n:1,ev_bt:0,ev_h:-1,ev_ch:-2,goalStars:3,
+  testKeo:0,konigKeo:0,saoPerKeo:3,handPerKeo:3,keoEuro:0.2,allowance:2,interest:2,pfandSelf:0.25,pfandDad:0.15,unlockMin:5,undoMin:10,
   formTired:35,formWarrior:70,formSS:87,formSS2:95,formSS3:10};
 const CFG_EURO=["keoEuro","allowance","pfandSelf","pfandDad"];   // hiện 2 số lẻ
 let _cfg=null;
@@ -1391,8 +1385,8 @@ function kidRaw(){try{return JSON.parse(localStorage.getItem(KIDKEY))||{};}catch
 // Cửa hàng mặc định: chỉ 2 nút chơi game, giá theo block 15′ = 2🍬 + 1✋. hand = số ✋ cần · min = phút game (tính giới hạn ngày)
 function defaultShop(){
   return [
-    {id:"game30",e:"🎮",name:LANG==="de"?"Videospiel 30 Min.":"Chơi game 30 phút",cost:4,cur:"keo",hand:1,min:30},
-    {id:"game15",e:"🎮",name:LANG==="de"?"Videospiel 15 Min.":"Chơi game 15 phút",cost:2,cur:"keo",hand:1,min:15}];
+    {id:"game30",e:"🎮",name:LANG==="de"?"Videospiel 30 Min.":"Chơi game 30 phút",cost:4,cur:"keo",hand:0,min:30},
+    {id:"game15",e:"🎮",name:LANG==="de"?"Videospiel 15 Min.":"Chơi game 15 phút",cost:2,cur:"keo",hand:0,min:15}];
 }
 // 🐉 Điều ước: gọi Rồng thần -> rút ngẫu nhiên 3 (theo tỉ lệ w), con chọn 1. keo>0 = cộng kẹo ngay; keo=0 = điều ước ngoài đời (bố mẹ thực hiện)
 // Mỗi điều ước: text = tiếng Việt, de = tiếng Đức, c = màu lá bài; sao/keo > 0 = thưởng ngay, cả hai = 0 = điều ước ngoài đời
@@ -1439,12 +1433,10 @@ function drawWishes(s){const pool=s.wishes.slice(),out=[];
 function defaultGoals(){const wk=isoWeek(iso(new Date()));
   if(LANG==="de"){
     return [
-      {id:"g1",text:"Sich im Unterricht melden",emoji:"✋",week:wk,done:false},
       {id:"g2",text:"Nicht meckern / keine Ausreden",emoji:"😌",week:wk,done:false},
       {id:"g3",text:"Selbstbewusst mit anderen sprechen",emoji:"🤝",week:wk,done:false}];
   }
   return [
-    {id:"g1",text:"Giơ tay phát biểu ở lớp",emoji:"✋",week:wk,done:false},
     {id:"g2",text:"Không cáu gắt / kiếm cớ",emoji:"😌",week:wk,done:false},
     {id:"g3",text:"Tự tin bắt chuyện với người khác",emoji:"🤝",week:wk,done:false}];
 }
@@ -1470,6 +1462,22 @@ function migrateKid(){
   out.v=2;
   kidSave(out);
 }
+/* --- Nâng cấp 1 lần (cờ s.mig5): bỏ ✋ giơ tay + thưởng bài KT/König. Chạy SAU preUpdateSnapshot + autoSnapshot
+   -> các bản tự lưu là dữ liệu trước nâng cấp. ✋ còn lại -> ⭐ 1:1. Lịch sử cũ giữ nguyên. --- */
+const OLD_HAND_GOALS=["Giơ tay phát biểu ở lớp","Sich im Unterricht melden"];
+function migrateNoHand5(){const s=kidState();if(s.mig5)return;
+  let o={};try{o=JSON.parse(localStorage.getItem(CFG_KEY))||{};}catch(e){o={};}
+  ["handMax","handPerKeo","testKeo","konigKeo"].forEach(k=>delete o[k]);
+  try{localStorage.setItem(CFG_KEY,JSON.stringify(o));}catch(e){storageFull(e);return;}
+  _cfg=null;
+  // Không cộng saoLife: mỗi ✋ đã được tính vào ngọc rồng lúc con kiếm được
+  const n=Math.max(0,Math.round(Number(s.hand&&s.hand.n)||0));
+  if(n>0){s.sao=(s.sao||0)+n;logAdd(s,{delta:n,reason:"",k:"handmig",cur:"sao"});}
+  s.hand={wk:wkMon(),n:0};
+  s.shop=(Array.isArray(s.shop)?s.shop:[]).map(it=>it&&typeof it==="object"?Object.assign({},it,{hand:0}):it);
+  s.goals=(s.goals||[]).filter(g=>!(g&&OLD_HAND_GOALS.includes(String(g.text||"").trim())));
+  s.mig5=1;kidSave(s);
+  sv(UNDO_KEY,[]);}                  // ↩ cũ chụp dữ liệu trước nâng cấp -> bỏ
 /* --- Nâng cấp dữ liệu 1 lần (bản ✋/game). Chạy SAU autoSnapshot -> bản tự lưu hôm nay vẫn là dữ liệu trước nâng cấp --- */
 function migrateV3(){const s=kidState();if(s.mig3)return;
   s.shop=defaultShop();              // chỉ còn 2 nút mua nhanh: game 30′ (4🍬) và 15′ (2🍬), mỗi lần cần 1✋
@@ -1704,7 +1712,7 @@ const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nh�
   goalPre:["Mục tiêu tuần: ","Wochenziel: "],goalUndoPre:["Hủy mục tiêu tuần: ","Wochenziel zurückgenommen: "]};
 // Xoá bản ghi nhật ký mới nhất khớp pred (dùng khi bỏ tick / bỏ đánh giá -> không để lại dòng "hủy" trong lịch sử)
 function logRemove(s,pred){const i=s.keoLog.findIndex(e=>e&&pred(e));if(i<0)return false;s.keoLog.splice(i,1);return true;}
-/* --- 🔒 Mã bố mẹ: khoá các nút cộng/trừ điểm, đánh giá, ⚙️, ↩... (con vẫn tự bấm checklist, giơ tay, mua game, đổi, gọi rồng).
+/* --- 🔒 Mã bố mẹ: khoá các nút cộng/trừ điểm, ⚙️, ↩... (con vẫn tự bấm checklist, giơ tay, tự chấm đánh giá ngày, mua game, đổi, gọi rồng).
    Mã chỉ lưu dạng băm trong máy (fam.pin), không bao giờ nằm trong code. Mở khoá 5 phút. Có mã khôi phục khi quên. --- */
 const PIN_KEY="fam.pin";let unlockUntil=0;
 const unlockMs=()=>Math.max(1,NUM("unlockMin"))*60e3;
@@ -1921,7 +1929,7 @@ function openEvalYesterday(){
   sheet.querySelectorAll("[data-evy]").forEach(b=>b.onclick=()=>applyEvalYesterday(b.dataset.evy));$("evyNo").onclick=close;}
 function renderEvalReminder(){const el=$("evalReminder");if(!el)return;const s=kidState(),h=new Date().getHours();
   if(!todayEval(s)&&h>=19){el.hidden=false;el.textContent=L().evalRemindToday;el.onclick=()=>{setTab("con");const b=$("evalBtns");if(b)b.scrollIntoView({block:"center"});};return;}
-  if(canEvalYesterday(s)){el.hidden=false;el.textContent=L().evalRemindYest;el.onclick=needParent(openEvalYesterday);return;}
+  if(canEvalYesterday(s)){el.hidden=false;el.textContent=L().evalRemindYest;el.onclick=openEvalYesterday;return;}
   el.hidden=true;}
 /* --- Kẹo: thao tác tay + đúng bài + König --- */
 function addKeo(n,reason){const s=kidState();
@@ -2117,7 +2125,8 @@ function convertHand(){const s=kidState();
   playSound('success');
   renderRewardAll();}
 /* --- Giơ tay phát biểu ✋ — tối đa handMax() lần/ngày, mỗi lần +1✋ (ô riêng) --- */
-function raiseHand(){const s=kidState(),today=iso(new Date()),c=todayHandCount(s);
+function raiseHand(){if(NUM("handMax")<=0)return;   // ✋ đã bỏ
+  const s=kidState(),today=iso(new Date()),c=todayHandCount(s);
   if(c>=handMax()){kidCheer=KL().handMax;renderRewardAll();return;}
   if(!confirm(KL().handConfirm(c+1)))return;
   undoPush("+1✋");
@@ -2157,11 +2166,10 @@ function toggleGoal(id){const s=kidState(),g=s.goals.find(x=>String(x.id)===Stri
   kidSave(s);renderRewardAll();}
 /* --- 🛒 Cửa hàng đổi thưởng (nút mua nhanh ở tab của con) --- */
 // ✋ trả theo NGÀY: món có hand>0 cần 1✋ cho lần mua đầu tiên trong ngày, các lần sau trong ngày không tốn ✋
-const handDue=(it,s)=>(it.hand||0)>0&&!(s&&(s.holiday||todayGameDay(s).handPaid))?1:0;   // 🏖️ nghỉ lễ: không cần ✋
+const handDue=()=>0;   // ✋ đã bỏ: mua game chỉ tốn kẹo
 function keoToMin(s){const g=(s.shop||[]).filter(x=>x.min>0&&x.cost>0&&x.cur!=="sao").sort((a,b)=>a.min-b.min)[0];
   return g?Math.max(0,Math.floor((s.keo||0)/g.cost))*g.min:0;}
-const costLabel=(it,s)=>{const h=s?(handDue(it,s)?"1✋":""):((it.hand||0)>0?"1✋/"+(LANG==="de"?"Tag":"ngày"):"");
-  return it.cost>0||!h?`${it.cost}${it.cur==="sao"?"⭐":"🍬"}`+(h?" + "+h:""):h;};
+const costLabel=it=>`${it.cost}${it.cur==="sao"?"⭐":"🍬"}`;
 function buyShopItem(id){const s=kidState(),it=s.shop.find(x=>String(x.id)===String(id));if(!it)return;
   const icon=it.cur==="sao"?"⭐":"🍬",bal=it.cur==="sao"?(s.sao||0):(s.keo||0);
   const nameTr=T_val(it.name),needH=handDue(it,s),haveH=s.hand.n||0,mins=Math.max(0,Math.round(it.min||0));
@@ -2241,8 +2249,7 @@ document.addEventListener("click",e=>{
   const ma=e.target.closest("[data-mgadd]");if(ma){mgAdd(ma.dataset.mgadd);return;}
   const me=e.target.closest("[data-mgedit]");if(me){mgEdit(me.dataset.mgedit);return;}
   const md=e.target.closest("[data-mgdel]");if(md){mgDel(md.dataset.mgdel);return;}});
-$("gTest").onclick=needParent(()=>{if(confirm(L().gTestConfirm))addKeo(Math.round(NUM("testKeo")),L().gReasonTest);});
-$("gKonig").onclick=needParent(()=>{if(confirm(L().gKonigConfirm))addKeo(Math.round(NUM("konigKeo")),L().gReasonKonig);});$("gPay").onclick=needParent(payKeo);
+$("gPay").onclick=needParent(payKeo);
 $("gPlus").onclick=needParent(()=>keoManual(1));$("gMinus").onclick=needParent(()=>keoManual(-1));$("repBtn").onclick=openReport;
 $("addSleep").onclick=openSleep;$("addTemp").onclick=openTemp;$("addGrowth").onclick=openGrowth;
 
@@ -2259,6 +2266,7 @@ function logReason(e){
   if(e.k==="hand")return L().rsHand;
   if(e.k==="handexp")return L().rsHandExp;
   if(e.k==="hand2sao")return L().rsHand2Sao;
+  if(e.k==="handmig")return L().rsHandMig;
   if(e.k==="debtclear")return L().rsDebtClear;
   if(e.k==="weekconv")return L().rsWeekConv;
   if(e.k==="trip"){const d=TRIP.find(x=>x.c===e.c);return L().rsTrip(d?d.f+" "+tripName(d):"",e.n||1)+(e.reason?": "+wReason(e.reason):"");}
@@ -2699,8 +2707,8 @@ const KX={
    convertHandBtn:"🔄 Đổi {handPerKeo} ✋ → 1 🍬",convertHandBlocked:"Chưa đủ {handPerKeo} ✋ để đổi.",convertHandReason:"Đổi {handPerKeo}✋ → 1🍬",
    convertHandConfirm:"Đổi {handPerKeo} sao giơ tay ✋ lấy 1 kẹo 🍬?\n(✋ để chơi game sẽ ít đi {handPerKeo})",
    gameT:(m,lim)=>`🎮 Chơi game · hôm nay đã chơi ${m}/${lim} phút`,
-   gameRuleHoliday:"🏖️ Nghỉ lễ: 🎮 15 phút = 2 🍬 (không cần ✋)",
-   gameRule:"🎮 15 phút = 2 🍬 · lần chơi đầu tiên trong ngày: + 1 ✋",
+   gameRuleHoliday:"🏖️ Nghỉ lễ: 🎮 15 phút = 2 🍬",
+   gameRule:"🎮 15 phút = 2 🍬",
    shopNeedHand:(need,name,have)=>`Chưa đủ ✋ để "${name}": cần ${need} ✋, con đang có ${have} ✋.\nGiơ tay phát biểu ở lớp để có ✋ nhé!`,
    gameLimit:(played,lim,mins)=>`Hôm nay con đã chơi ${played}/${lim} phút, không mua thêm ${mins} phút được nữa.\nMuốn chơi thêm thì hỏi bố mẹ. Bố mẹ đồng ý thì bấm "🎮 Bố mẹ cho chơi thêm {gameExtra} phút" ở tab 🎁 Thưởng.`,
    gameExtraCheer:lim=>`🎮 Hôm nay được chơi tới ${lim} phút.`,
@@ -2713,13 +2721,13 @@ const KX={
    handCheer:n=>`✋ Hoan hô con dũng cảm giơ tay! +1 ✋ (${n}/{handMax} hôm nay)`,
    dragonT:"🐉 7 viên ngọc rồng · gom đủ 7 viên để gọi Rồng thần",
    dragonNext:(i,rem)=>`📡 Máy dò ngọc: viên ${i} sao còn cách ${rem}⭐`, dragonReady:"Đủ 7 viên rồi! Gọi Rồng thần thôi ✨",
-   dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per} ⭐ hoặc ✋ là có thêm 1 viên ngọc`,
+   dragonBtn:"🐉 Gọi Rồng thần!", dragonRule:per=>`Cứ kiếm được ${per} ⭐ là có thêm 1 viên ngọc`,
    albBtn:(n,t)=>`📖 Album rồng (${n}/${t})`, albT:"📖 Album rồng của con", albNew:"MỚI",
    albSub:(n,t)=>n>=t?`Con đã sưu tập đủ ${t} con rồng! Rồng thần tặng con chuyến bay ✈️ vòng quanh thế giới.`:`Mỗi lần gọi Rồng thần sẽ gặp một con rồng màu mới. Còn ${t-n} con chưa gặp!`,
    albSeen:n=>n>1?`đã gặp ${n} lần`:"",
    tripT:"✈️ Vòng quanh thế giới · 7 chặng bay đến nước tiếp theo",
    tripNext:(d,i,rem)=>`✈️ Bay tới ${d}: còn ${rem}⭐ nữa xong chặng ${i}/7`, tripReady:d=>`🛬 Sắp tới ${d} rồi! Hạ cánh thôi ✨`,
-   tripBtn:d=>`🛬 Hạ cánh ở ${d}!`, tripRule:per=>`Cứ kiếm được ${per} ⭐ hoặc ✋ là bay thêm 1 chặng`,
+   tripBtn:d=>`🛬 Hạ cánh ở ${d}!`, tripRule:per=>`Cứ kiếm được ${per} ⭐ là bay thêm 1 chặng`,
    passBtn:(n,t)=>`🛂 Hộ chiếu (${n}/${t} tem)`, passT:"🛂 Hộ chiếu của con",
    passSub:(n,t,d)=>n>=t?`Con đã đi vòng quanh thế giới! Bay tiếp vòng mới nhé.`:`Mỗi nước con đến là 1 con tem. Chạm vào tem để đọc điều thú vị. Điểm đến tiếp theo: ${d}`,
    tripCome:d=>`Willkommen in ${d}!`, tripStamp:n=>`Tem số ${n}`, tripPick:"Chọn 1 món quà du lịch:",
@@ -2737,7 +2745,7 @@ const KX={
    wishPendingKid:"🐉 Điều ước đang chờ bố mẹ:", capCheer:(x,eur)=>`🐷 Kẹo đã đầy - ${x}🍬 dư thành +${eur}€ tiền tiết kiệm`,
    dragonSay:["Ta là Rồng thần! Con đã gom đủ 7 viên ngọc. Giỏi lắm!","Ta thấy con chăm chỉ lắm. Cứ thế mà phát huy!",
      "Ngọc rồng chỉ đến với người kiên trì. Hẹn gặp lại con!","Sức mạnh của con đã tăng lên rất nhiều!",
-     "Giơ tay phát biểu thật nhiều nhé, ta sẽ sớm gặp lại con!","Người dũng cảm là người dám thử dù còn ngại. Con làm được!"],
+     "Cứ cố gắng mỗi ngày nhé, ta sẽ sớm gặp lại con!","Người dũng cảm là người dám thử dù còn ngại. Con làm được!"],
    handExpWarn:n=>`⏰ Hôm nay Chủ nhật: ${n} ✋ còn dư, sáng mai sẽ thành ${n} ⭐ rồi tự đổi sang 🍬.`,
    goalsT:"🎯 Mục tiêu tuần này - mỗi mục = +{goalStars} ⭐",goalsEmpty:"Chưa có mục tiêu - nhờ bố mẹ thêm nhé.",goalsHint:"🔒 Bố mẹ sẽ tick mục tiêu cho con.",
    tauschBtn:"🔄 Đổi",tauschT:"🔄 Con muốn đổi gì?",
@@ -2762,8 +2770,8 @@ const KX={
    convertHandBtn:"🔄 {handPerKeo} ✋ → 1 🍬 tauschen",convertHandBlocked:"Noch nicht genug ✋ ({handPerKeo} nötig).",convertHandReason:"{handPerKeo}✋ → 1🍬 getauscht",
    convertHandConfirm:"{handPerKeo} Meldungen ✋ gegen 1 Süßigkeit 🍬 tauschen?\n(dann hast du {handPerKeo} ✋ weniger für Videospiel)",
    gameT:(m,lim)=>`🎮 Videospiel · heute ${m}/${lim} Min. gespielt`,
-   gameRuleHoliday:"🏖️ Ferien: 🎮 15 Min. = 2 🍬 (ohne ✋)",
-   gameRule:"🎮 15 Min. = 2 🍬 · erstes Spiel am Tag: + 1 ✋",
+   gameRuleHoliday:"🏖️ Ferien: 🎮 15 Min. = 2 🍬",
+   gameRule:"🎮 15 Min. = 2 🍬",
    shopNeedHand:(need,name,have)=>`Nicht genug ✋ für "${name}": ${need} ✋ nötig, du hast ${have} ✋.\nMelde dich im Unterricht, dann bekommst du ✋!`,
    gameLimit:(played,lim,mins)=>`Heute schon ${played}/${lim} Min. gespielt, ${mins} Min. mehr gehen nicht.\nFrag Mama oder Papa. Wenn sie ja sagen: im Tab 🎁 "🎮 Eltern erlauben heute {gameExtra} Min. extra" antippen.`,
    gameExtraCheer:lim=>`🎮 Heute sind bis zu ${lim} Min. erlaubt.`,
@@ -2776,13 +2784,13 @@ const KX={
    handCheer:n=>`✋ Bravo, du hast dich gemeldet! +1 ✋ (heute ${n}/{handMax})`,
    dragonT:"🐉 Sammle alle 7 Drachenkugeln und ruf den Drachen!",
    dragonNext:(i,rem)=>`📡 Kugel-Radar: noch ${rem} ⭐ bis zur ${i}-Sterne-Kugel`, dragonReady:"Alle 7 gesammelt! Ruf den Drachen ✨",
-   dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Für je ${per} verdiente ⭐ oder ✋ gibt es 1 Kugel`,
+   dragonBtn:"🐉 Drache, erscheine!", dragonRule:per=>`Für je ${per} verdiente ⭐ gibt es 1 Kugel`,
    albBtn:(n,t)=>`📖 Drachen-Album (${n}/${t})`, albT:"📖 Dein Drachen-Album", albNew:"NEU",
    albSub:(n,t)=>n>=t?`Du hast alle ${t} Drachen gesammelt! Der Drache schenkt dir eine ✈️ Weltreise.`:`Bei jedem Ruf kommt ein Drache in einer neuen Farbe. Noch ${t-n} fehlen!`,
    albSeen:n=>n>1?`${n}× gesehen`:"",
    tripT:"✈️ Weltreise · 7 Etappen bis zum nächsten Land",
    tripNext:(d,i,rem)=>`✈️ Flug nach ${d}: noch ${rem}⭐ bis Etappe ${i}/7`, tripReady:d=>`🛬 Gleich in ${d}! Zeit zum Landen ✨`,
-   tripBtn:d=>`🛬 Landen in ${d}!`, tripRule:per=>`Für je ${per} verdiente ⭐ oder ✋ fliegst du 1 Etappe weiter`,
+   tripBtn:d=>`🛬 Landen in ${d}!`, tripRule:per=>`Für je ${per} verdiente ⭐ fliegst du 1 Etappe weiter`,
    passBtn:(n,t)=>`🛂 Reisepass (${n}/${t} Stempel)`, passT:"🛂 Dein Reisepass",
    passSub:(n,t,d)=>n>=t?`Du bist einmal um die Welt gereist! Weiter geht's mit der nächsten Runde.`:`Jedes Land gibt einen Stempel. Tippe auf einen Stempel für ein spannendes Wissen. Nächstes Ziel: ${d}`,
    tripCome:d=>`Willkommen in ${d}!`, tripStamp:n=>`Stempel Nr. ${n}`, tripPick:"Wähle ein Reise-Geschenk:",
@@ -2800,7 +2808,7 @@ const KX={
    wishPendingKid:"🐉 Offene Wünsche:", capCheer:(x,eur)=>`🐷 Süßigkeiten voll - ${x}🍬 Rest wird +${eur}€ Sparkonto`,
    dragonSay:["Ich bin der Drache! Du hast alle 7 Kugeln gesammelt. Großartig!","Ich sehe, wie fleißig du bist. Mach weiter so!",
      "Die Kugeln kommen nur zu denen, die durchhalten. Bis bald!","Deine Kraft ist enorm gewachsen!",
-     "Melde dich weiter fleißig, dann sehen wir uns bald wieder!","Mutig ist, wer es trotzdem versucht. Du schaffst das!"],
+     "Gib jeden Tag dein Bestes, dann sehen wir uns bald wieder!","Mutig ist, wer es trotzdem versucht. Du schaffst das!"],
    handExpWarn:n=>`⏰ Heute ist Sonntag: ${n} ✋ übrig, morgen werden daraus ${n} ⭐ und dann 🍬.`,
    goalsT:"🎯 Wochenziele - jedes Ziel = +{goalStars} ⭐",goalsEmpty:"Noch keine Ziele - frag Mama oder Papa.",goalsHint:"🔒 Mama oder Papa haken die Ziele ab.",
    tauschBtn:"🔄 Tauschen",tauschT:"🔄 Was möchtest du tauschen?",
@@ -2831,33 +2839,27 @@ function getMoneyHistory(s, count) {
 }
 function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   const negS=(s.sao||0)<0?" neg":"",negK=(s.keo||0)<0?" neg":"";
-  const hn=s.hand.n||0,hc=todayHandCount(s),played=todayGameMin(s),dg=dragonState(s);
+  const played=todayGameMin(s),dg=dragonState(s);
   const shopBtns=s.shop.length?s.shop.map(it=>{
-    const ok=(it.cur==="sao"?(s.sao||0):(s.keo||0))>=it.cost&&hn>=handDue(it,s);
-    return `<button class="shopbig${ok?'':' shopbuy'}" data-kidshop="${esc(it.id)}">${it.e?`<span class="e">${esc(it.e)}</span>`:""}<span class="nm">${esc(T_val(it.name))}</span><span class="cost">${costLabel(it,s)}</span></button>`;}).join(""):`<div class="empty">—</div>`;
+    const ok=(it.cur==="sao"?(s.sao||0):(s.keo||0))>=it.cost;
+    return `<button class="shopbig${ok?'':' shopbuy'}" data-kidshop="${esc(it.id)}">${it.e?`<span class="e">${esc(it.e)}</span>`:""}<span class="nm">${esc(T_val(it.name))}</span><span class="cost">${costLabel(it)}</span></button>`;}).join(""):`<div class="empty">—</div>`;
   const goals=s.goals.length?s.goals.map(g=>`<div class="chk${g.done?' done':''}" data-gk="${esc(g.id)}">
       <span class="box">${g.done?'✓':''}</span><span class="nm">${g.emoji?esc(g.emoji)+' ':''}${esc(T_val(g.text))}</span></div>`).join("")
     :`<div class="empty">${KL().goalsEmpty}</div>`;
-  const lastDay=new Date().getDay()===0&&hn>0;   // Chủ nhật: nhắc ✋ sắp hết hạn
   const fm=formState(s);
   $("kidPanel").innerHTML=`
    <div class="kidtop"><span class="kidav aura${fm.lv}" id="kAv">${esc(s.avatar)}</span>
      <div class="kidhi">${greetWord()}, ${esc(CHILD())}! 🌟       <div class="kform lv${fm.lv}"><div class="kfn">${KL().formLv[fm.lv]}</div><div class="kfbar"><span style="width:${fm.pct}%"></span></div>
        <div class="kfsub">${esc(KL().formSub(fm))}<br>${esc(fx(KL().formNext[fm.lv]))}</div></div></div></div>
-   <div class="wallets wallets4">
+   <div class="wallets wallets3">
      <div class="wallet sao"><div class="n${negS}">⭐ ${s.sao||0}</div><div class="sub">${KL().walletSaoSub}</div></div>
-     <div class="wallet whand"><div class="n">✋ ${hn}</div><div class="sub">${KL().walletHandSub}</div></div>
      <div class="wallet keo"><div class="n${negK}">🍬 ${s.keo||0}</div><div class="sub">${KL().walletKeoSub(keoToMin(s),keoCap(s))}</div></div>
      <div class="wallet money"><div class="n">${fmtEuro(s.pocketMoney||0)}</div><div class="sub">${KL().walletMoneySub}</div><div style="font-size:12px;color:#9fe0b0;margin-top:3px;line-height:1.25">${KL().moneyInterest(s.pocketMoneyAccruedInterest||0)}</div></div>
    </div>
    ${kidCheer?`<div class="kidcheer" id="kCheer">${esc(kidCheer)}</div>`:""}
-   ${lastDay?`<div class="kidwarn">${esc(KL().handExpWarn(hn))}</div>`:""}
    <div class="kidsec">${KL().gameT(played,todayGameLimit(s))}</div>
    <div class="kidrule">${s.holiday?KL().gameRuleHoliday:KL().gameRule}</div>
    <div class="shopgrid">${shopBtns}</div>
-   <div class="kidsec">${KL().handQ}</div>
-   <div class="hand"><div class="q">${KL().handSub(hc,handMax())}</div>
-      <button class="handbtn" id="kHand" ${hc>=handMax()?'disabled style="background:var(--bd);color:var(--mut);cursor:default"':''}>${hc>=handMax()?KL().handDone:KL().handBtn}</button></div>
    <button class="tauschbtn" id="kTausch">${KL().tauschBtn}</button>
    <div style="font-size:13px;color:#ffd98a;text-align:center;margin:8px 0 4px">${KL().streak(s.streak||0)}</div>
    ${tripOn(s)?tripHtml(s,dg):`<div class="kidsec">${KL().dragonT}</div>
@@ -2890,20 +2892,18 @@ function renderKid(){const s=kidState();if(TAB==="kid")dragonCheer="";
   if($("kSummon"))$("kSummon").onclick=summonDragon;
   if($("kAlbum"))$("kAlbum").onclick=openAlbum;
   if($("kPass"))$("kPass").onclick=openPassport;
-  $("kHand").onclick=raiseHand;
   P.querySelectorAll("[data-gk]").forEach(g=>g.onclick=needParent(()=>toggleGoal(g.dataset.gk)));
   P.querySelectorAll("#kMood [data-mi]").forEach(b=>b.onclick=()=>{if(!confirm(LANG==="vi"?"Lưu cảm xúc này?":"Diese Stimmung speichern?"))return;addLog({type:"mood",mood:L().moods[+b.dataset.mi]});kidCheer=KL().thanks;playSound('click');renderKid();});
   if($("kGoodSave"))$("kGoodSave").onclick=()=>{const v=$("kGood").value.trim();if(v){if(!confirm(LANG==="vi"?"Lưu điều hay hôm nay?":"Diesen Eintrag speichern?"))return;const a=ld("fam.kid.diary");a.push({id:newId(),date:iso(new Date()),ts:Date.now(),text:v});sv("fam.kid.diary",a);kidCheer=KL().thanks;playSound('click');renderKid();}}
   P.querySelectorAll("[data-kidshop]").forEach(el=>el.onclick=()=>buyShopItem(el.dataset.kidshop));}
 // 🔄 1 nút "Đổi" -> bảng 3 cách đổi (đỡ rối ở màn hình chính)
-function openTausch(){const s=kidState(),hn=s.hand.n||0;
+function openTausch(){const s=kidState();
   openSheet(`<h3>${KL().tauschT}</h3><div class="tausch">
     <button class="gumbtn gold2" id="tSao" ${(s.sao||0)<iPos("saoPerKeo")?'disabled':''}>${KL().convertBtn}<br><small>⭐ ${s.sao||0}</small></button>
-    <button class="gumbtn" id="tHand" style="background:var(--blue);color:#fff" ${hn<iPos("handPerKeo")?'disabled':''}>${KL().convertHandBtn}<br><small>✋ ${hn}</small></button>
     <button class="gumbtn indigo" id="tMoney" ${(s.keo||0)<1?'disabled':''}>${KL().convertMoneyBtn}<br><small>🍬 ${s.keo||0}</small></button></div>
     <div class="acts"><button class="cancel" id="tNo">${KL().close}</button></div>`);
   const run=f=>()=>{close();f();};
-  $("tSao").onclick=run(convertStars);$("tHand").onclick=run(convertHand);$("tMoney").onclick=run(convertCandyToMoney);$("tNo").onclick=close;}
+  $("tSao").onclick=run(convertStars);$("tMoney").onclick=run(convertCandyToMoney);$("tNo").onclick=close;}
 const pendKid=s=>(s.dragon.pending||[]).length?`<div class="dpend">${KL().wishPendingKid}<br>${s.dragon.pending.map(p=>`${p.e?esc(p.e)+" ":""}${esc(wName(p,true))}`).join("<br>")}</div>`:"";
 function tripHtml(s,dg){const d=tripDest(s),fr=tripFrom(s),n=tripStamps(s).length;
   const steps=[1,2,3,4,5,6,7].map(i=>`<span class="tstep${i<=dg.n?" got":""}">${i===dg.n&&dg.n<7?"✈️":i<=dg.n?"●":"○"}</span>`).join("");
@@ -2924,13 +2924,7 @@ function renderParentReward(){const s=kidState();
   $("pSaoUnit").innerHTML=L().pSaoUnit(s.saoLife||0);
   $("critBtn").textContent=L().critBtn;
   $("sPlus").textContent=L().sPlus;$("sMinus").textContent=L().sMinus;
-  const hc=todayHandCount(s);
-  $("h_hand").textContent=L().h_hand;$("pHand").textContent="✋ "+(s.hand.n||0);
-  $("pHandUnit").textContent=L().pHandUnit(hc,handMax());
-  $("pHandBtn").textContent=hc>=handMax()?L().pHandMax:L().pHandBtn;$("pHandBtn").disabled=hc>=handMax();
-  $("pHandBtn").onclick=raiseHand;
-  $("hPlus").textContent=L().hPlus;$("hMinus").textContent=L().hMinus;
-  $("hPlus").onclick=needParent(()=>handManual(1));$("hMinus").onclick=needParent(()=>handManual(-1));
+  $("h_game").textContent=L().h_game;
   $("pGameT").textContent=L().pGameT(todayGameMin(s),todayGameLimit(s));
   $("pGameExtra").textContent=L().pGameExtra;$("pGameExtra").onclick=needParent(grantGameExtra);
   const container = $("saoAdjustsContainer");
@@ -2963,9 +2957,9 @@ function renderParentReward(){const s=kidState();
     +`<div class="row" style="color:var(--mut);font-size:12.5px">${L().dragonHint}</div>`;
   $("pKeo").textContent=s.keo||0;$("pKeo").className="bignum gold"+negK;
   $("keoUnit").textContent=L().keoUnit;
-  $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
+  $("gPay").textContent=L().gPay;
   $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;
-  document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=needParent(()=>applyEval(b.dataset.eval)));
+  document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=needParent(()=>saoManual(1));
   $("sMinus").onclick=needParent(()=>saoManual(-1));
@@ -3033,12 +3027,11 @@ function shopForm(title,init,save){
     {key:"name",label:LANG==="vi"?"Tên món":"Name",type:"text",value:init.name!=null?T_val(init.name):"",required:true},
     {key:"cost",label:LANG==="vi"?"Giá (số điểm)":"Preis (Punkte)",type:"number",min:0,value:init.cost!=null?init.cost:2,required:true},
     {key:"cur",label:LANG==="vi"?"Tiêu bằng loại điểm":"Punkteart",type:"chips",options:[["sao","⭐ "+(LANG==="vi"?"Sao":"Sterne")],["keo","🍬 "+(LANG==="vi"?"Kẹo":"Süßigkeiten")]],value:init.cur||"keo"},
-    {key:"hand",label:LANG==="vi"?"✋ Cần 1 sao giơ tay mỗi ngày (lần mua đầu trong ngày)":"✋ Braucht 1 Melde-Stern pro Tag (erster Kauf am Tag)",type:"chips",options:[["1",LANG==="vi"?"Có":"Ja"],["0",LANG==="vi"?"Không":"Nein"]],value:(init.hand||0)>0?"1":"0"},
     {key:"min",label:LANG==="vi"?`🎮 Số phút game (tính vào giới hạn ${gameDayMin()} phút/ngày · 0 = không phải game)`:`🎮 Spielminuten (zählt zum Limit ${gameDayMin()} Min./Tag · 0 = kein Spiel)`,type:"number",min:0,value:init.min!=null?init.min:0},
     {key:"e",label:"Emoji",type:"emoji",value:init.e!=null?init.e:"🎁"}],
    onSave:v=>{
      const cost=Math.max(0,Math.round(v.cost||0));
-     save(v.name,cost,v.cur==="sao"?"sao":"keo",v.e||"",v.hand==="1"?1:0,Math.max(0,Math.round(v.min||0)));}});}
+     save(v.name,cost,v.cur==="sao"?"sao":"keo",v.e||"",0,Math.max(0,Math.round(v.min||0)));}});}
 function addShopPrompt(){shopForm(LANG==="vi"?"Món đổi thưởng mới":"Neuer Shop-Artikel",{},
   (name,cost,cur,e,hand,min)=>{const s=kidState();s.shop.push({id:newId(),e,name,cost,cur,hand,min});kidSave(s);renderRewardAll();});}
 function editShopPrompt(id){const it0=kidState().shop.find(x=>String(x.id)===String(id));if(!it0)return;
@@ -3120,8 +3113,8 @@ function mgDel(tok){const i=tok.indexOf(":"),t=tok.slice(0,i),id=tok.slice(i+1);
   else if(t==="wish"){if(confirm(LANG==="vi"?"Xoá điều ước này?":"Diesen Wunsch löschen?")){const s=kidState();s.wishes=s.wishes.filter(x=>String(x.id)!==String(id));s.dragon.offer=null;kidSave(s);renderRewardAll();}}
   if($("mgBody"))renderManageBody();}
 // Các con số luật chơi (fam.cfg) — 1 form, không cần sửa code
-const RULE_FIELDS=[["handMax",1],["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
-  ["goalStars",1],["testKeo",1],["konigKeo",1],["saoPerKeo",1],["handPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],["undoMin",1],
+const RULE_FIELDS=[["gameMin",5],["gameExtra",5],["chkSelf",1],["chkHelp",1],["ev_cn",1],["ev_n",1],["ev_bt",1],["ev_h",1],["ev_ch",1],
+  ["goalStars",1],["saoPerKeo",1],["keoEuro",0.05],["allowance",0.5],["interest",0.5],["pfandSelf",0.05],["pfandDad",0.05],["unlockMin",1],["undoMin",1],
   ["formTired",1],["formWarrior",1],["formSS",1],["formSS2",1],["formSS3",1]];
 function ruleLabel(k){const ev=L().evalRatings.find(r=>"ev_"+r[0]===k);return ev?L().ruleEval(ev[1]):L().rules[k];}
 function rulesSummary(){const R=L().rulesShort;return R.map(f=>f.replace(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,(m,k)=>k in CFG_DEF?fmtN(k):m)).join(" · ");}
@@ -3132,7 +3125,7 @@ function openRules(){
   RULE_FIELDS.filter(x=>!used.has(x[0])).forEach(f=>fields.push(fld(f)));
   openForm({title:L().mgSecRules,plain:true,fields,
     onSave:v=>{const o={};RULE_FIELDS.forEach(([k])=>{const n=v[k];if(n==null||!isFinite(n))return;
-        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["handMax","saoPerKeo","handPerKeo","unlockMin","undoMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
+        let x=Number(n);if(!k.startsWith("ev_"))x=Math.max(0,x);if(["saoPerKeo","unlockMin","undoMin","formSS3"].includes(k))x=Math.max(1,x);if(k.startsWith("form")&&k!=="formSS3")x=Math.min(100,x);
         if(!CFG_EURO.includes(k)&&k!=="interest")x=Math.round(x);if(x!==CFG_DEF[k])o[k]=x;});
       try{localStorage.setItem(CFG_KEY,JSON.stringify(o));}catch(e){storageFull(e);}
       _cfg=null;renderAll();}});}
@@ -3177,7 +3170,7 @@ function renderAll(){
   if($("mgBody"))renderManageBody();}
 document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("on",x.dataset.lang===LANG));
 // Khởi động: từng bước chạy riêng -> 1 bước lỗi (dữ liệu lạ) không làm trắng cả app
-[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateWishes4,migrateWishes5,migrateKeoCap20,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
+[preUpdateSnapshot,fixAnItems,seedDailyChecklist,migrateKid,autoSnapshot,migrateV3,migrateDragon4,migrateWishes2,migrateWishes3,migrateWishes4,migrateWishes5,migrateKeoCap20,migrateNoHand5,archiveOldLog,compactAnchk,checkPocketMoneyAllowance,checkPocketMoneyInterest,
  function capOnLoad(){const s=kidState();if((s.keo||0)>keoCap(s)&&keoCap(s))kidSave(s);},renderAll,()=>setTab(TAB)]
   .forEach(f=>{try{f();}catch(e){console.error("startup",f.name,e);}});
 $("mgOpenBtn").onclick=needParent(openManage);

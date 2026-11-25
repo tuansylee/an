@@ -2,7 +2,7 @@
 // - Trang app: thử mạng tối đa NET_WAIT ms; có bản mới (200) thì dùng + lưu đè vào cache.
 //   Mất mạng / mạng treo / GitHub trả lỗi -> dùng bản đã lưu trong máy, không hiện trang lỗi.
 // - Bản lưu luôn nằm ở 1 khoá duy nhất (SHELL) nên offline luôn mở đúng bản mới nhất đã tải.
-const CACHE = 'fam-v2';
+const CACHE = 'fam-v3';
 const SHELL = './index.html';
 const PRECACHE = ['./', './index.html', './manifest.webmanifest'];
 const NET_WAIT = 3500;
