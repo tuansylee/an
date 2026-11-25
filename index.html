@@ -450,7 +450,7 @@ button.hbtn{color:var(--fg);font:inherit;font-weight:700;width:100%;min-height:8
 
 <script>
 /* ============ i18n ============ */
-const BUILD="2026-11-13·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
+const BUILD="2026-11-25·1";   // ⬅ đổi số này mỗi lần update để biết Fully đã nạp bản mới chưa
 let LANG=localStorage.getItem("fam.lang")||"vi";
 function T_val(val) {
   if (!val) return "";
@@ -1704,7 +1704,7 @@ const LEG={checkPos:["Checklist xong — tự làm","Checklist xong — có nh�
   goalPre:["Mục tiêu tuần: ","Wochenziel: "],goalUndoPre:["Hủy mục tiêu tuần: ","Wochenziel zurückgenommen: "]};
 // Xoá bản ghi nhật ký mới nhất khớp pred (dùng khi bỏ tick / bỏ đánh giá -> không để lại dòng "hủy" trong lịch sử)
 function logRemove(s,pred){const i=s.keoLog.findIndex(e=>e&&pred(e));if(i<0)return false;s.keoLog.splice(i,1);return true;}
-/* --- 🔒 Mã bố mẹ: khoá các nút cộng/trừ điểm, đánh giá, ⚙️, ↩... (con vẫn tự bấm checklist, giơ tay, mua game, đổi, gọi rồng).
+/* --- 🔒 Mã bố mẹ: khoá các nút cộng/trừ điểm, ⚙️, ↩... (con vẫn tự bấm checklist, giơ tay, tự chấm đánh giá ngày, mua game, đổi, gọi rồng).
    Mã chỉ lưu dạng băm trong máy (fam.pin), không bao giờ nằm trong code. Mở khoá 5 phút. Có mã khôi phục khi quên. --- */
 const PIN_KEY="fam.pin";let unlockUntil=0;
 const unlockMs=()=>Math.max(1,NUM("unlockMin"))*60e3;
@@ -1921,7 +1921,7 @@ function openEvalYesterday(){
   sheet.querySelectorAll("[data-evy]").forEach(b=>b.onclick=()=>applyEvalYesterday(b.dataset.evy));$("evyNo").onclick=close;}
 function renderEvalReminder(){const el=$("evalReminder");if(!el)return;const s=kidState(),h=new Date().getHours();
   if(!todayEval(s)&&h>=19){el.hidden=false;el.textContent=L().evalRemindToday;el.onclick=()=>{setTab("con");const b=$("evalBtns");if(b)b.scrollIntoView({block:"center"});};return;}
-  if(canEvalYesterday(s)){el.hidden=false;el.textContent=L().evalRemindYest;el.onclick=needParent(openEvalYesterday);return;}
+  if(canEvalYesterday(s)){el.hidden=false;el.textContent=L().evalRemindYest;el.onclick=openEvalYesterday;return;}
   el.hidden=true;}
 /* --- Kẹo: thao tác tay + đúng bài + König --- */
 function addKeo(n,reason){const s=kidState();
@@ -2965,7 +2965,7 @@ function renderParentReward(){const s=kidState();
   $("keoUnit").textContent=L().keoUnit;
   $("gTest").textContent=L().gTest;$("gKonig").textContent=L().gKonig;$("gPay").textContent=L().gPay;
   $("gPlus").textContent=L().gPlus;$("gMinus").textContent=L().gMinus;
-  document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=needParent(()=>applyEval(b.dataset.eval)));
+  document.querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>applyEval(b.dataset.eval));
   $("critBtn").onclick=openCrit;
   $("sPlus").onclick=needParent(()=>saoManual(1));
   $("sMinus").onclick=needParent(()=>saoManual(-1));
